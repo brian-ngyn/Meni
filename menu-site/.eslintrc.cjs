@@ -1,35 +1,51 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+const path = require("path");
+const prettierConfig = require("./prettier.config.cjs");
+
+const project = path.join(__dirname, "tsconfig.json");
+
 /** @type {import("eslint").Linter.Config} */
 const config = {
+  overrides: [
+    {
+      extends: [
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "plugin:promise/recommended",
+      ],
+      files: ["*.ts", "*.tsx"],
+      parserOptions: {
+        project,
+      },
+    },
+  ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
-    project: true,
+    project,
   },
-  plugins: ["@typescript-eslint"],
+  plugins: ["@typescript-eslint", "prettier", "promise"],
   extends: [
     "next/core-web-vitals",
-    "plugin:@typescript-eslint/recommended-type-checked",
-    "plugin:@typescript-eslint/stylistic-type-checked",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended",
+    "plugin:tailwindcss/recommended",
+    "prettier",
   ],
   rules: {
-    // These opinionated rules are enabled in stylistic-type-checked above.
-    // Feel free to reconfigure them to your own preference.
-    "@typescript-eslint/array-type": "off",
-    "@typescript-eslint/consistent-type-definitions": "off",
-
     "@typescript-eslint/consistent-type-imports": [
-      "warn",
+      "error",
       {
         prefer: "type-imports",
-        fixStyle: "inline-type-imports",
       },
     ],
     "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
-    "@typescript-eslint/no-misused-promises": [
-      2,
-      {
-        checksVoidReturn: { attributes: false },
-      },
-    ],
+    eqeqeq: ["error", "smart"],
+    "prettier/prettier": ["error", prettierConfig],
+    "no-eval": "error",
+    "no-var": "error",
+    // "prettier/prettier": "error",
+    "no-restricted-imports": ["error", { patterns: [".*"] }],
+    "tailwindcss/no-custom-classname": "off",
+    "tailwindcss/classnames-order": "off", // tcss prettier plugin handles this
   },
 };
 
