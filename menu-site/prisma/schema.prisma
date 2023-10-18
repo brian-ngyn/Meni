@@ -2,89 +2,70 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider     = "mysql"
-    url          = env("DATABASE_URL")
-    relationMode = "prisma"
-}
-
-model MyString {
-    id         String    @id @default(cuid())
-    value      String
-    MenuItem   MenuItem? @relation(fields: [menuItemId], references: [id])
-    menuItemId String?
-    Menus      Menus?    @relation(fields: [menusId], references: [id])
-    menusId    String?
-
-    @@index([menuItemId])
-    @@index([menusId])
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Account {
-    id               String    @id @default(cuid())
-    clerkId          String    @unique
-    stripeCustomerId String
-    stripePaymentId  String
-    isPaid           Boolean   @default(false)
-    currentPlan      String
-    lastPaidAt       DateTime?
+  id               String    @id @default(cuid())
+  clerkId          String    @unique
+  stripeCustomerId String
+  stripePaymentId  String
+  isPaid           Boolean   @default(false)
+  currentPlan      String
+  lastPaidAt       DateTime?
 }
 
-model RestarauntInfo {
-    id                    String    @id @default(cuid())
-    ownerId               String
-    restarauntName        String
-    address               String
-    restaurantPhoneNumber String
-    description           String
-    image                 String?
-    activeMenuId          String?
-    featuredPayment       Boolean?
-    paidUntil             DateTime?
-    geoLocation           String
-}
-
-model MenuItem {
-    id                String           @id @default(cuid())
-    name              String
-    price             Int
-    description       String
-    image             String?
-    ownerId           String
-    MenuSubCategory   MenuSubCategory? @relation(fields: [menuSubCategoryId], references: [id])
-    menuSubCategoryId String?
-    tags              MyString[]
-
-    @@index([menuSubCategoryId])
-}
-
-model MenuSubCategory {
-    id                 String            @id @default(cuid())
-    name               String
-    items              MenuItem[]
-    MenuMainCategory   MenuMainCategory? @relation(fields: [menuMainCategoryId], references: [id])
-    menuMainCategoryId String?
-
-    @@index([menuMainCategoryId])
-}
-
-model MenuMainCategory {
-    id            String            @id @default(cuid())
-    name          String
-    subcategories MenuSubCategory[]
-    Menus         Menus?            @relation(fields: [menusId], references: [id])
-    menusId       String?
-
-    @@index([menusId])
+model RestaurantInfo {
+  id              String    @id @default(cuid())
+  ownerId         String
+  name            String
+  address         String
+  phoneNumber     String
+  description     String
+  image           String?
+  activeMenuId    String?
+  featuredPayment Boolean?
+  paidUntil       DateTime?
+  geoLocation     String
 }
 
 model Menus {
-    id             String             @id @default(cuid())
-    name           String
-    mainCategories MenuMainCategory[]
-    restarauntId   String
-    tags           MyString[]
+  id             String             @id @unique @default(cuid())
+  name           String
+  mainCategories MenuMainCategory[]
+  restaurantId   Int
+  tags           String[]
+}
+
+model MenuMainCategory {
+  id            String            @id @unique @default(cuid())
+  name          String
+  subCategories MenuSubCategory[]
+  Menus         Menus             @relation(fields: [menusId], references: [id])
+  menusId       String
+}
+
+model MenuSubCategory {
+  id                 String           @id @unique @default(cuid())
+  name               String
+  items              MenuItem[]
+  MenuMainCategory   MenuMainCategory @relation(fields: [menuMainCategoryId], references: [id])
+  menuMainCategoryId String
+}
+
+model MenuItem {
+  id                String          @id @unique @default(cuid())
+  name              String
+  price             Int
+  description       String
+  image             String
+  restaurantId      String
+  tags              String[]
+  MenuSubCategory   MenuSubCategory @relation(fields: [menuSubCategoryId], references: [id])
+  menuSubCategoryId String
 }
