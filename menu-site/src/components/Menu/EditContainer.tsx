@@ -51,10 +51,6 @@ export default function EditContainer(props: EditContainerProps) {
 
   const [currentImage, setCurrentImage] = useState<string>("");
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
   const renderHeader = () => {
     return (
       <>
