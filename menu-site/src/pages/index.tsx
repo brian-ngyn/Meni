@@ -112,7 +112,7 @@ export default function Home() {
                       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                       onChange={debounceSearch}
                       type="search"
-                      className="text-s w-full border-transparent bg-grey px-3 pl-16 focus:border-transparent focus:ring-0 md:text-lg"
+                      className="w-full border-transparent bg-grey px-3 pl-16 text-sm focus:border-transparent focus:ring-0 md:text-lg"
                       placeholder="Search for a restaurant, food, or cuisine"
                     />
                   </div>
