@@ -1,0 +1,31 @@
+<svg width="482" height="310" viewBox="0 0 482 310" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="350" y="8" width="132" height="291" fill="#363636"/>
+<rect x="132" width="218" height="308" fill="#454545"/>
+<rect x="157" y="189" width="168" height="13" fill="white" fill-opacity="0.25"/>
+<rect x="157" y="160" width="168" height="13" fill="white" fill-opacity="0.25"/>
+<rect x="157" y="218" width="168" height="13" fill="white" fill-opacity="0.25"/>
+<rect x="157" y="247" width="168" height="13" fill="white" fill-opacity="0.25"/>
+<circle cx="241" cy="81" r="50" fill="white" fill-opacity="0.25"/>
+<rect y="8" width="132" height="291" fill="#363636"/>
+<rect x="30" y="189" width="102" height="13" fill="white" fill-opacity="0.25"/>
+<rect x="30" y="160" width="102" height="13" fill="white" fill-opacity="0.25"/>
+<rect x="30" y="218" width="102" height="13" fill="white" fill-opacity="0.25"/>
+<rect x="30" y="247" width="102" height="13" fill="white" fill-opacity="0.25"/>
+<mask id="mask0_63_320" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="57" y="24" width="75" height="114">
+<rect x="57" y="24" width="75" height="114" fill="#D9D9D9"/>
+</mask>
+<g mask="url(#mask0_63_320)">
+<circle cx="114" cy="81" r="50" fill="white" fill-opacity="0.25"/>
+</g>
+<rect x="350" y="189" width="102" height="13" fill="white" fill-opacity="0.25"/>
+<rect x="350" y="160" width="102" height="13" fill="white" fill-opacity="0.25"/>
+<rect x="350" y="218" width="102" height="13" fill="white" fill-opacity="0.25"/>
+<rect x="350" y="247" width="102" height="13" fill="white" fill-opacity="0.25"/>
+<mask id="mask1_63_320" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="350" y="24" width="75" height="114">
+<rect x="350" y="24" width="75" height="114" fill="#D9D9D9"/>
+</mask>
+<g mask="url(#mask1_63_320)">
+<circle cx="375" cy="81" r="50" fill="white" fill-opacity="0.25"/>
+</g>
+<path d="M341 276L346.6 304.319L368.325 285.31L341 276ZM370.881 306.354L357.698 291.287L353.935 294.579L367.119 309.646L370.881 306.354Z" fill="white"/>
+</svg>
