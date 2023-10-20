@@ -5,11 +5,11 @@ import { IconButton } from "@mui/material";
 
 export default function Navbar() {
   return (
-    <div className="sticky top-0 z-40 h-24 min-w-full bg-backdrop font-thin">
-      <div className="min-h-full min-w-full border-b-[1px] border-[#353535] bg-backdrop px-4 py-2 md:px-12">
+    <div className="sticky top-0 z-40 flex h-20 w-screen items-center border-b-[1px] border-[#353535] bg-backdrop px-4 font-thin md:px-12 lg:px-24">
+      <div className="w-full bg-backdrop">
         <div className="flex w-full flex-row items-center justify-between">
           <IconButton>
-            <Image alt="logo" src="/logo.svg" width="90" height="90" />
+            <Image alt="logo" src="/logo.svg" width="70" height="70" />
           </IconButton>
           <div>
             <div className="flex flex-row items-center gap-10">

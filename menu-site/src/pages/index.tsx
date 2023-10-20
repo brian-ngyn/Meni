@@ -100,7 +100,7 @@ export default function Home() {
           <div className="mt-6 flex min-h-screen flex-col px-[7%] font-sans">
             <div className="flex flex-row justify-between space-x-14">
               <div className="mb-5 grow border-b-[1px] pb-5 md:border-none">
-                <h1 className="relative mb-5 font-serif text-5xl md:text-7xl">
+                <h1 className="relative mb-5 font-serif text-5xl md:text-6xl">
                   Explore
                 </h1>
                 <form className="mb-5" onSubmit={(e) => e.preventDefault()}>
@@ -112,7 +112,7 @@ export default function Home() {
                       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                       onChange={debounceSearch}
                       type="search"
-                      className="w-full bg-grey px-3 text-xs outline-none md:text-lg"
+                      className="w-full border-transparent bg-grey px-3 text-xs focus:border-transparent focus:ring-0 md:text-lg"
                       placeholder="Search for a restaurant, food, or cuisine"
                     />
                   </div>
@@ -136,7 +136,7 @@ export default function Home() {
             search.searchString.length !== 0 &&
             search.flag ? (
               <div className="mb-10">
-                <h2 className={HEADER}>
+                <h2 className="mb-5 font-serif text-3xl md:text-4xl">
                   Search results for: {search.searchString}
                 </h2>
                 <div className={GRID_CONTAINER} ref={ref}>
@@ -180,7 +180,7 @@ export default function Home() {
                 <div className="mb-8">
                   <h2 className={HEADER}>Restaurants Near You</h2>
                   <div className="flex">
-                    <div className="flex flex-wrap justify-start gap-10 pb-10">
+                    <div className="flex flex-wrap justify-center gap-10 pb-10 md:justify-start">
                       {localRestaurants?.map((data, index) => {
                         return (
                           <div
