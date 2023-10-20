@@ -3,13 +3,11 @@ import MeniTextInput from "~/components/items/MeniTextInput";
 type PersonalInfoProps = {
   firstName: string;
   lastName: string;
-  email: string;
-  password: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 const PersonalInfo: React.FunctionComponent<PersonalInfoProps> = (props) => {
-  const { firstName, lastName, email, password, onChange } = props;
+  const { firstName, lastName, onChange } = props;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e);
@@ -18,7 +16,7 @@ const PersonalInfo: React.FunctionComponent<PersonalInfoProps> = (props) => {
   return (
     <div className="font-sans" id="edit-personal-section">
       <h1 className="my-6 text-2xl">Personal Information</h1>
-      <div className="md-grid-rows-2 grid grid-cols-1 grid-rows-4 gap-4 text-white md:grid-cols-2 md:gap-8 lg:grid-cols-2 lg:grid-rows-2 lg:gap-10">
+      <div className="grid grid-cols-1 grid-rows-2 gap-10 md:grid-cols-2 md:grid-rows-1">
         <MeniTextInput
           id="firstName"
           name="firstName"
@@ -49,7 +47,7 @@ const PersonalInfo: React.FunctionComponent<PersonalInfoProps> = (props) => {
             },
           }}
         />
-        <MeniTextInput
+        {/* <MeniTextInput
           id="email"
           type="email"
           name="email"
@@ -81,7 +79,7 @@ const PersonalInfo: React.FunctionComponent<PersonalInfoProps> = (props) => {
               pattern: "Password is not valid",
             },
           }}
-        />
+        /> */}
       </div>
     </div>
   );

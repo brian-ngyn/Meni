@@ -2,6 +2,8 @@ import { type AppType } from "next/app";
 import { Abril_Fatface, Montserrat } from "next/font/google";
 import Head from "next/head";
 
+import { ClerkProvider } from "@clerk/nextjs";
+
 import { MeniContextProvider } from "~/context/meniContext";
 import "~/styles/globals.css";
 import { api } from "~/utils/api";
@@ -29,9 +31,11 @@ const MyApp: AppType = ({ Component, pageProps }) => {
       <main
         className={`min-h-screen bg-backdrop text-white ${abrilFatface.variable} font-serif ${montserrat.variable} font-sans`}
       >
-        <MeniContextProvider>
-          <Component {...pageProps} />
-        </MeniContextProvider>
+        <ClerkProvider {...pageProps}>
+          <MeniContextProvider>
+            <Component {...pageProps} />
+          </MeniContextProvider>
+        </ClerkProvider>
       </main>
     </>
   );

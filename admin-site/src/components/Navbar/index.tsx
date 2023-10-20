@@ -41,7 +41,7 @@ export default function Navbar(props: NavbarProps) {
                       Login
                     </div>
                   </Link>
-                  <MeniButton link="/registration" rounded normalCase={true}>
+                  <MeniButton link="/register" rounded normalCase={true}>
                     Join Now
                   </MeniButton>
                 </div>
@@ -95,7 +95,7 @@ export default function Navbar(props: NavbarProps) {
                       Login
                     </div>
                   </Link>
-                  <MeniButton link="/registration" rounded>
+                  <MeniButton link="/register" rounded>
                     Join Now
                   </MeniButton>
                 </div>
