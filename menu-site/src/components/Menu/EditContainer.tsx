@@ -53,7 +53,7 @@ export default function EditContainer(props: EditContainerProps) {
 
   useEffect(() => {
     if (!isLoadingMenu && !isLoadingRestaurant) {
-      window.scrollTo(0, 0);
+      window.scroll(0, 0);
     }
   }, [isLoadingMenu, isLoadingRestaurant]);
 
@@ -133,8 +133,8 @@ export default function EditContainer(props: EditContainerProps) {
     <LoadingPage />
   ) : menu && menu?.mainCategories ? (
     <>
-      <div className="sticky top-0 z-50 h-1/4 w-full rounded-b-xl bg-backdrop font-sans ">
-        {tableMode && (
+      {tableMode && (
+        <div className="sticky top-0 z-50 h-1/4 w-full rounded-b-xl bg-backdrop font-sans">
           <>
             <div className="m-auto grid w-4/5 gap-4 border-b pb-2 pt-4 font-sans">
               <h1 className="m-auto font-serif text-2xl text-white">
@@ -143,8 +143,6 @@ export default function EditContainer(props: EditContainerProps) {
             </div>
             {renderCategoryBar()}
           </>
-        )}
-        {tableMode ? (
           <div className="relative">
             <div className="absolute left-0 top-0 z-40 h-full w-full bg-gradient-to-t from-backdrop via-transparent to-transparent "></div>
             <div className="h-56 w-full">
@@ -158,8 +156,8 @@ export default function EditContainer(props: EditContainerProps) {
               />
             </div>
           </div>
-        ) : null}
-      </div>
+        </div>
+      )}
       <div
         className={`h-full w-full items-center justify-center font-sans text-white ${
           !tableMode ? "p-10" : "px-10 pt-2"
