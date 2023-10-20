@@ -31,7 +31,7 @@ export default function Home() {
         <div className="grid grid-cols-1 gap-y-10 md:grid-cols-2 lg:grid-cols-2 lg:gap-x-20">
           <div className="grid grid-cols-1">
             <div className="flex flex-col space-y-10">
-              <div className="pt-20 font-serif text-7xl">
+              <div className="pt-10 font-serif text-7xl md:pt-20">
                 Digitalize your menu
               </div>
               <div className="text-2xl">
