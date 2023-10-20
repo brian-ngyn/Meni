@@ -6,11 +6,11 @@ import ScrollContainer from "react-indiana-drag-scroll";
 import { Link } from "react-scroll";
 
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import { type RestaurantInfo } from "@prisma/client";
-import { type Menus } from "@prisma/client";
 
 import MeniGlobals from "~/MeniGlobals";
+import { api } from "~/utils/api";
 
+import { LoadingPage } from "~/components/LoadingPage";
 import { FoodCard } from "~/components/Menu/FoodCard";
 import EditableText from "~/components/Menu/MenuText";
 
@@ -21,75 +21,35 @@ interface EditContainerProps {
 
 export default function EditContainer(props: EditContainerProps) {
   const router = useRouter();
-  const { restaurantId, tableMode } = props;
   const barREF = useRef();
-  const [menu, setMenu] = useState<Menus | undefined>(undefined);
-  const [restaurant, setRestaurant] = useState<RestaurantInfo | undefined>(
-    undefined,
-  );
+  const { restaurantId, tableMode } = props;
+
+  const {
+    data: menu,
+    isLoading: isLoadingMenu,
+    refetch: refetchMenus,
+  } = api.restaurant.getMenu.useQuery(restaurantId, { enabled: false });
+  const {
+    data: restaurant,
+    isLoading: isLoadingRestaurant,
+    refetch: refetchRestaurant,
+  } = api.restaurant.getRestaurant.useQuery(restaurantId, { enabled: false });
+
+  useEffect(() => {
+    if (props.restaurantId) {
+      void refetchMenus();
+      void refetchRestaurant();
+    }
+  }, [props.restaurantId, refetchMenus, refetchRestaurant]);
+
+  useEffect(() => {
+    console.log(menu);
+    console.log(restaurant);
+  }, [menu, restaurant]);
 
   const horizontalScrollRef = useRef<HTMLElement>(null);
 
   const [currentImage, setCurrentImage] = useState<string>("");
-
-  // Load menu
-  const loadMenu = async () => {
-    console.log("loading menu");
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    // await fetch(
-    //   MeniGlobals().apiRoot +
-    //     "/get-menu?" +
-    //     new URLSearchParams({ restaurantId: props.restaurantId }),
-    // )
-    //   .then((response) => {
-    //     if (response.status === 200) {
-    //       return response.json();
-    //     } else {
-    //       throw Error();
-    //     }
-    //   })
-    //   .then((result) => {
-    //     setMenu(result[0]);
-    //     setCurrentImage(
-    //       result[0].mainCategories[0].subCategories[0].items[0].image,
-    //     );
-    //   })
-    //   .catch(() => {
-    //     MeniNotification("Error", "Could not load menu", "error");
-    //   });
-  };
-
-  // Load restaurant
-  const loadRestaurant = async () => {
-    console.log("loading restaurant");
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    // await fetch(
-    //   MeniGlobals().apiRoot +
-    //     "/get-restaurant?" +
-    //     new URLSearchParams({ restaurantId: props.restaurantId }),
-    // )
-    //   .then((response) => {
-    //     if (response.status === 200) {
-    //       return response.json();
-    //     } else {
-    //       throw Error();
-    //     }
-    //   })
-    //   .then((result) => {
-    //     setRestaurant(result);
-    //   })
-    //   .catch(() => {
-    //     MeniNotification("Error", "Could not load menu", "error");
-    //   });
-  };
-
-  useEffect(() => {
-    if (restaurantId) {
-      void loadMenu();
-      void loadRestaurant();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [restaurantId]);
 
   const renderHeader = () => {
     return (
@@ -97,7 +57,7 @@ export default function EditContainer(props: EditContainerProps) {
         <Head>
           <title>{restaurant?.name} | Meni</title>
         </Head>
-        <div className="mt-2 flex w-full max-w-[1460px] flex-col gap-4 px-0 pb-4 font-sans xl:px-32 xl:pt-8">
+        <div className="mt-2 flex w-full flex-col gap-4 px-0 pb-4 font-sans xl:px-32 xl:pt-8">
           <div>
             <ArrowBackIosIcon
               className="absolute left-6 top-6 cursor-pointer"
@@ -163,7 +123,9 @@ export default function EditContainer(props: EditContainerProps) {
     </div>
   );
 
-  return menu?.mainCategories && menu?.mainCategories.length > 0 ? (
+  return isLoadingMenu || isLoadingRestaurant ? (
+    <LoadingPage />
+  ) : menu && menu?.mainCategories ? (
     <>
       <div className="sticky top-0 z-50 h-1/4 w-full rounded-b-xl bg-backdrop font-sans ">
         {tableMode && (
@@ -243,7 +205,11 @@ export default function EditContainer(props: EditContainerProps) {
                                       name={item.name}
                                       description={item.description}
                                       price={item.price}
-                                      image={item.image ? item.image : ""}
+                                      image={
+                                        item.image
+                                          ? "97505de7-0cf3-4849-ba07-2d4e9630580e-f1lhsm.jpg"
+                                          : ""
+                                      }
                                       tags={item.tags}
                                       isTable={tableMode}
                                       setCurrentImage={setCurrentImage}

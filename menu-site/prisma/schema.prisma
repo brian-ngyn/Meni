@@ -11,7 +11,7 @@ datasource db {
 }
 
 model Account {
-  id               String  @id @default(cuid()) @map("_id")
+  id               String  @id @default(auto()) @map("_id") @db.ObjectId
   clerkId          String  @unique
   stripeCustomerId String
   stripePaymentId  String
@@ -21,7 +21,7 @@ model Account {
 }
 
 model RestaurantInfo {
-  id              String   @id @default(cuid()) @map("_id")
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
   ownerId         String
   name            String
   address         String
@@ -35,10 +35,10 @@ model RestaurantInfo {
 }
 
 model Menus {
-  id             String             @id @default(cuid()) @map("_id")
-  name           String?
+  id             String             @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
   mainCategories MenuMainCategory[]
-  restaurantId   String?
+  restaurantId   String
   tags           String[]
 }
 
@@ -55,12 +55,12 @@ type MenuSubCategory {
 }
 
 type MenuItem {
-  id           String
-  name         String
-  price        Int
-  description  String
-  image        String
-  tags         String[]
+  id          String
+  name        String
+  price       Int
+  description String
+  image       String
+  tags        String[]
 }
 
 type GeoLocation {

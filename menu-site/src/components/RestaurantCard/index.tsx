@@ -20,7 +20,7 @@ export default function RestaurantCard({
 
   function handleClick() {
     console.log("clicked");
-    // router.push(`/restaurant/${restaurantInfo.id}`);
+    void router.push(`/restaurant/${restaurantInfo.id}`);
   }
 
   return (

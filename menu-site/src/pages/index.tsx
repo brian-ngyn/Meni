@@ -146,7 +146,6 @@ export default function Home() {
                         restaurantInfo={{
                           ...data,
                         }}
-                        distance={0}
                         key={index}
                       />
                     );
