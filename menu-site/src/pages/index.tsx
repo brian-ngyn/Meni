@@ -104,15 +104,15 @@ export default function Home() {
                   Explore
                 </h1>
                 <form className="mb-5" onSubmit={(e) => e.preventDefault()}>
-                  <div className="flex flex-row bg-grey ring-white/50 duration-300 ease-in hover:ring-1">
-                    <span className="my-2 border-r-2 px-3">
+                  <div className="relative flex flex-row items-center bg-grey ring-white/50 duration-300 ease-in hover:ring-1">
+                    <span className="absolute my-2 border-r-2 px-3">
                       <SearchIcon />
                     </span>
                     <input
                       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                       onChange={debounceSearch}
                       type="search"
-                      className="w-full border-transparent bg-grey px-3 text-xs focus:border-transparent focus:ring-0 md:text-lg"
+                      className="w-full border-transparent bg-grey px-3 pl-16 text-xs focus:border-transparent focus:ring-0 md:text-lg"
                       placeholder="Search for a restaurant, food, or cuisine"
                     />
                   </div>
