@@ -142,6 +142,11 @@ export default function Page() {
                   path="/register"
                   signInUrl="/login"
                   redirectUrl="/register"
+                  appearance={{
+                    variables: {
+                      colorPrimary: "#4D4D4F",
+                    },
+                  }}
                 />
               </div>
             </div>
