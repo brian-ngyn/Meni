@@ -6,33 +6,19 @@ import ScrollContainer from "react-indiana-drag-scroll";
 import { Link } from "react-scroll";
 
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import { type Prisma } from "@prisma/client";
 import { type RestaurantInfo } from "@prisma/client";
+import { type Menus } from "@prisma/client";
 
 import MeniGlobals from "~/MeniGlobals";
 
+import MeniNotification from "~/components/Items/MeniNotification";
 import { FoodCard } from "~/components/Menu/FoodCard";
 import EditableText from "~/components/Menu/MenuText";
-import MeniNotification from "~/components/items/MeniNotification";
 
 interface EditContainerProps {
   restaurantId: string;
   tableMode: boolean;
 }
-
-type Menus = Prisma.MenusGetPayload<{
-  include: {
-    mainCategories: {
-      include: {
-        subCategories: {
-          include: {
-            items: true;
-          };
-        };
-      };
-    };
-  };
-}>;
 
 export default function EditContainer(props: EditContainerProps) {
   const router = useRouter();
@@ -50,6 +36,7 @@ export default function EditContainer(props: EditContainerProps) {
   // Load menu
   const loadMenu = async () => {
     console.log("loading menu");
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     // await fetch(
     //   MeniGlobals().apiRoot +
     //     "/get-menu?" +
@@ -76,6 +63,7 @@ export default function EditContainer(props: EditContainerProps) {
   // Load restaurant
   const loadRestaurant = async () => {
     console.log("loading restaurant");
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     // await fetch(
     //   MeniGlobals().apiRoot +
     //     "/get-restaurant?" +
@@ -151,8 +139,7 @@ export default function EditContainer(props: EditContainerProps) {
   const renderCategoryBar = () => (
     <div className="flex justify-center">
       <ScrollContainer
-        className={`bg-backdrop 
-           sticky top-0 z-50 flex w-10/12 gap-16 overflow-x-auto py-4 align-middle text-xl font-thin`}
+        className={`sticky top-0 z-50 flex w-10/12 gap-16 overflow-x-auto bg-backdrop py-4 align-middle text-xl font-thin`}
       >
         {menu?.mainCategories.map((category, index) => (
           <Link
@@ -179,7 +166,7 @@ export default function EditContainer(props: EditContainerProps) {
 
   return menu?.mainCategories && menu?.mainCategories.length > 0 ? (
     <>
-      <div className="bg-backdrop sticky top-0 z-50 h-1/4 w-full rounded-b-xl font-sans ">
+      <div className="sticky top-0 z-50 h-1/4 w-full rounded-b-xl bg-backdrop font-sans ">
         {tableMode && (
           <>
             <div className="m-auto grid w-4/5 gap-4 border-b pb-2 pt-4 font-sans">
@@ -192,7 +179,7 @@ export default function EditContainer(props: EditContainerProps) {
         )}
         {tableMode ? (
           <div className="relative">
-            <div className="from-backdrop absolute left-0 top-0 z-40 h-full w-full bg-gradient-to-t via-transparent to-transparent "></div>
+            <div className="absolute left-0 top-0 z-40 h-full w-full bg-gradient-to-t from-backdrop via-transparent to-transparent "></div>
             <div className="h-56 w-full">
               <Image
                 src={MeniGlobals().cdnRoot + currentImage}
@@ -213,7 +200,7 @@ export default function EditContainer(props: EditContainerProps) {
       >
         <>
           {!tableMode && renderHeader()}
-          <div className="bg-backdrop sticky top-0 z-50 h-1/4 w-full rounded-b-xl font-sans ">
+          <div className="sticky top-0 z-50 h-1/4 w-full rounded-b-xl bg-backdrop font-sans ">
             {!tableMode && renderCategoryBar()}
           </div>
         </>
@@ -222,7 +209,7 @@ export default function EditContainer(props: EditContainerProps) {
           <div className=" relative grid gap-4 ">
             <div className="relative overflow-hidden " id="">
               <div className="my-8 flex flex-col">
-                {menu.mainCategories.map((category, index1) => {
+                {menu?.mainCategories.map((category, index1) => {
                   return (
                     <section
                       id={category.id}
@@ -263,8 +250,6 @@ export default function EditContainer(props: EditContainerProps) {
                                       setCurrentImage={setCurrentImage}
                                       barREF={barREF}
                                       currentImage={currentImage}
-                                      restaurantId={restaurantId}
-                                      menuSubCategoryId={subCategory.id}
                                     />
                                   );
                                 })}

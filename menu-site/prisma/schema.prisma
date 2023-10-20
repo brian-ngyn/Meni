@@ -6,66 +6,64 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model Account {
-  id               String    @id @default(cuid())
-  clerkId          String    @unique
+  id               String  @id @default(cuid()) @map("_id")
+  clerkId          String  @unique
   stripeCustomerId String
   stripePaymentId  String
-  isPaid           Boolean   @default(false)
+  isPaid           Boolean @default(false)
   currentPlan      String
-  lastPaidAt       DateTime?
+  lastPaidAt       String? // this will be BigInt in the future
 }
 
 model RestaurantInfo {
-  id              String    @id @default(cuid())
+  id              String   @id @default(cuid()) @map("_id")
   ownerId         String
   name            String
   address         String
   phoneNumber     String
   description     String
-  image           String?
+  image           String
   activeMenuId    String?
   featuredPayment Boolean?
-  paidUntil       DateTime?
-  geoLocation     String
+  paidUntil       String? // this will be BigInt in the future
+  geoLocation     GeoLocation
 }
 
 model Menus {
-  id             String             @id @unique @default(cuid())
-  name           String
+  id             String             @id @default(cuid()) @map("_id")
+  name           String?
   mainCategories MenuMainCategory[]
-  restaurantId   Int
+  restaurantId   String?
   tags           String[]
 }
 
-model MenuMainCategory {
-  id            String            @id @unique @default(cuid())
+type MenuMainCategory {
+  id            String
   name          String
   subCategories MenuSubCategory[]
-  Menus         Menus             @relation(fields: [menusId], references: [id])
-  menusId       String
 }
 
-model MenuSubCategory {
-  id                 String           @id @unique @default(cuid())
-  name               String
-  items              MenuItem[]
-  MenuMainCategory   MenuMainCategory @relation(fields: [menuMainCategoryId], references: [id])
-  menuMainCategoryId String
+type MenuSubCategory {
+  id    String
+  name  String
+  items MenuItem[]
 }
 
-model MenuItem {
-  id                String          @id @unique @default(cuid())
-  name              String
-  price             Int
-  description       String
-  image             String
-  restaurantId      String
-  tags              String[]
-  MenuSubCategory   MenuSubCategory @relation(fields: [menuSubCategoryId], references: [id])
-  menuSubCategoryId String
+type MenuItem {
+  id           String
+  name         String
+  price        Int
+  description  String
+  image        String
+  tags         String[]
+}
+
+type GeoLocation {
+  latitude  Float
+  longitude Float
 }

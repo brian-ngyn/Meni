@@ -5,8 +5,8 @@ import { IconButton } from "@mui/material";
 
 export default function Navbar() {
   return (
-    <div className="bg-backdrop sticky top-0 z-40 h-24 min-w-full font-thin">
-      <div className="bg-backdrop min-h-full min-w-full border-b-[1px] border-[#353535] px-4 py-2 md:px-12">
+    <div className="sticky top-0 z-40 h-24 min-w-full bg-backdrop font-thin">
+      <div className="min-h-full min-w-full border-b-[1px] border-[#353535] bg-backdrop px-4 py-2 md:px-12">
         <div className="flex w-full flex-row items-center justify-between">
           <IconButton>
             <Image alt="logo" src="/logo.svg" width="90" height="90" />

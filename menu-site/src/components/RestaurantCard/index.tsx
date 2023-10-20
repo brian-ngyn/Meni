@@ -9,13 +9,11 @@ import MeniGlobals from "~/MeniGlobals";
 
 interface RestaurantCardProps {
   restaurantInfo: RestaurantInfo;
-  image: string;
-  distance: number;
+  distance?: number;
 }
 
 export default function RestaurantCard({
   restaurantInfo,
-  image,
   distance,
 }: RestaurantCardProps) {
   const router = useRouter();
@@ -27,13 +25,13 @@ export default function RestaurantCard({
 
   return (
     <div
-      className="bg-grey flex aspect-square h-[375px] w-[320px] flex-col items-center hover:cursor-pointer md:h-[325px] md:w-[275px]"
+      className="flex aspect-square h-[375px] w-[320px] flex-col items-center bg-grey hover:cursor-pointer md:h-[325px] md:w-[275px]"
       onClick={handleClick}
     >
       <div className="relative mb-3 h-[200px] w-full object-cover">
         <Image
           alt="resto"
-          src={MeniGlobals().cdnRoot + image}
+          src={MeniGlobals().cdnRoot + restaurantInfo.image}
           fill={true}
           className="object-cover"
         />
@@ -47,17 +45,15 @@ export default function RestaurantCard({
               {restaurantInfo.address}
             </p>
           </div>
-          <div className="flex h-1/3 w-full flex-row items-start justify-start">
-            {distance && (
-              <>
-                <RouteIcon sx={{ marginLeft: -0.5 }} />
-                <p className="w-full break-words font-normal md:w-auto lg:text-sm">
-                  {typeof distance === "number" ? distance.toFixed(2) : ""}{" "}
-                  kilometres
-                </p>
-              </>
-            )}
-          </div>
+          {distance && (
+            <div className="flex h-1/3 w-full flex-row items-start justify-start">
+              <RouteIcon sx={{ marginLeft: -0.5 }} />
+              <p className="w-full break-words font-normal md:w-auto lg:text-sm">
+                {typeof distance === "number" ? distance.toFixed(2) : ""}{" "}
+                kilometres
+              </p>
+            </div>
+          )}
           <div className="mt-1 line-clamp-2 h-16 w-full text-sm font-thin">
             {restaurantInfo.description}
           </div>

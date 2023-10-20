@@ -86,7 +86,7 @@ export function FoodCard(props: IFoodCardProps) {
               {name}
             </MeniText>
           </div>
-          <div className="scrollbar-hide w-full flex-initial grow overflow-y-auto">
+          <div className="w-full flex-initial grow overflow-y-auto scrollbar-hide">
             <MeniText id={id} field="description" textClass="text-sm font-thin">
               {description}
             </MeniText>

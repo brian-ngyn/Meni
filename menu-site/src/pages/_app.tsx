@@ -18,7 +18,7 @@ const header = Abril_Fatface({
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <main
-      className={`bg-backdrop min-h-screen ${body.variable} font-body ${header.variable} font-header`}
+      className={`min-h-screen bg-backdrop ${body.variable} font-body ${header.variable} font-header`}
     >
       <Component {...pageProps} />
     </main>

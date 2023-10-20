@@ -16,6 +16,11 @@ const config = {
       parserOptions: {
         project,
       },
+      rules: {
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": "warn",
+        "@typescript-eslint/no-explicit-any": "warn",
+      },
     },
   ],
   parser: "@typescript-eslint/parser",

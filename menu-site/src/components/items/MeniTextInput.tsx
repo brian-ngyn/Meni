@@ -31,7 +31,7 @@ export default function MeniTextInput(props: MeniTextInputProps) {
   return (
     <label
       htmlFor={id}
-      className="bg-grey relative block overflow-hidden fill-transparent pt-3 font-sans shadow-sm focus-within:ring-1 focus-within:ring-white hover:cursor-text"
+      className="relative block overflow-hidden bg-grey fill-transparent pt-3 font-sans shadow-sm focus-within:ring-1 focus-within:ring-white hover:cursor-text"
     >
       <input
         type={type ? type : "text"}
@@ -40,7 +40,7 @@ export default function MeniTextInput(props: MeniTextInputProps) {
         autoFocus={autoFocus}
         name={name}
         value={value}
-        className="bg-grey peer w-full border-none p-0 font-sans placeholder:text-transparent focus:border-transparent focus:outline-none focus:ring-0 sm:text-sm lg:h-9 lg:pl-6"
+        className="peer w-full border-none bg-grey p-0 font-sans placeholder:text-transparent focus:border-transparent focus:outline-none focus:ring-0 sm:text-sm lg:h-9 lg:pl-6"
         id={id}
         placeholder={title}
         required
