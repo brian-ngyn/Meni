@@ -149,8 +149,8 @@ export default function EditContainer(props: EditContainerProps) {
               <Image
                 src={MeniGlobals().cdnRoot + currentImage}
                 alt={"Current Food Image"}
-                width="0"
-                height="0"
+                width="1000"
+                height="1000"
                 className="z-30 h-full w-full "
                 style={{ objectFit: "cover" }}
               />
