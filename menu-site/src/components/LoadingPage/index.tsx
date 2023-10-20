@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-
 export const LoadingSpinner = () => {
   return (
     <div role="status">
@@ -31,10 +29,6 @@ export const LoadingSpinner = () => {
 };
 
 export const LoadingPage = () => {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
   return (
     <div className="bg-off-white flex min-h-screen justify-center pt-64">
       <LoadingSpinner />

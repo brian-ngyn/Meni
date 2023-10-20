@@ -51,6 +51,12 @@ export default function EditContainer(props: EditContainerProps) {
 
   const [currentImage, setCurrentImage] = useState<string>("");
 
+  useEffect(() => {
+    if (!isLoadingMenu && !isLoadingRestaurant) {
+      window.scrollTo(0, 0);
+    }
+  }, [isLoadingMenu, isLoadingRestaurant]);
+
   const renderHeader = () => {
     return (
       <>

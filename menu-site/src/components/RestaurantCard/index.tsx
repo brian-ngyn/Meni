@@ -18,15 +18,14 @@ export default function RestaurantCard({
 }: RestaurantCardProps) {
   const router = useRouter();
 
-  function handleClick() {
-    console.log("clicked");
-    void router.push(`/restaurant/${restaurantInfo.id}`);
-  }
-
   return (
     <div
       className="flex aspect-square h-[375px] w-[320px] flex-col items-center bg-grey hover:cursor-pointer md:h-[325px] md:w-[275px]"
-      onClick={handleClick}
+      onClick={() =>
+        void router.push(`/restaurant/${restaurantInfo.id}`, "", {
+          scroll: true,
+        })
+      }
     >
       <div className="relative mb-3 h-[200px] w-full object-cover">
         <Image
