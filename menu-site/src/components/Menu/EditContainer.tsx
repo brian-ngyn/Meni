@@ -11,7 +11,6 @@ import { type Menus } from "@prisma/client";
 
 import MeniGlobals from "~/MeniGlobals";
 
-import MeniNotification from "~/components/Items/MeniNotification";
 import { FoodCard } from "~/components/Menu/FoodCard";
 import EditableText from "~/components/Menu/MenuText";
 
