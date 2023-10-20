@@ -2,89 +2,68 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider     = "mysql"
-    url          = env("DATABASE_URL")
-    relationMode = "prisma"
-}
-
-model MyString {
-    id         String    @id @default(cuid())
-    value      String
-    MenuItem   MenuItem? @relation(fields: [menuItemId], references: [id])
-    menuItemId String?
-    Menus      Menus?    @relation(fields: [menusId], references: [id])
-    menusId    String?
-
-    @@index([menuItemId])
-    @@index([menusId])
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
 
 model Account {
-    id               String    @id @default(cuid())
-    clerkId          String    @unique
-    stripeCustomerId String
-    stripePaymentId  String
-    isPaid           Boolean   @default(false)
-    currentPlan      String
-    lastPaidAt       DateTime?
+  id               String  @id @default(auto()) @map("_id") @db.ObjectId
+  clerkId          String  @unique
+  stripeCustomerId String
+  stripePaymentId  String
+  isPaid           Boolean @default(false)
+  currentPlan      String
+  lastPaidAt       String? // this will be BigInt in the future
 }
 
-model RestarauntInfo {
-    id                    String    @id @default(cuid())
-    ownerId               String
-    restarauntName        String
-    address               String
-    restaurantPhoneNumber String
-    description           String
-    image                 String?
-    activeMenuId          String?
-    featuredPayment       Boolean?
-    paidUntil             DateTime?
-    geoLocation           String
-}
-
-model MenuItem {
-    id                String           @id @default(cuid())
-    name              String
-    price             Int
-    description       String
-    image             String?
-    ownerId           String
-    MenuSubCategory   MenuSubCategory? @relation(fields: [menuSubCategoryId], references: [id])
-    menuSubCategoryId String?
-    tags              MyString[]
-
-    @@index([menuSubCategoryId])
-}
-
-model MenuSubCategory {
-    id                 String            @id @default(cuid())
-    name               String
-    items              MenuItem[]
-    MenuMainCategory   MenuMainCategory? @relation(fields: [menuMainCategoryId], references: [id])
-    menuMainCategoryId String?
-
-    @@index([menuMainCategoryId])
-}
-
-model MenuMainCategory {
-    id            String            @id @default(cuid())
-    name          String
-    subcategories MenuSubCategory[]
-    Menus         Menus?            @relation(fields: [menusId], references: [id])
-    menusId       String?
-
-    @@index([menusId])
+model RestaurantInfo {
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
+  ownerId         String
+  name            String
+  address         String
+  phoneNumber     String
+  description     String
+  image           String
+  activeMenuId    String?
+  featuredPayment Boolean?
+  paidUntil       String? // this will be BigInt in the future
+  geoLocation     GeoLocation
 }
 
 model Menus {
-    id             String             @id @default(cuid())
-    name           String
-    mainCategories MenuMainCategory[]
-    restarauntId   String
-    tags           MyString[]
+  id             String             @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  restaurantId   String
+  tags           String[]
+  mainCategories MenuMainCategory[]
+}
+
+type MenuMainCategory {
+  id            String
+  name          String
+  subCategories MenuSubCategory[]
+}
+
+type MenuSubCategory {
+  id    String
+  name  String
+  items MenuItem[]
+}
+
+type MenuItem {
+  id          String
+  name        String
+  price       Int
+  description String
+  image       String
+  tags        String[]
+}
+
+type GeoLocation {
+  latitude  Float
+  longitude Float
 }

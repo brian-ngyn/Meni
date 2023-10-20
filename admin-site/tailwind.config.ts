@@ -10,16 +10,16 @@ export default {
         card: "#353535",
         white: "#F7F7F7",
         grey: "#4D4D4F",
+        accent: "#505050",
       },
       fontFamily: {
-        sans: ["var(--font-body)", ...fontFamily.sans],
-        serif: ["var(--font-header)", ...fontFamily.sans],
+        sans: ["var(--font-mont)"],
+        serif: ["var(--font-abril)"],
       },
     },
   },
   plugins: [
+    require("tw-elements/dist/plugin"),
     require("tailwind-scrollbar-hide"),
-    require("@tailwindcss/line-clamp"),
-    require("@tailwindcss/forms"),
   ],
 } satisfies Config;
