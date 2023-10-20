@@ -46,4 +46,14 @@ export const homeRouter = createTRPCRouter({
         .filter((restaurant) => restaurant.isWithinRadius);
       return restaurantsWithinRadius;
     }),
+  search: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
+    return ctx.db.restaurantInfo.findMany({
+      where: {
+        name: {
+          contains: input,
+          mode: "insensitive",
+        },
+      },
+    });
+  }),
 });

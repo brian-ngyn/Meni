@@ -1,7 +1,8 @@
+import { debounce } from "lodash";
 import Head from "next/head";
 import Image from "next/image";
 import type { FormEvent } from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import SearchIcon from "@mui/icons-material/Search";
 import { type RestaurantInfo } from "@prisma/client";
@@ -17,21 +18,32 @@ const GRID_CONTAINER =
   "grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10 max-w-screen";
 
 export default function Home() {
+  const ref =
+    useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;
+
   const [coordinates, setCoordinates] = useState({
     latitude: -1,
     longitude: -1,
   });
+  const [search, setSearch] = useState({
+    searchString: "",
+    flag: false,
+  });
+
   const { data: featuredRestaurants, isLoading } =
     api.home.getFeaturedRestaurants.useQuery();
-  const { data: localRestaurants, refetch } =
+  const { data: localRestaurants, refetch: refetchLocalRestaurants } =
     api.home.getLocalRestaurants.useQuery(coordinates, { enabled: false });
+  const { data: searchedRestaurants, refetch: refetchSearchedRestaurants } =
+    api.home.search.useQuery(search.searchString, {
+      enabled: false,
+    });
 
   useEffect(() => {
     if (coordinates.latitude !== -1 && coordinates.longitude !== -1) {
-      console.log("hi");
-      void refetch();
+      void refetchLocalRestaurants();
     }
-  }, [coordinates]);
+  }, [coordinates, refetchLocalRestaurants]);
 
   useEffect(() => {
     if ("geolocation" in navigator) {
@@ -44,87 +56,36 @@ export default function Home() {
     }
   }, []);
 
-  const [search, setSearch] = useState({
-    key: "",
-    restaurants: [],
-    flag: false,
-  });
-
-  // const [localRestaurants, setLocalRestaurants] = useState([]);
-  const ref =
-    useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;
-
-  // const { events } = useDraggable(ref);
-
-  function onSubmit(e: FormEvent): void {
-    e.preventDefault();
-    console.log(search.key);
-    // fetch(
-    //   MeniGlobals().apiRoot +
-    //     `/search?` +
-    //     new URLSearchParams({
-    //       key: JSON.stringify(search.key),
-    //     }),
-    //   { method: "GET" },
-    // )
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     const uniqueRestaurants = new Set();
-    //     const filteredRestaurants = data.filter((item: any) => {
-    //       if (uniqueRestaurants.has(item.id)) {
-    //         return false;
-    //       } else {
-    //         uniqueRestaurants.add(item.id);
-    //         return true;
-    //       }
-    //     });
-    //     setSearch((prev) => {
-    //       return {
-    //         ...prev,
-    //         restaurants: filteredRestaurants,
-    //         flag: true,
-    //       };
-    //     });
-    //   });
-  }
-
-  function onChange(str: string): void {
-    setSearch((prev) => {
-      return {
-        ...prev,
-        key: str,
-      };
-    });
-  }
-
-  // Clears the current start if the search field is deleted
   useEffect(() => {
-    if (search.flag) {
+    if (search.searchString.length === 0) {
       setSearch({
-        key: "",
-        restaurants: [],
         flag: false,
+        searchString: "",
       });
     }
-  }, [search.key]);
+    if (search.flag && search.searchString.length !== 0) {
+      void refetchSearchedRestaurants();
+    }
+  }, [search.flag, refetchSearchedRestaurants, search.searchString.length]);
 
-  // useEffect(() => {
-  //   const container = ref.current;
+  useEffect(() => {
+    return () => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+      debounceSearch.cancel();
+    };
+  });
 
-  //   function handleScrollRight() {
-  //     const isEndReached =
-  //       container.scrollWidth - container.scrollLeft === container.clientWidth;
-  //     const arrow = container.querySelector<HTMLElement>(".scroll-arrow");
-  //     if (arrow && arrow.style) {
-  //       arrow.style.display = isEndReached ? "none" : "block";
-  //     }
-  //   }
-
-  //   container.addEventListener("scroll", handleScrollRight);
-  //   handleScrollRight();
-
-  //   return () => container.removeEventListener("scroll", handleScrollRight);
-  // }, []);
+  const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch({
+      flag: true,
+      searchString: e.target.value,
+    });
+  };
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const debounceSearch = useMemo(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
+    return debounce(onSearchChange, 1000);
+  }, []);
 
   return (
     <>
@@ -142,13 +103,14 @@ export default function Home() {
                 <h1 className="relative mb-5 font-serif text-5xl md:text-7xl">
                   Explore
                 </h1>
-                <form className="mb-5" onSubmit={(e) => onSubmit(e)}>
+                <form className="mb-5" onSubmit={(e) => e.preventDefault()}>
                   <div className="flex flex-row bg-grey ring-white/50 duration-300 ease-in hover:ring-1">
                     <span className="my-2 border-r-2 px-3">
                       <SearchIcon />
                     </span>
                     <input
-                      onChange={(e) => onChange(e.target.value)}
+                      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                      onChange={debounceSearch}
                       type="search"
                       className="w-full bg-grey px-3 text-xs outline-none md:text-lg"
                       placeholder="Search for a restaurant, food, or cuisine"
@@ -169,15 +131,20 @@ export default function Home() {
                 alt="rhombus"
               />
             </div>
-            {search.restaurants.length !== 0 && search.key.length !== 0 ? (
+            {searchedRestaurants &&
+            searchedRestaurants.length !== 0 &&
+            search.searchString.length !== 0 &&
+            search.flag ? (
               <div className="mb-10">
-                <h2 className={HEADER}>Search results for: `{search.key}`</h2>
+                <h2 className={HEADER}>
+                  Search results for: {search.searchString}
+                </h2>
                 <div className={GRID_CONTAINER} ref={ref}>
-                  {search.restaurants.map((data, index) => {
+                  {searchedRestaurants.map((data, index) => {
                     return (
                       <RestaurantCard
                         restaurantInfo={{
-                          ...(data as RestaurantInfo),
+                          ...data,
                         }}
                         distance={0}
                         key={index}
