@@ -40,7 +40,7 @@ export const onboardingRouter = createTRPCRouter({
             firstName: input.firstName,
             lastName: input.lastName,
             clerkId: userSubmittingRequest.id,
-            currentPlan: "free",
+            currentPlan: "tier0",
           },
         });
 

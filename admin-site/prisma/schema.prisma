@@ -25,7 +25,7 @@ model Account {
 
 model RestaurantInfo {
   id              String      @id @default(auto()) @map("_id") @db.ObjectId
-  ownerId         String
+  ownerId         String      @unique
   name            String
   address         String
   phoneNumber     String

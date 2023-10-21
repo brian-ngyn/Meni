@@ -79,15 +79,14 @@ export default function Page() {
       restaurantPhoneNumber: form.restaurantPhoneNumber,
       description: form.description,
     };
-    console.log(body);
     mutate(body);
   };
 
   useEffect(() => {
-    if (isLoaded && isSignedIn && user?.publicMetadata.isOnboarded) {
+    if (isLoaded && isSignedIn && user?.publicMetadata.onboardingComplete) {
       void router.push("/dashboard");
     }
-  }, [isLoaded, isSignedIn, user?.publicMetadata.isOnboarded]);
+  }, [isLoaded, isSignedIn, user]);
 
   if (!isLoaded || isLoading) return <LoadingPage />;
 

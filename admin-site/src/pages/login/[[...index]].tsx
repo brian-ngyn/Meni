@@ -15,9 +15,13 @@ export default function Page() {
   const { isLoaded, user, isSignedIn } = useUser();
 
   useEffect(() => {
-    if (isLoaded && isSignedIn && user?.publicMetadata.isOnboarded) {
+    if (isLoaded && isSignedIn && user?.publicMetadata.onboardingComplete) {
       void router.push("/dashboard");
-    } else if (isLoaded && isSignedIn && !user?.publicMetadata.isOnboarded) {
+    } else if (
+      isLoaded &&
+      isSignedIn &&
+      !user?.publicMetadata.onboardingComplete
+    ) {
       void router.push("/register");
     }
   }, [isLoaded, isSignedIn, user]);

@@ -1,8 +1,12 @@
+import { useRouter } from "next/router";
 import { createContext, useContext, useState } from "react";
 import { useEffect } from "react";
 import { type Dispatch, type SetStateAction } from "react";
 
-import MeniGlobals from "~/MeniGlobals";
+import { useUser } from "@clerk/nextjs";
+import { type Account, type RestaurantInfo } from "@prisma/client";
+
+import { api } from "~/utils/api";
 
 import MeniNotification from "~/components/items/MeniNotification";
 
@@ -10,35 +14,27 @@ interface Props {
   children: React.ReactNode | React.ReactNode[];
 }
 
-type userInfoType = {
-  user: string;
-  meniRefreshToke: string;
-  meniToke: string;
-};
-
-type personalInfoType = {
+interface EditedAccount {
   firstName: string;
   lastName: string;
-  email: string;
-  password: string;
-  isPaid: boolean;
-  currentPlan: string;
-  lastPaid: string;
-  nextPayment: string;
-};
+}
+
+interface EditedRestaurantInfo {
+  name: string;
+  address: string;
+  phoneNumber: string;
+  description: string;
+  image: string;
+}
 
 type MeniContextReturnType = {
-  userInfo: userInfoType | null;
   loading: boolean;
-  interactibilityLoader: boolean;
-  beginLoad: () => void;
-  endLoad: () => void;
-  setUserInfo: React.Dispatch<React.SetStateAction<userInfoType | null>>;
-  logout: () => void;
-  setLocalStorage: (newInfo: userInfoType) => void; // change later
-  personalInfo: personalInfoType;
-  getPersonalInfo: () => void; // change later
-  setPersonalInfo: Dispatch<SetStateAction<personalInfoType>>;
+  accountInfo: Account | null | undefined;
+  restaurantInfo: RestaurantInfo | null | undefined;
+  refetchAccountInfo: unknown;
+  refetchRestaurantInfo: unknown;
+  updateAccountInfo: (newInfo: EditedAccount) => void;
+  updateRestaurantInfo: (newInfo: EditedRestaurantInfo) => void;
 };
 
 const MeniContext = createContext<MeniContextReturnType>(
@@ -46,199 +42,133 @@ const MeniContext = createContext<MeniContextReturnType>(
 );
 
 export function MeniContextProvider({ children }: Props) {
-  const [userInfo, setUserInfo] = useState<userInfoType | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [interactibilityLoader, setInteractibilityLoader] =
-    useState<boolean>(false);
-  const [loadingCount, setLoadingCount] = useState<number>(0);
-  const [personalInfo, setPersonalInfo] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-    isPaid: false,
-    currentPlan: "",
-    lastPaid: "",
-    nextPayment: "",
+  const { user, isSignedIn, isLoaded: isClerkLoaded } = useUser();
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const {
+    data: accountInfo,
+    refetch: refetchAccountInfo,
+    isLoading: isAccountInfoLoading,
+  } = api.getters.getAccountInfo.useQuery(
+    { clerkId: user?.id || "" },
+    { enabled: false },
+  );
+  const {
+    data: restaurantInfo,
+    refetch: refetchRestaurantInfo,
+    isLoading: isRestaurantInfoLoading,
+  } = api.getters.getRestaurantInfo.useQuery(
+    { clerkId: user?.id || "" },
+    { enabled: false },
+  );
+  const { mutate: mutateRestaurantInfo } =
+    api.setters.updateRestaurantInfo.useMutation({
+      onSuccess: (a) => {
+        if (a.success) {
+          MeniNotification(
+            "Success",
+            "Restaurant information has been updated.",
+            "success",
+          );
+        } else {
+          MeniNotification(
+            "Error",
+            "Failed to update restaurant information. Please try again later or contact support.",
+            "error",
+          );
+        }
+      },
+      onError: (e) => {
+        const errorMessage = e.data?.zodError?.fieldErrors.content;
+        if (errorMessage && errorMessage[0]) {
+          MeniNotification("Error", errorMessage[0], "error");
+        } else {
+          MeniNotification(
+            "Error",
+            "Failed to update restaurant information. Please try again later or contact support.",
+            "error",
+          );
+        }
+      },
+    });
+  const { mutate: mutateAccount } = api.setters.updateAccount.useMutation({
+    onSuccess: (a) => {
+      if (a.success) {
+        MeniNotification(
+          "Success",
+          "Personal information has been updated.",
+          "success",
+        );
+      } else {
+        MeniNotification(
+          "Error",
+          "Failed to update personal information. Please try again later or contact support.",
+          "error",
+        );
+      }
+    },
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors.content;
+      if (errorMessage && errorMessage[0]) {
+        MeniNotification("Error", errorMessage[0], "error");
+      } else {
+        MeniNotification(
+          "Error",
+          "Failed to update personal information. Please try again later or contact support.",
+          "error",
+        );
+      }
+    },
   });
 
-  const getPersonalInfo = () => {
-    return;
-    // if (userInfo) {
-    //   beginLoad();
-    //   fetch(MeniGlobals().apiRoot + "/get-personal-info", {
-    //     method: "GET",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       Authorization: `Bearer ${userInfo.meniToke}`,
-    //     },
-    //   })
-    //     .then((response) => response.json())
-    //     .then((data) => {
-    //       const paymentInfoValid = data.stripePaymentId ? true : false;
-    //       setPersonalInfo({
-    //         firstName: data.firstName,
-    //         lastName: data.lastName,
-    //         email: data.email,
-    //         password: "",
-    //         isPaid: paymentInfoValid,
-    //         currentPlan: data.currentPlan,
-    //         lastPaid: data.lastPaid,
-    //         nextPayment: data.nextPayment,
-    //       });
-    //       endLoad();
-    //     })
-    //     .catch((err) => {
-    //       endLoad();
-    //     });
-    // }
-    // return "Loaded";
+  const updateRestaurantInfo = (newInfo: EditedRestaurantInfo) => {
+    mutateRestaurantInfo({
+      ...newInfo,
+      id: restaurantInfo?.id || "",
+      clerkId: user?.id || "",
+    });
+  };
+
+  const updateAccountInfo = (newInfo: EditedAccount) => {
+    mutateAccount({
+      ...newInfo,
+      id: accountInfo?.id || "",
+      clerkId: user?.id || "",
+    });
   };
 
   useEffect(() => {
-    if (loadingCount <= 0) {
-      setInteractibilityLoader(false);
-    } else {
-      setInteractibilityLoader(true);
+    if (user && isSignedIn && router.pathname === "/dashboard") {
+      void refetchAccountInfo();
+      void refetchRestaurantInfo();
     }
-  }, [loadingCount]);
-
-  const beginLoad = () => {
-    setLoadingCount((prev) => prev + 1);
-  };
-
-  const endLoad = () => {
-    setLoadingCount((prev) => prev - 1);
-  };
-
-  function checkIfTokenIsValid() {
-    return;
-    // const localstorage =
-    //   typeof window !== "undefined" ? localStorage.getItem("session") : null;
-    // if (localstorage) {
-    //   beginLoad();
-    //   try {
-    //     const response = await fetch(MeniGlobals().apiRoot + "/validateToken", {
-    //       method: "GET",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //         Authorization: `Bearer ${JSON.parse(localstorage).meniToke}`,
-    //       },
-    //     });
-    //     if (response && response.status === 200) {
-    //       const data = await response.json();
-    //       if (data.message === "Valid") {
-    //         return "Valid Token";
-    //       } else {
-    //         MeniNotification(
-    //           "Your session has expired",
-    //           "Please login again",
-    //           "warning",
-    //         );
-    //         return "Invalid Token, 401 error";
-    //       }
-    //     } else {
-    //       MeniNotification(
-    //         "Your session has expired",
-    //         "Please login again",
-    //         "warning",
-    //       );
-    //       return "Invalid Token, 401 error";
-    //     }
-    //   } catch (error) {
-    //     MeniNotification(
-    //       "Your session has expired",
-    //       "Please login again",
-    //       "warning",
-    //     );
-    //   }
-    // } else {
-    //   return "Nothing in local storage";
-    // }
-  }
-
-  function setLocalStorage(newInfo: userInfoType) {
-    return;
-    // setLoading(true);
-    // if (newInfo.meniToke) {
-    //   localStorage.setItem("session", JSON.stringify(newInfo));
-    //   const localstorage = localStorage.getItem("session");
-    //   if (localstorage) {
-    //     setUserInfo(JSON.parse(localstorage));
-    //     setLoading(false);
-    //     return "Saved";
-    //   } else {
-    //     setLoading(false);
-    //     return "Error";
-    //   }
-    // } else {
-    //   setLoading(false);
-    //   return "Error";
-    // }
-  }
-
-  function logout() {
-    return;
-    // if (typeof window !== "undefined") {
-    //   localStorage.removeItem("session");
-    //   setUserInfo(null);
-    // }
-  }
+  }, [
+    isSignedIn,
+    refetchAccountInfo,
+    refetchRestaurantInfo,
+    router.pathname,
+    user,
+  ]);
 
   useEffect(() => {
-    // setLoading(true);
-    // try {
-    //   checkIfTokenIsValid()
-    //     .then((res) => {
-    //       if (res === "Valid Token") {
-    //         const localstorage =
-    //           typeof window !== "undefined"
-    //             ? localStorage.getItem("session")
-    //             : null;
-    //         if (localstorage) {
-    //           setUserInfo(JSON.parse(localstorage));
-    //           setLoading(false);
-    //           endLoad();
-    //           return localstorage ? JSON.parse(localstorage) : null;
-    //         }
-    //       } else {
-    //         logout();
-    //         setLoading(false);
-    //         endLoad();
-    //         return null;
-    //       }
-    //     })
-    //     .catch((err) => {
-    //       console.log("err", err);
-    //       logout();
-    //       endLoad();
-    //     });
-    // } catch (err) {
-    //   console.log("err", err);
-    //   logout();
-    //   endLoad();
-    //   MeniNotification(
-    //     "Your session has expired",
-    //     "Please login again",
-    //     "warning",
-    //   );
-    // }
-  }, []);
+    if (isAccountInfoLoading || isRestaurantInfoLoading || !isClerkLoaded) {
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
+  }, [isAccountInfoLoading, isClerkLoaded, isRestaurantInfoLoading]);
 
   return (
     <MeniContext.Provider
       value={{
-        userInfo,
         loading,
-        setUserInfo,
-        logout,
-        setLocalStorage,
-        interactibilityLoader,
-        beginLoad,
-        endLoad,
-        personalInfo,
-        getPersonalInfo,
-        setPersonalInfo,
+        accountInfo,
+        restaurantInfo,
+        refetchAccountInfo,
+        refetchRestaurantInfo,
+        updateAccountInfo,
+        updateRestaurantInfo,
       }}
     >
       {children}
