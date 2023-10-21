@@ -8,12 +8,40 @@ import { type ChangeEvent, useEffect, useState } from "react";
 import { SignUp, useUser } from "@clerk/nextjs";
 
 import quotes from "~/constants/quotes";
+import { api } from "~/utils/api";
 
 import { LoadingPage } from "~/components/LoadingPage";
 import PersonalInfo from "~/components/RegistrationForms/PersonalInfo";
 import RestaurantInfo from "~/components/RegistrationForms/RestaurantInfo";
+import MeniNotification from "~/components/items/MeniNotification";
 
 export default function Page() {
+  const { mutate, isLoading } = api.onboarding.signUp.useMutation({
+    onSuccess: (a) => {
+      if (a.success) {
+        void router.push("/dashboard");
+      } else {
+        MeniNotification(
+          "Error",
+          "Failed to onboard you. Please try again later or contact support.",
+          "error",
+        );
+      }
+    },
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors.content;
+      if (errorMessage && errorMessage[0]) {
+        MeniNotification(errorMessage[0]);
+      } else {
+        MeniNotification(
+          "Error",
+          "Failed to onboard you. Please try again later or contact support.",
+          "error",
+        );
+      }
+    },
+  });
+
   const { isLoaded, user, isSignedIn } = useUser();
   const [form, setForm] = useState({
     firstName: "",
@@ -34,6 +62,8 @@ export default function Page() {
 
   const handleSubmit = () => {
     if (
+      form.firstName === "" ||
+      form.lastName === "" ||
       form.restaurantName === "" ||
       form.address === "" ||
       form.restaurantPhoneNumber === "" ||
@@ -50,43 +80,7 @@ export default function Page() {
       description: form.description,
     };
     console.log(body);
-    // try {
-    //   beginLoad();
-    //   const res = await fetch(MeniGlobals().apiRoot + "/register", {
-    //     method: `POST`,
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(body),
-    //   });
-    //   if (res.status === 401) {
-    //     MeniNotification("Error!", "", "error");
-    //     logout();
-    //     endLoad();
-    //     router.push("/");
-    //   } else if (res.status === 400) {
-    //     endLoad();
-    //     const data = await res.json();
-    //     MeniNotification("Error!", data.message, "error");
-    //     setPage(0);
-    //   } else if (res.status === 200) {
-    //     const data = await res.json();
-    //     setLocalStorage(data).then((setStorageRes) => {
-    //       if (setStorageRes === "Saved") {
-    //         MeniNotification("Account Created!", "", "success");
-    //         router.push("/dashboard");
-    //         endLoad();
-    //       } else {
-    //         MeniNotification("Error!", "", "error");
-    //         logout();
-    //         endLoad();
-    //         router.push("/");
-    //       }
-    //     });
-    //   }
-    // } catch (err) {
-    //   endLoad();
-    // }
+    mutate(body);
   };
 
   useEffect(() => {
@@ -95,7 +89,7 @@ export default function Page() {
     }
   }, [isLoaded, isSignedIn, user?.publicMetadata.isOnboarded]);
 
-  if (!isLoaded) return <LoadingPage />;
+  if (!isLoaded || isLoading) return <LoadingPage />;
 
   return isLoaded && !user && !isSignedIn ? (
     <>

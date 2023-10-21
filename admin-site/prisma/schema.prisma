@@ -12,9 +12,12 @@ datasource db {
 
 model Account {
   id               String  @id @default(auto()) @map("_id") @db.ObjectId
+  email            String  @unique
+  firstName        String
+  lastName         String
   clerkId          String  @unique
-  stripeCustomerId String
-  stripePaymentId  String
+  stripeCustomerId String?
+  stripePaymentId  String?
   isPaid           Boolean @default(false)
   currentPlan      String
   lastPaidAt       String? // this will be BigInt in the future
