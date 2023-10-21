@@ -44,8 +44,6 @@ export default function EditContainer(props: EditContainerProps) {
     deleteSubCategory,
     setCurrentEditId,
   } = useEditableMenu();
-  const { userInfo, beginLoad, endLoad } = useMeniContext();
-
   const [startGuide, setStartGuide] = useState(false);
   const [restaurant, setRestaurant] = useState<IRestaurant>({
     restaurantImage: "",
@@ -120,19 +118,19 @@ export default function EditContainer(props: EditContainerProps) {
     //   });
   };
 
-  useEffect(() => {
-    if (menuId) {
-      setMenuLoading(true);
-      if (menuId === "new") {
-        createNewMenu();
-        if (router.query.restaurantId) {
-          loadRestaurant(router.query.restaurantId as string);
-        }
-      } else {
-        loadMenu();
-      }
-    }
-  }, [menuId, userInfo, router.query.restaurantId]);
+  // useEffect(() => {
+  //   if (menuId) {
+  //     setMenuLoading(true);
+  //     if (menuId === "new") {
+  //       createNewMenu();
+  //       if (router.query.restaurantId) {
+  //         loadRestaurant(router.query.restaurantId as string);
+  //       }
+  //     } else {
+  //       loadMenu();
+  //     }
+  //   }
+  // }, [menuId, userInfo, router.query.restaurantId]);
 
   // Save/Create
   const saveMenu = () => {

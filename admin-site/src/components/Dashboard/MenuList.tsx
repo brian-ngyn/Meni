@@ -29,8 +29,6 @@ type SelectedMenu = { id: string; name: string };
 
 function MenuList(props: IMenuListProps) {
   const router = useRouter();
-  const { userInfo, beginLoad, endLoad } = useMeniContext();
-
   // We will use React useRef hook to reference the wrapping div:
   const ref =
     useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;

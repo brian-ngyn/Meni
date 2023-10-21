@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
+import router from "next/router";
 
+import { useClerk } from "@clerk/nextjs";
 import { IconButton } from "@mui/material";
-
-import { useMeniContext } from "~/context/meniContext";
 
 import MeniButton from "~/components/items/MeniButton";
 
@@ -13,7 +13,7 @@ type NavbarProps = {
 };
 
 export default function Navbar(props: NavbarProps) {
-  const { logout } = useMeniContext();
+  const { signOut } = useClerk();
 
   if (!props.hidden) {
     return (
@@ -55,7 +55,7 @@ export default function Navbar(props: NavbarProps) {
                   <Link href="/">
                     <div
                       className="relative text-lg before:absolute before:bottom-0 before:left-0 before:h-0.5 before:w-full before:origin-right before:scale-x-0 before:bg-[#545454] before:transition-transform before:duration-500 hover:before:origin-left hover:before:scale-x-100"
-                      onClick={logout}
+                      onClick={() => void signOut(() => router.reload())}
                     >
                       Logout
                     </div>
@@ -109,7 +109,7 @@ export default function Navbar(props: NavbarProps) {
                   <Link href="/">
                     <div
                       className="relative text-lg before:absolute before:bottom-0 before:left-0 before:h-0.5 before:w-full before:origin-right before:scale-x-0 before:bg-[#545454] before:transition-transform before:duration-500 hover:before:origin-left hover:before:scale-x-100"
-                      onClick={logout}
+                      onClick={() => void signOut(() => router.reload())}
                     >
                       Logout
                     </div>

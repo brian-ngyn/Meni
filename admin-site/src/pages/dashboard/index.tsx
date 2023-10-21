@@ -7,7 +7,6 @@ import MeniGlobals from "~/MeniGlobals";
 import { useMeniContext } from "~/context/meniContext";
 
 import MenuList, { MenuCardMode } from "~/components/Dashboard/MenuList";
-import Loader from "~/components/Loader";
 import { LoadingPage } from "~/components/LoadingPage";
 import Navbar from "~/components/Navbar";
 import MeniMoneyMaker from "~/components/RegistrationForms/MeniMoneyMaker";
@@ -200,8 +199,6 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen w-full bg-backdrop">
       {/* {renderTour()} */}
-
-      <Loader />
       <Navbar page="dashboard" />
       <div className="pb-8">
         <div className={`pt-20 font-serif text-6xl ${PADDING}`}>

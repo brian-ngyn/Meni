@@ -23,14 +23,7 @@ type MMMProps = {
 };
 
 const MeniMoneyMaker: React.FunctionComponent<MMMProps> = (props) => {
-  const {
-    interactibilityLoader,
-    userInfo,
-    beginLoad,
-    endLoad,
-    getPersonalInfo,
-    personalInfo,
-  } = useMeniContext();
+  const { accountInfo } = useMeniContext();
   const [pageStep, setPageStep] = useState(1);
   const [paymentPlans, setPaymentPlans] = useState<Plan[]>([
     {
@@ -222,17 +215,17 @@ const MeniMoneyMaker: React.FunctionComponent<MMMProps> = (props) => {
                   The Meni Team appreciates your continued support. Your current
                   plan is{" "}
                   {paymentPlans
-                    .find((tier) => tier.key === personalInfo.currentPlan)
+                    .find((tier) => tier.key === accountInfo?.currentPlan)
                     ?.tier.replace(/Tier(\d)/, "Tier $1")}{" "}
                   paying $
                   {
                     paymentPlans.find(
-                      (tier) => tier.key === personalInfo.currentPlan,
+                      (tier) => tier.key === accountInfo?.currentPlan,
                     )?.price
                   }{" "}
                   per month. You will be charged again on{" "}
                   {new Date(
-                    parseInt(personalInfo.nextPayment) * 1000,
+                    parseInt(accountInfo?.lastPaidAt || "1") * 1000,
                   ).toLocaleString("en-US", {
                     weekday: "long",
                     year: "numeric",
@@ -381,22 +374,22 @@ const MeniMoneyMaker: React.FunctionComponent<MMMProps> = (props) => {
             {!localLoader ? (
               <>
                 <div className="flex flex-col items-center justify-center gap-y-6 text-center">
-                  {personalInfo.currentPlan !== "tier0" ? (
+                  {accountInfo?.currentPlan !== "tier0" ? (
                     <>
                       Thank you! Your payment info has been saved. You have paid
                       $
                       {
                         paymentPlans.find(
-                          (tier) => tier.key === personalInfo.currentPlan,
+                          (tier) => tier.key === accountInfo?.currentPlan,
                         )?.price
                       }{" "}
                       for{" "}
                       {paymentPlans
-                        .find((tier) => tier.key === personalInfo.currentPlan)
+                        .find((tier) => tier.key === accountInfo?.currentPlan)
                         ?.tier.replace(/Tier(\d)/, "Tier $1")}
                       . You will be charged again on{" "}
                       {new Date(
-                        parseInt(personalInfo.nextPayment) * 1000,
+                        parseInt(accountInfo?.lastPaidAt || "1") * 1000,
                       ).toLocaleString("en-US", {
                         weekday: "long",
                         year: "numeric",
@@ -440,15 +433,15 @@ const MeniMoneyMaker: React.FunctionComponent<MMMProps> = (props) => {
                   {selectedTier === "Free"
                     ? `You have successfully changed your plan. You will no longer be charged monthy for Meni.`
                     : `You have successfully changed your plan. You have been charged $${paymentPlans.find(
-                        (tier) => tier.key === personalInfo.currentPlan,
+                        (tier) => tier.key === accountInfo?.currentPlan,
                       )?.price} for ${paymentPlans
-                        .find((tier) => tier.key === personalInfo.currentPlan)
+                        .find((tier) => tier.key === accountInfo?.currentPlan)
                         ?.tier.replace(
                           /Tier(\d)/,
                           "Tier $1",
                         )}. You will be charged again on
                   ${new Date(
-                    parseInt(personalInfo.nextPayment) * 1000,
+                    parseInt(accountInfo?.lastPaidAt || "1") * 1000,
                   ).toLocaleString("en-US", {
                     weekday: "long",
                     year: "numeric",
