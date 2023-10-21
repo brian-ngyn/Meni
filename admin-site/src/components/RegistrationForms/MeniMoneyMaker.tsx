@@ -427,7 +427,7 @@ const MeniMoneyMaker: React.FunctionComponent<MMMProps> = (props) => {
           <div>
             <>
               <div className="flex flex-row items-center justify-center text-center">
-                {newSelectedTier.currentTier === "tier0"
+                {newSelectedTier.tier === "tier0"
                   ? `You have successfully changed your plan. You will no longer be charged monthy for Meni.`
                   : `You have successfully changed your plan. You have been charged $${paymentPlans.find(
                       (tier) => tier.key === currentTier,
@@ -435,7 +435,7 @@ const MeniMoneyMaker: React.FunctionComponent<MMMProps> = (props) => {
                       .find((tier) => tier.key === currentTier)
                       ?.tier.replace(/Tier(\d)/, "Tier $1")}.`}
               </div>
-              {newSelectedTier.currentTier === "tier0" ? null : (
+              {newSelectedTier.tier === "tier0" ? null : (
                 <div className="flex justify-center pt-8">
                   <button
                     className="text-light w-full border border-white bg-white px-6 py-3 font-semibold text-black transition hover:border-white hover:bg-backdrop hover:text-white sm:w-96"
