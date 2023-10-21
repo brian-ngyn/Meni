@@ -31,7 +31,7 @@ export default function Page() {
     onError: (e) => {
       const errorMessage = e.data?.zodError?.fieldErrors.content;
       if (errorMessage && errorMessage[0]) {
-        MeniNotification(errorMessage[0]);
+        MeniNotification("Error", errorMessage[0], "error");
       } else {
         MeniNotification(
           "Error",
