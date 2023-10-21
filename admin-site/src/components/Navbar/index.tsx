@@ -55,7 +55,7 @@ export default function Navbar(props: NavbarProps) {
                   <Link href="/">
                     <div
                       className="relative text-lg before:absolute before:bottom-0 before:left-0 before:h-0.5 before:w-full before:origin-right before:scale-x-0 before:bg-[#545454] before:transition-transform before:duration-500 hover:before:origin-left hover:before:scale-x-100"
-                      onClick={() => void signOut(() => router.reload())}
+                      onClick={() => void signOut(() => router.push("/"))}
                     >
                       Logout
                     </div>
@@ -109,7 +109,7 @@ export default function Navbar(props: NavbarProps) {
                   <Link href="/">
                     <div
                       className="relative text-lg before:absolute before:bottom-0 before:left-0 before:h-0.5 before:w-full before:origin-right before:scale-x-0 before:bg-[#545454] before:transition-transform before:duration-500 hover:before:origin-left hover:before:scale-x-100"
-                      onClick={() => void signOut(() => router.reload())}
+                      onClick={() => void signOut(() => router.push("/"))}
                     >
                       Logout
                     </div>
