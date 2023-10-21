@@ -147,7 +147,7 @@ export default function Page() {
         </div>
       </div>
     </>
-  ) : (
+  ) : !isLoading && !isSignedIn ? (
     <div className="min-h-screen w-full bg-backdrop">
       <Head>
         <title>Registration | Meni</title>
@@ -193,5 +193,7 @@ export default function Page() {
         </div>
       </div>
     </div>
+  ) : (
+    <></>
   );
 }
