@@ -1,7 +1,8 @@
 import { type Config } from "tailwindcss";
 import { fontFamily } from "tailwindcss/defaultTheme";
+import { withUt } from "uploadthing/tw";
 
-export default {
+export default withUt({
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
@@ -22,4 +23,4 @@ export default {
     require("tw-elements/dist/plugin"),
     require("tailwind-scrollbar-hide"),
   ],
-} satisfies Config;
+});

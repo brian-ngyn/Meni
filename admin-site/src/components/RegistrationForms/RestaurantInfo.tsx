@@ -1,5 +1,10 @@
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
+import MeniGlobals from "~/MeniGlobals";
+import { UploadButton } from "~/utils/uploadthing";
+
+import MeniNotification from "~/components/items/MeniNotification";
 import MeniTextInput from "~/components/items/MeniTextInput";
 
 type RestaurantInfoProps = {
@@ -9,7 +14,7 @@ type RestaurantInfoProps = {
   description: string;
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   restaurantImage: string;
-  imageChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  handleImageChange: (imageUrl: string) => void;
   initial: boolean;
 };
 
@@ -23,7 +28,7 @@ const RestaurantInfo: React.FunctionComponent<RestaurantInfoProps> = (
     description,
     onChange,
     restaurantImage,
-    imageChange,
+    handleImageChange,
     initial,
   } = props;
 
@@ -48,7 +53,7 @@ const RestaurantInfo: React.FunctionComponent<RestaurantInfoProps> = (
   return (
     <div className="font-sans" id="edit-restaurant-section">
       <h1 className="my-6 text-2xl">Restaurant Information</h1>
-      <div className="grid-flow-rows grid grid-cols-1 grid-rows-6 gap-4 text-white md:grid-cols-3 md:grid-rows-6 lg:grid-cols-3 lg:grid-rows-4 lg:gap-10">
+      <div className="grid grid-cols-1 gap-3 text-white md:grid-cols-3 lg:gap-10">
         <MeniTextInput
           id="restaurantName"
           name="restaurantName"
@@ -95,28 +100,59 @@ const RestaurantInfo: React.FunctionComponent<RestaurantInfoProps> = (
           }}
         />
         <div
-          className={`grid-row-2 grid-col-1 relative row-span-3 grid ${
-            !initial ? "lg:col-span-2" : "lg:col-span-3"
-          } md:col-span-3`}
+          className={`${
+            initial ? "col-span-3 h-48" : "col-span-2"
+          } relative grid`}
         >
           <textarea
             onChange={handleDescriptionChange}
             name="description"
             value={description}
-            maxLength={2000}
-            className="row-span-3 whitespace-normal bg-grey px-6 py-8 md:col-span-3 lg:col-span-3"
+            maxLength={500}
+            className="row-span-3 resize-none whitespace-normal bg-grey px-6 py-8 md:col-span-3 lg:col-span-3"
             placeholder="Description"
           ></textarea>
           <div className="absolute bottom-2 right-2 text-gray-400">
-            {charCount}/{2000}
+            {charCount}/{500}
           </div>
         </div>
-        {/* {!initial ? (
-          <UploadyHolder
-            imageChange={imageChange}
-            restaurantImage={restaurantImage}
-          />
-        ) : null} */}
+        {!initial && (
+          <div className="flex flex-col gap-y-4 ">
+            <div className="relative aspect-video">
+              <Image
+                src={MeniGlobals().cdnRoot + restaurantImage}
+                fill
+                style={{ objectFit: "contain" }}
+                alt="Restaurant Image"
+              />
+            </div>
+            <UploadButton
+              endpoint="imageUploader"
+              appearance={{
+                button: "bg-white text-black",
+              }}
+              onClientUploadComplete={(res) => {
+                // Do something with the response
+                if (res) {
+                  const newUrl = res[0]?.key;
+                  if (newUrl) {
+                    handleImageChange(newUrl);
+                    MeniNotification("Success!", "Upload Completed", "success");
+                  }
+                }
+              }}
+              onUploadError={(error: Error) => {
+                // Do something with the error.
+                MeniNotification(
+                  "Error!",
+                  "There was an error uploading your image. Please try again later or contact support.",
+                  "error",
+                );
+                console.log(`${error.message}`);
+              }}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

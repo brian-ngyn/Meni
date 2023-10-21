@@ -73,6 +73,9 @@ export default function Dashboard() {
     setNewForm({ ...newForm, [e.target.name]: e.target.value, edited: true });
   };
 
+  const handleImageChange = (imageUrl: string) => {
+    setNewForm({ ...newForm, image: imageUrl, edited: true });
+  };
   const handleSubmitNewInfo = (buttonOrigin: string) => {
     if (newForm.edited === false) {
       return;
@@ -275,7 +278,7 @@ export default function Dashboard() {
               restaurantImage={newForm.image}
               description={newForm.description}
               onChange={handleInfoChange}
-              imageChange={() => {}}
+              handleImageChange={handleImageChange}
               initial={false}
             />
             {/* </Uploady> */}
