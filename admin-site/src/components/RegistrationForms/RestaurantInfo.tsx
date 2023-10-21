@@ -128,8 +128,9 @@ const RestaurantInfo: React.FunctionComponent<RestaurantInfoProps> = (
             </div>
             <UploadButton
               endpoint="imageUploader"
+              className="ut-button:bg-gray-500 ut-button:ut-readying:bg-gray-500/50 ut-uploading:cursor-not-allowed"
               appearance={{
-                button: "bg-white text-black",
+                button: "after:bg-gray-600",
               }}
               onClientUploadComplete={(res) => {
                 // Do something with the response

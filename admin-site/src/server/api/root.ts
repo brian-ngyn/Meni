@@ -1,4 +1,5 @@
 import { gettersRouter } from "~/server/api/routers/getters";
+import { meniMoneyMakerRouter } from "~/server/api/routers/meniMoneyMaker";
 import { onboardingRouter } from "~/server/api/routers/onboarding";
 import { settersRouter } from "~/server/api/routers/setters";
 import { createTRPCRouter } from "~/server/api/trpc";
@@ -12,6 +13,7 @@ export const appRouter = createTRPCRouter({
   onboarding: onboardingRouter,
   getters: gettersRouter,
   setters: settersRouter,
+  meniMoneyMaker: meniMoneyMakerRouter,
 });
 
 // export type definition of API

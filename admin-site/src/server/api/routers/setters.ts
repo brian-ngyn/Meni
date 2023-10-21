@@ -9,7 +9,6 @@ export const settersRouter = createTRPCRouter({
   updateRestaurantInfo: privateProcedure
     .input(
       z.object({
-        id: z.string(),
         clerkId: z.string(),
         name: z.string(),
         address: z.string(),
@@ -60,7 +59,6 @@ export const settersRouter = createTRPCRouter({
   updateAccount: privateProcedure
     .input(
       z.object({
-        id: z.string(),
         clerkId: z.string(),
         firstName: z.string(),
         lastName: z.string(),

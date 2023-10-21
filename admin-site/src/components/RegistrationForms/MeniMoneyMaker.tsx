@@ -1,8 +1,10 @@
+import router from "next/router";
 import QRCode from "qrcode.react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import MeniGlobals from "~/MeniGlobals";
-import { useMeniContext } from "~/context/meniContext";
+import { useUser } from "@clerk/nextjs";
+
+import { api } from "~/utils/api";
 
 import MeniButton from "~/components/items/MeniButton";
 import MeniNotification from "~/components/items/MeniNotification";
@@ -17,15 +19,47 @@ type Plan = {
 };
 
 type MMMProps = {
-  paymentProvided: boolean;
+  hasPaymentMethod: boolean;
+  isPaid: boolean;
   currentTier: string;
   restaurantId: string;
 };
 
 const MeniMoneyMaker: React.FunctionComponent<MMMProps> = (props) => {
-  const { accountInfo } = useMeniContext();
+  const { hasPaymentMethod, isPaid, currentTier, restaurantId } = props;
+  const { user } = useUser();
+  const { mutate: pickPaymentPlan } = api.meniMoneyMaker.pickPlan.useMutation({
+    onSuccess: (a) => {
+      if (a.success) {
+        MeniNotification(
+          "Success",
+          "Your plan has been updated. Thanks for testing Meni!",
+          "success",
+        );
+      } else {
+        MeniNotification(
+          "Error",
+          "Failed to set your payment plan. Please try again later or contact support.",
+          "error",
+        );
+      }
+    },
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors.content;
+      if (errorMessage && errorMessage[0]) {
+        MeniNotification("Error", errorMessage[0], "error");
+      } else {
+        MeniNotification(
+          "Error",
+          "Failed to set your payment plan. Please try again later or contact support.",
+          "error",
+        );
+      }
+    },
+  });
+
   const [pageStep, setPageStep] = useState(1);
-  const [paymentPlans, setPaymentPlans] = useState<Plan[]>([
+  const paymentPlans: Plan[] = [
     {
       key: "tier0",
       tier: "Free",
@@ -55,8 +89,11 @@ const MeniMoneyMaker: React.FunctionComponent<MMMProps> = (props) => {
       description:
         "Create 4 menus, select 1 to publish at a time. Your menu will be featured on Meni Explore!",
     },
-  ]);
-  const [selectedTier, setSelectedTier] = useState("");
+  ];
+  const [newSelectedTier, setNewSelectedTier] = useState({
+    tier: currentTier,
+    initial: true,
+  });
   const [paymentInfo, setPaymentInfo] = useState({
     paymentFirstName: "",
     paymentLastName: "",
@@ -65,7 +102,6 @@ const MeniMoneyMaker: React.FunctionComponent<MMMProps> = (props) => {
     expiryDate: "",
     cvc: "",
   });
-  const [localLoader, setLocalLoader] = useState(false);
 
   const handleChangePayment = (e: any) => {
     // const expDateRegex = /^(\d{1,2})\/(\d{1,2})$/;
@@ -145,79 +181,43 @@ const MeniMoneyMaker: React.FunctionComponent<MMMProps> = (props) => {
     // }
   };
 
-  const handleUserPickedPaymentPlan = (e: string) => {
+  const handleUserPickedTier = (newTier: string) => {
+    if (newTier === currentTier) {
+      MeniNotification("Error!", "You are currently on this plan!", "warning");
+      setNewSelectedTier({ tier: currentTier, initial: true });
+    }
+    if (hasPaymentMethod) {
+      setNewSelectedTier({ tier: newTier, initial: false });
+    }
+    // else condition is to send to to page 3 and enter payment info
     return;
-    // if (
-    //   e === props.currentTier ||
-    //   (e === "free" && props.currentTier === "tier0")
-    // ) {
-    //   return "You are currently on this plan!";
-    // }
-    // if (userInfo) {
-    //   beginLoad();
-    //   setLocalLoader(true);
-    //   fetch(MeniGlobals().apiRoot + "/set-payment-plan", {
-    //     method: "POST",
-    //     body: JSON.stringify({ type: e }),
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       Authorization: `Bearer ${userInfo.meniToke}`,
-    //     },
-    //   })
-    //     .then((response) => response.json())
-    //     .then((data) => {
-    //       getPersonalInfo().then((res) => {
-    //         endLoad();
-    //         setLocalLoader(false);
-    //         return data;
-    //       });
-    //     })
-    //     .catch((error) => {
-    //       endLoad();
-    //       return error;
-    //     });
-    // }
   };
 
-  const handleUserPickedPlan = (e: string) => {
-    return;
-    // setSelectedTier(e);
-    // if (props.paymentProvided) {
-    //   handleUserPickedPaymentPlan(e.toLowerCase()).then((status) => {
-    //     if (status === "You are currently on this plan!") {
-    //       MeniNotification("Error!", status, "warning");
-    //     } else {
-    //       setPageStep(5);
-    //     }
-    //   });
-    // } else {
-    //   if (e === "Free") {
-    //     MeniNotification(
-    //       "Error!",
-    //       "You are currently on this plan!",
-    //       "warning",
-    //     );
-    //   } else {
-    //     setPageStep(3);
-    //   }
-    // }
-  };
+  useEffect(() => {
+    if (!newSelectedTier.initial && newSelectedTier.tier !== currentTier) {
+      pickPaymentPlan({
+        clerkId: user?.id || "",
+        plan: newSelectedTier.tier || "",
+      });
+    }
+  }, [currentTier, newSelectedTier, pickPaymentPlan, user]);
 
   return (
     <div className="text-sans my-10">
       <h1 className="my-6 font-serif text-4xl">Menu Publication</h1>
       <div className="grid gap-10 text-white">
         {pageStep === 1 ? (
-          <div className="m-auto grid grid-rows-2 gap-5">
+          <div className="m-auto grid grid-rows-2 gap-2">
             <div className="m-auto grid gap-y-10">
-              {props.paymentProvided && props.currentTier !== "tier0" ? (
+              {isPaid && currentTier !== "tier0" ? (
                 <p className="text-center">
                   The Meni Team appreciates your continued support. Your current
                   plan is{" "}
                   {paymentPlans
-                    .find((tier) => tier.key === accountInfo?.currentPlan)
-                    ?.tier.replace(/Tier(\d)/, "Tier $1")}{" "}
-                  paying $
+                    .find((tier) => tier.key === currentTier)
+                    ?.tier.replace(/Tier(\d)/, "Tier $1")}
+                  {". "}
+                  {/* paying $
                   {
                     paymentPlans.find(
                       (tier) => tier.key === accountInfo?.currentPlan,
@@ -232,7 +232,7 @@ const MeniMoneyMaker: React.FunctionComponent<MMMProps> = (props) => {
                     month: "long",
                     day: "numeric",
                   })}
-                  .
+                  . */}
                 </p>
               ) : (
                 <p>
@@ -242,7 +242,7 @@ const MeniMoneyMaker: React.FunctionComponent<MMMProps> = (props) => {
               )}
             </div>
             <div className="m-auto" id="edit-plan-button">
-              {props.paymentProvided && props.currentTier !== "tier0" ? (
+              {isPaid && currentTier !== "tier0" ? (
                 <div className="flex flex-col items-center justify-center space-y-2">
                   <div className={`flex justify-center`}>
                     <button
@@ -254,7 +254,7 @@ const MeniMoneyMaker: React.FunctionComponent<MMMProps> = (props) => {
                   </div>
                   <QRCode
                     id="qr-gen"
-                    value={"https://meniapp.ca/table/" + props.restaurantId}
+                    value={"https://meniapp.ca/table/" + restaurantId}
                     size={290}
                     level={"H"}
                     includeMargin={true}
@@ -285,7 +285,7 @@ const MeniMoneyMaker: React.FunctionComponent<MMMProps> = (props) => {
               return (
                 <div
                   key={index}
-                  onClick={() => handleUserPickedPlan(currPlan.tier)}
+                  onClick={() => handleUserPickedTier(currPlan.key)}
                   className="col-span-1 row-span-1 rounded-md bg-card hover:cursor-pointer"
                 >
                   <div className="flex h-full flex-col items-center justify-between gap-y-6 p-6">
@@ -295,7 +295,15 @@ const MeniMoneyMaker: React.FunctionComponent<MMMProps> = (props) => {
                     <div className="text-center text-base font-thin">
                       {currPlan.description}
                     </div>
-                    <div className="text-2xl">${currPlan.price}/mo</div>
+                    <div className="text-2xl">
+                      {currPlan.key === "tier0" ? (
+                        "Free"
+                      ) : (
+                        <>
+                          <s>${currPlan.price}/mo</s> Free
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
               );
@@ -371,110 +379,81 @@ const MeniMoneyMaker: React.FunctionComponent<MMMProps> = (props) => {
           </>
         ) : pageStep === 4 ? (
           <div>
-            {!localLoader ? (
-              <>
-                <div className="flex flex-col items-center justify-center gap-y-6 text-center">
-                  {accountInfo?.currentPlan !== "tier0" ? (
-                    <>
-                      Thank you! Your payment info has been saved. You have paid
-                      $
-                      {
-                        paymentPlans.find(
-                          (tier) => tier.key === accountInfo?.currentPlan,
-                        )?.price
-                      }{" "}
-                      for{" "}
-                      {paymentPlans
-                        .find((tier) => tier.key === accountInfo?.currentPlan)
-                        ?.tier.replace(/Tier(\d)/, "Tier $1")}
-                      . You will be charged again on{" "}
-                      {new Date(
-                        parseInt(accountInfo?.lastPaidAt || "1") * 1000,
-                      ).toLocaleString("en-US", {
-                        weekday: "long",
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                      .
-                      <div className={`flex justify-center`}>
-                        <button
-                          className="text-light w-full border border-white bg-white px-6 py-3 font-semibold text-black transition hover:border-white hover:bg-backdrop hover:text-white sm:w-96"
-                          onClick={handleQRCodeExport}
-                        >
-                          Export QR Code
-                        </button>
-                      </div>
-                      <QRCode
-                        id="qr-gen"
-                        value={"https://meniapp.ca/table/" + props.restaurantId}
-                        size={290}
-                        level={"H"}
-                        includeMargin={true}
-                        className="hidden"
-                      />
-                    </>
-                  ) : null}
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="flex items-center justify-center">
-                  Processing your payment...
-                </div>
-              </>
-            )}
-          </div>
-        ) : (
-          <div>
-            {!localLoader ? (
-              <>
-                <div className="flex flex-row items-center justify-center text-center">
-                  {selectedTier === "Free"
-                    ? `You have successfully changed your plan. You will no longer be charged monthy for Meni.`
-                    : `You have successfully changed your plan. You have been charged $${paymentPlans.find(
-                        (tier) => tier.key === accountInfo?.currentPlan,
-                      )?.price} for ${paymentPlans
-                        .find((tier) => tier.key === accountInfo?.currentPlan)
-                        ?.tier.replace(
-                          /Tier(\d)/,
-                          "Tier $1",
-                        )}. You will be charged again on
-                  ${new Date(
-                    parseInt(accountInfo?.lastPaidAt || "1") * 1000,
-                  ).toLocaleString("en-US", {
-                    weekday: "long",
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}.`}
-                </div>
-                {selectedTier === "Free" ? null : (
-                  <div className="flex justify-center pt-8">
-                    <button
-                      className="text-light w-full border border-white bg-white px-6 py-3 font-semibold text-black transition hover:border-white hover:bg-backdrop hover:text-white sm:w-96"
-                      onClick={handleQRCodeExport}
-                    >
-                      Export QR Code
-                    </button>
+            <>
+              <div className="flex flex-col items-center justify-center gap-y-6 text-center">
+                {currentTier !== "tier0" ? (
+                  <>
+                    Thank you! Your payment info has been saved. You have paid $
+                    {
+                      paymentPlans.find((tier) => tier.key === currentTier)
+                        ?.price
+                    }{" "}
+                    {/* for{" "}
+                    {paymentPlans
+                      .find((tier) => tier.key === currentTier)
+                      ?.tier.replace(/Tier(\d)/, "Tier $1")}
+                    . You will be charged again on{" "}
+                    {new Date(
+                      parseInt(accountInfo?.lastPaidAt || "1") * 1000,
+                    ).toLocaleString("en-US", {
+                      weekday: "long",
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                    . */}
+                    <div className={`flex justify-center`}>
+                      <button
+                        className="text-light w-full border border-white bg-white px-6 py-3 font-semibold text-black transition hover:border-white hover:bg-backdrop hover:text-white sm:w-96"
+                        onClick={handleQRCodeExport}
+                      >
+                        Export QR Code
+                      </button>
+                    </div>
                     <QRCode
                       id="qr-gen"
-                      value={"https://meniapp.ca/table/" + props.restaurantId}
+                      value={"https://meniapp.ca/table/" + restaurantId}
                       size={290}
                       level={"H"}
                       includeMargin={true}
                       className="hidden"
                     />
-                  </div>
-                )}
-              </>
-            ) : (
-              <>
-                <div className="flex items-center justify-center">
-                  Processing your payment...
+                  </>
+                ) : null}
+              </div>
+            </>
+          </div>
+        ) : (
+          <div>
+            <>
+              <div className="flex flex-row items-center justify-center text-center">
+                {selectedTier === "Free"
+                  ? `You have successfully changed your plan. You will no longer be charged monthy for Meni.`
+                  : `You have successfully changed your plan. You have been charged $${paymentPlans.find(
+                      (tier) => tier.key === currentTier,
+                    )?.price} for ${paymentPlans
+                      .find((tier) => tier.key === currentTier)
+                      ?.tier.replace(/Tier(\d)/, "Tier $1")}.`}
+              </div>
+              {selectedTier === "Free" ? null : (
+                <div className="flex justify-center pt-8">
+                  <button
+                    className="text-light w-full border border-white bg-white px-6 py-3 font-semibold text-black transition hover:border-white hover:bg-backdrop hover:text-white sm:w-96"
+                    onClick={handleQRCodeExport}
+                  >
+                    Export QR Code
+                  </button>
+                  <QRCode
+                    id="qr-gen"
+                    value={"https://meniapp.ca/table/" + restaurantId}
+                    size={290}
+                    level={"H"}
+                    includeMargin={true}
+                    className="hidden"
+                  />
                 </div>
-              </>
-            )}
+              )}
+            </>
           </div>
         )}
       </div>

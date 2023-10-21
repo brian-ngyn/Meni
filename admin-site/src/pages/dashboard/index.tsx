@@ -249,7 +249,14 @@ export default function Dashboard() {
         <div className={`${PADDING}`}>
           <div className="grid font-sans">
             <MeniMoneyMaker
-              paymentProvided={accountInfo?.isPaid || false}
+              hasPaymentMethod={
+                // !!(
+                //   accountInfo?.stripePaymentId && accountInfo?.stripeCustomerId
+                // ) || true
+                // WHEN WE GO OUT OF BETA UNCOMMENT THIS
+                true
+              }
+              isPaid={accountInfo?.isPaid || false}
               currentTier={accountInfo?.currentPlan || ""}
               restaurantId={restaurantInfo?.id || ""}
             />
@@ -257,20 +264,6 @@ export default function Dashboard() {
           <h1 className="my-6 font-serif text-4xl">Edit Account Information</h1>
 
           <div className="grid">
-            {/* <Uploady
-              noPortal
-              accept=".heic, .jpg, .jpeg, .png, .tiff"
-              multiple={false}
-              destination={{
-                url: MeniGlobals().apiRoot + "/upload-image",
-                method: "POST",
-                headers: {
-                  Authorization: `Bearer ${
-                    userInfo ? userInfo.meniToke : null
-                  }`,
-                },
-              }}
-            > */}
             <RestaurantInfo
               restaurantName={newForm.restaurantName}
               address={newForm.address}
@@ -281,7 +274,6 @@ export default function Dashboard() {
               handleImageChange={handleImageChange}
               initial={false}
             />
-            {/* </Uploady> */}
             <button
               className="ml-auto mt-6 h-11 w-40 border-2 border-white bg-backdrop font-sans uppercase text-white"
               onClick={() => handleSubmitNewInfo("restaurant")}
