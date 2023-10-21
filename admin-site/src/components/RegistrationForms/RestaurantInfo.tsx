@@ -14,7 +14,7 @@ type RestaurantInfoProps = {
   description: string;
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   restaurantImage: string;
-  handleImageChange: (imageUrl: string) => void;
+  handleImageChange?: (imageUrl: string) => void;
   initial: boolean;
 };
 
@@ -116,7 +116,7 @@ const RestaurantInfo: React.FunctionComponent<RestaurantInfoProps> = (
             {charCount}/{500}
           </div>
         </div>
-        {!initial && (
+        {!initial && handleImageChange && (
           <div className="flex flex-col gap-y-4 ">
             <div className="relative aspect-video">
               <Image

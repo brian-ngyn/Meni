@@ -147,7 +147,7 @@ export default function Page() {
         </div>
       </div>
     </>
-  ) : !isLoading && !isSignedIn ? (
+  ) : !isLoading && isSignedIn && !user?.publicMetadata.onboardingComplete ? (
     <div className="min-h-screen w-full bg-backdrop">
       <Head>
         <title>Registration | Meni</title>
@@ -179,7 +179,6 @@ export default function Page() {
             description={form.description}
             onChange={handleChange}
             restaurantImage=""
-            imageChange={() => {}}
             initial={true}
           />
         </motion.div>
