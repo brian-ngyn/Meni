@@ -31,6 +31,7 @@
     "@trpc/server": "^10.37.1",
     "@uploadthing/react": "^5.7.0",
     "antd": "^5.10.2",
+    "bson": "^6.2.0",
     "framer-motion": "^10.16.4",
     "next": "^13.5.4",
     "react": "18.2.0",

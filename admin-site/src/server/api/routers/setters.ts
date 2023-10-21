@@ -100,4 +100,84 @@ export const settersRouter = createTRPCRouter({
         message: "Account Info updated",
       };
     }),
+
+  createMenu: privateProcedure
+    .input(
+      // this needs to be fixed to use the prisma type.. idk how to do that yet.
+      z.object({
+        clerkId: z.string(),
+        newMenu: z.object({
+          id: z.string(),
+          name: z.string(),
+          restaurantId: z.string(),
+          tags: z.array(z.string()),
+          mainCategories: z.array(
+            z.object({
+              id: z.string(),
+              name: z.string(),
+              subCategories: z.array(
+                z.object({
+                  id: z.string(),
+                  name: z.string(),
+                  items: z.array(
+                    z.object({
+                      id: z.string(),
+                      name: z.string(),
+                      price: z.number(),
+                      description: z.string(),
+                      image: z.string(),
+                      tags: z.array(z.string()),
+                    }),
+                  ),
+                }),
+              ),
+            }),
+          ),
+        }),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.userId !== input.clerkId) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "User is not authorized to update this account info",
+        });
+      }
+      const userSubmittingRequest = await clerkClient.users.getUser(ctx.userId);
+      if (!userSubmittingRequest.publicMetadata.onboardingComplete) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "User is not authorized to update this account info",
+        });
+      }
+
+      const owner = await ctx.db.account.findUnique({
+        where: {
+          clerkId: input.clerkId,
+        },
+      });
+      const restaurant = await ctx.db.restaurantInfo.findUnique({
+        where: {
+          ownerId: owner?.id,
+        },
+      });
+
+      if (restaurant?.id !== input.newMenu.restaurantId) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "User is not authorized to update this restaurant",
+        });
+      }
+
+      await ctx.db.menus.create({
+        data: {
+          ...input.newMenu,
+        },
+      });
+
+      return {
+        success: "true",
+        message: "Menu created successfully",
+      };
+    }),
 });

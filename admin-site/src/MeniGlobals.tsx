@@ -14,9 +14,22 @@ export default function MeniGlobals() {
 }
 
 export function defaultStarterMenu(restaurantId: string): Menus {
+  const newObjectId = () => {
+    const timestamp = Math.floor(new Date().getTime() / 1000).toString(16);
+    const objectId =
+      timestamp +
+      "xxxxxxxxxxxxxxxx"
+        .replace(/[x]/g, () => {
+          return Math.floor(Math.random() * 16).toString(16);
+        })
+        .toLowerCase();
+
+    return objectId;
+  };
+
   const defaultStarterMenuObj: Menus = {
-    id: uuidv4(),
-    name: "Menu Name",
+    id: newObjectId(),
+    name: "Menu 1",
     restaurantId: restaurantId,
     tags: ["Vegan", "Dairy Free", "Gluten Free", "Nut Free"],
     mainCategories: [
@@ -56,7 +69,7 @@ export function defaultStarterMenu(restaurantId: string): Menus {
       },
       {
         id: uuidv4(),
-        name: "Desert",
+        name: "Dessert",
         subCategories: [
           {
             id: uuidv4(),

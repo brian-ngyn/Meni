@@ -4,18 +4,22 @@ import { useEffect, useState } from "react";
 import ScrollContainer from "react-indiana-drag-scroll";
 import { Link } from "react-scroll";
 
+import { useUser } from "@clerk/nextjs";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ClearIcon from "@mui/icons-material/Clear";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
+import { type RestaurantInfo } from "@prisma/client";
 
 import MeniGlobals from "~/MeniGlobals";
 import { EditMode, useEditableMenu } from "~/context/EditableMenuContext";
 import { useMeniContext } from "~/context/meniContext";
+import { api } from "~/utils/api";
 
 import EditableText from "~/components/EditMenu/EditableText";
 import FoodCard from "~/components/EditMenu/FoodCard";
+import { LoadingPage } from "~/components/LoadingPage";
 import MeniButton from "~/components/items/MeniButton";
 import MeniDialog from "~/components/items/MeniDialog";
 import MeniNotification from "~/components/items/MeniNotification";
@@ -24,13 +28,6 @@ type EditContainerProps = {
   menuId: string;
 };
 
-type IRestaurant = {
-  restaurantName: string;
-  address: string;
-  restaurantPhoneNumber: string;
-  description: string;
-  restaurantImage: string;
-};
 export default function EditContainer(props: EditContainerProps) {
   const {
     editableMenuState,
@@ -44,25 +41,75 @@ export default function EditContainer(props: EditContainerProps) {
     deleteSubCategory,
     setCurrentEditId,
   } = useEditableMenu();
+  const [initialLoad, setInitialLoad] = useState(true);
+  const { user } = useUser();
   const [startGuide, setStartGuide] = useState(false);
-  const [restaurant, setRestaurant] = useState<IRestaurant>({
-    restaurantImage: "",
-    restaurantPhoneNumber: "",
-    address: "",
-    description: "",
-    restaurantName: "",
-  } as IRestaurant);
-
-  const router = useRouter();
   const { menuId } = props;
+  const router = useRouter();
+
+  const {
+    data: restaurant,
+    isLoading,
+    refetch: fetchRestaurantInfo,
+  } = api.getters.getRestaurantInfo.useQuery(
+    { clerkId: user?.id || "" },
+    { enabled: false },
+  );
+  const { mutate: createMenu } = api.setters.createMenu.useMutation({
+    onSuccess: (a) => {
+      if (a.success) {
+        MeniNotification(
+          "Success",
+          "Your menu has successfully been created.",
+          "success",
+        );
+      } else {
+        MeniNotification(
+          "Error",
+          "Failed to create your menu. Please try again later or contact support.",
+          "error",
+        );
+      }
+    },
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors.content;
+      if (errorMessage && errorMessage[0]) {
+        MeniNotification("Error", errorMessage[0], "error");
+      } else {
+        MeniNotification(
+          "Error",
+          "Failed to create your menu. Please try again later or contact support.",
+          "error",
+        );
+      }
+    },
+  });
+
+  useEffect(() => {
+    if (user) {
+      void fetchRestaurantInfo();
+    }
+  }, [fetchRestaurantInfo, user]);
 
   // create new Menu
-  const createNewMenu = () => {
-    if (router.query.restaurantId) {
-      setStartGuide(true);
-      loadNewTemplate(router.query.restaurantId as string);
+  useEffect(() => {
+    const createNewMenu = () => {
+      if (router.query.restaurantId) {
+        setStartGuide(true);
+        loadNewTemplate(router.query.restaurantId as string);
+      }
+    };
+
+    if (menuId && initialLoad) {
+      console.log(menuId);
+      if (menuId === "new") {
+        createNewMenu();
+      } else {
+        loadMenu();
+      }
+      setInitialLoad(false);
     }
-  };
+  }, [menuId, router, setMenuLoading, loadNewTemplate, initialLoad]);
 
   // Load menu
   const loadMenu = () => {
@@ -92,48 +139,14 @@ export default function EditContainer(props: EditContainerProps) {
     // }
   };
 
-  // Load restaurant
-  const loadRestaurant = (restaurantId: string) => {
-    return;
-    // beginLoad();
-    // await fetch(
-    //   MeniGlobals().apiRoot +
-    //     "/get-restaurant?" +
-    //     new URLSearchParams({ restaurantId: restaurantId as string }),
-    // )
-    //   .then((response) => {
-    //     if (response.status === 200) {
-    //       return response.json();
-    //     } else {
-    //       throw Error();
-    //     }
-    //   })
-    //   .then((result) => {
-    //     setRestaurant(result);
-    //     endLoad();
-    //   })
-    //   .catch(() => {
-    //     MeniNotification("Error", "Could not load menu", "error");
-    //     endLoad();
-    //   });
-  };
-
-  // useEffect(() => {
-  //   if (menuId) {
-  //     setMenuLoading(true);
-  //     if (menuId === "new") {
-  //       createNewMenu();
-  //       if (router.query.restaurantId) {
-  //         loadRestaurant(router.query.restaurantId as string);
-  //       }
-  //     } else {
-  //       loadMenu();
-  //     }
-  //   }
-  // }, [menuId, userInfo, router.query.restaurantId]);
-
   // Save/Create
   const saveMenu = () => {
+    if (editableMenuState.mode === EditMode.CREATE) {
+      createMenu({
+        newMenu: editableMenuState.menu,
+        clerkId: user?.id || "",
+      });
+    }
     return;
     // if (userInfo) {
     //   beginLoad();
@@ -249,10 +262,8 @@ export default function EditContainer(props: EditContainerProps) {
     return (
       <>
         <div className="mt-20 grid gap-4 font-sans">
-          <h1 className="font-serif text-6xl text-white">
-            {restaurant.restaurantName}
-          </h1>
-          <p className="font-thin">{restaurant.description} </p>
+          <h1 className="font-serif text-6xl text-white">{restaurant?.name}</h1>
+          <p className="font-thin">{restaurant?.description} </p>
           <div className="flex gap-2">
             <Image
               width={20}
@@ -260,7 +271,7 @@ export default function EditContainer(props: EditContainerProps) {
               alt="location icon"
               src="/menupage/location.svg"
             ></Image>
-            <p className="font-thin">{restaurant.address}</p>
+            <p className="font-thin">{restaurant?.address}</p>
           </div>
           <div className="flex gap-2">
             <Image
@@ -270,13 +281,15 @@ export default function EditContainer(props: EditContainerProps) {
               src="/menupage/phone.svg"
             ></Image>
             <a href="tel:403-231-8933" className="font-thin">
-              {restaurant.restaurantPhoneNumber}
+              {restaurant?.phoneNumber}
             </a>
           </div>
         </div>
       </>
     );
   };
+
+  if (isLoading) return <LoadingPage />;
 
   return !editableMenuState.loading ? (
     <>
@@ -286,7 +299,7 @@ export default function EditContainer(props: EditContainerProps) {
           <div className="grid gap-4 ">
             {renderHeader()}
             <div className="relative overflow-hidden">
-              {renderNewMenuDialog()}
+              {startGuide && renderNewMenuDialog()}
               <ScrollContainer className="sticky top-0 z-10 flex w-full gap-16 overflow-x-scroll border-t bg-backdrop py-4 align-middle text-xl font-thin">
                 {editableMenuState.menu.mainCategories.map(
                   (category, index) => (

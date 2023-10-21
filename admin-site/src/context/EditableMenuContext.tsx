@@ -83,6 +83,7 @@ export function EditableMenuContextProvider({ children }: Props) {
       menu: loadMenu,
       originalMenu: loadMenu,
       mode: EditMode.EDIT,
+      loading: false,
     });
     MeniNotification("Menu loaded", "", "success");
   };
@@ -93,6 +94,7 @@ export function EditableMenuContextProvider({ children }: Props) {
       menu: defaultStarterMenu(restaurantId),
       originalMenu: defaultStarterMenu(restaurantId),
       mode: EditMode.CREATE,
+      loading: false,
     });
   };
 
@@ -279,19 +281,14 @@ export function EditableMenuContextProvider({ children }: Props) {
   };
 
   useEffect(() => {
-    const oldMenu = JSON.stringify(editableMenuState.originalMenu);
-    const newMenu = JSON.stringify(editableMenuState.menu);
-
-    setEditableMenuState({ ...editableMenuState, modified: true });
-  }, [editableMenuState.menu]);
-
-  useEffect(() => {
     if (editableMenuState.menu.id) {
       setMenuLoading(false);
     }
   }, [editableMenuState.mode]);
 
-  useEffect(() => {}, [editableMenuState]);
+  useEffect(() => {
+    console.log(editableMenuState.menu);
+  }, [editableMenuState.menu]);
 
   const addTag = (values: string[]) => {
     const newTags = editableMenuState.menu.tags;
