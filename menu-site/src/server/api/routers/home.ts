@@ -10,6 +10,9 @@ export const homeRouter = createTRPCRouter({
     return ctx.db.restaurantInfo.findMany({
       where: {
         featuredPayment: true,
+        activeMenuId: {
+          not: null,
+        },
       },
     });
   }),
@@ -22,7 +25,13 @@ export const homeRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       // return the list of restaurants that have the same geoLocation as the user's location
-      const allRestaurants = await ctx.db.restaurantInfo.findMany();
+      const allRestaurants = await ctx.db.restaurantInfo.findMany({
+        where: {
+          activeMenuId: {
+            not: null,
+          },
+        },
+      });
       const restaurantsWithinRadius = allRestaurants
         .map((restaurant) => {
           const restaurantLatitude = restaurant.geoLocation.latitude;
