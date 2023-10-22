@@ -5,6 +5,7 @@ import { type Dispatch, type SetStateAction } from "react";
 
 import { useUser } from "@clerk/nextjs";
 import { type Account, type RestaurantInfo } from "@prisma/client";
+import { type UseQueryResult } from "@tanstack/react-query";
 
 import { api } from "~/utils/api";
 
@@ -31,8 +32,8 @@ type MeniContextReturnType = {
   loading: boolean;
   accountInfo: Account | null | undefined;
   restaurantInfo: RestaurantInfo | null | undefined;
-  refetchAccountInfo: unknown;
-  refetchRestaurantInfo: unknown;
+  refetchAccountInfo: () => Promise<UseQueryResult>;
+  refetchRestaurantInfo: () => Promise<UseQueryResult>;
   updateAccountInfo: (newInfo: EditedAccount) => void;
   updateRestaurantInfo: (newInfo: EditedRestaurantInfo) => void;
 };
@@ -125,7 +126,6 @@ export function MeniContextProvider({ children }: Props) {
   const updateRestaurantInfo = (newInfo: EditedRestaurantInfo) => {
     mutateRestaurantInfo({
       ...newInfo,
-      id: restaurantInfo?.id || "",
       clerkId: user?.id || "",
     });
   };
@@ -133,7 +133,6 @@ export function MeniContextProvider({ children }: Props) {
   const updateAccountInfo = (newInfo: EditedAccount) => {
     mutateAccount({
       ...newInfo,
-      id: accountInfo?.id || "",
       clerkId: user?.id || "",
     });
   };

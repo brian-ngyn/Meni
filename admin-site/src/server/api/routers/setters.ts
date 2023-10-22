@@ -140,14 +140,14 @@ export const settersRouter = createTRPCRouter({
       if (ctx.userId !== input.clerkId) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: "User is not authorized to update this account info",
+          message: "User is not authorized to create a menu",
         });
       }
       const userSubmittingRequest = await clerkClient.users.getUser(ctx.userId);
       if (!userSubmittingRequest.publicMetadata.onboardingComplete) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: "User is not authorized to update this account info",
+          message: "User is not authorized to create a menu",
         });
       }
 
@@ -165,7 +165,7 @@ export const settersRouter = createTRPCRouter({
       if (restaurant?.id !== input.newMenu.restaurantId) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: "User is not authorized to update this restaurant",
+          message: "User is not authorized to update this account info",
         });
       }
 
@@ -178,6 +178,269 @@ export const settersRouter = createTRPCRouter({
       return {
         success: "true",
         message: "Menu created successfully",
+      };
+    }),
+
+  updateMenu: privateProcedure
+    .input(
+      // this needs to be fixed to use the prisma type.. idk how to do that yet.
+      z.object({
+        clerkId: z.string(),
+        updatedMenu: z.object({
+          id: z.string(),
+          name: z.string(),
+          restaurantId: z.string(),
+          tags: z.array(z.string()),
+          mainCategories: z.array(
+            z.object({
+              id: z.string(),
+              name: z.string(),
+              subCategories: z.array(
+                z.object({
+                  id: z.string(),
+                  name: z.string(),
+                  items: z.array(
+                    z.object({
+                      id: z.string(),
+                      name: z.string(),
+                      price: z.number(),
+                      description: z.string(),
+                      image: z.string(),
+                      tags: z.array(z.string()),
+                    }),
+                  ),
+                }),
+              ),
+            }),
+          ),
+        }),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.userId !== input.clerkId) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "User is not authorized to update a menu",
+        });
+      }
+      const userSubmittingRequest = await clerkClient.users.getUser(ctx.userId);
+      if (!userSubmittingRequest.publicMetadata.onboardingComplete) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "User is not authorized to update a menu",
+        });
+      }
+
+      const owner = await ctx.db.account.findUnique({
+        where: {
+          clerkId: input.clerkId,
+        },
+      });
+      const restaurant = await ctx.db.restaurantInfo.findUnique({
+        where: {
+          ownerId: owner?.id,
+        },
+      });
+
+      if (restaurant?.id !== input.updatedMenu.restaurantId) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "User is not authorized to update this menu",
+        });
+      }
+
+      const menuWithoutId = { ...input.updatedMenu, id: undefined };
+      await ctx.db.menus.update({
+        where: {
+          id: input.updatedMenu.id,
+        },
+        data: {
+          ...menuWithoutId,
+        },
+      });
+
+      return {
+        success: "true",
+        message: "Menu updated successfully",
+      };
+    }),
+
+  setActiveMenu: privateProcedure
+    .input(
+      z.object({
+        clerkId: z.string(),
+        menuId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.userId !== input.clerkId) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message:
+            "User is not authorized to update this account's active menu",
+        });
+      }
+      const userSubmittingRequest = await clerkClient.users.getUser(ctx.userId);
+      if (!userSubmittingRequest.publicMetadata.onboardingComplete) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message:
+            "User is not authorized to update this account's active menu",
+        });
+      }
+
+      const owner = await ctx.db.account.findUnique({
+        where: {
+          clerkId: input.clerkId,
+        },
+      });
+      const restaurant = await ctx.db.restaurantInfo.findUnique({
+        where: {
+          ownerId: owner?.id,
+        },
+      });
+      const menu = await ctx.db.menus.findUnique({
+        where: {
+          id: input.menuId,
+        },
+      });
+      if (menu?.restaurantId !== restaurant?.id) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message:
+            "User is not authorized to update this account's active menu",
+        });
+      }
+      if (restaurant?.id) {
+        await ctx.db.restaurantInfo.update({
+          where: {
+            id: restaurant.id,
+          },
+          data: {
+            activeMenuId: input.menuId,
+          },
+        });
+      }
+
+      return {
+        success: "true",
+        message: "Active menu set successfully",
+      };
+    }),
+
+  renameMenu: privateProcedure
+    .input(
+      z.object({
+        clerkId: z.string(),
+        menuId: z.string(),
+        newName: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.userId !== input.clerkId) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "User is not authorized to rename this menu",
+        });
+      }
+      const userSubmittingRequest = await clerkClient.users.getUser(ctx.userId);
+      if (!userSubmittingRequest.publicMetadata.onboardingComplete) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "User is not authorized to rename this menu",
+        });
+      }
+
+      const owner = await ctx.db.account.findUnique({
+        where: {
+          clerkId: input.clerkId,
+        },
+      });
+      const restaurant = await ctx.db.restaurantInfo.findUnique({
+        where: {
+          ownerId: owner?.id,
+        },
+      });
+      const menu = await ctx.db.menus.findUnique({
+        where: {
+          id: input.menuId,
+        },
+      });
+      if (menu?.restaurantId !== restaurant?.id) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "User is not authorized to rename this menu",
+        });
+      }
+
+      await ctx.db.menus.update({
+        where: {
+          id: input.menuId,
+        },
+        data: {
+          name: input.newName,
+        },
+      });
+
+      return {
+        success: "true",
+        message: "Menu has been renamed successfully",
+      };
+    }),
+
+  deleteMenu: privateProcedure
+    .input(
+      z.object({
+        clerkId: z.string(),
+        menuId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.userId !== input.clerkId) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "User is not authorized to delete this menu",
+        });
+      }
+      const userSubmittingRequest = await clerkClient.users.getUser(ctx.userId);
+      if (!userSubmittingRequest.publicMetadata.onboardingComplete) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "User is not authorized to delete this menu",
+        });
+      }
+
+      const owner = await ctx.db.account.findUnique({
+        where: {
+          clerkId: input.clerkId,
+        },
+      });
+      const restaurant = await ctx.db.restaurantInfo.findUnique({
+        where: {
+          ownerId: owner?.id,
+        },
+      });
+      const menu = await ctx.db.menus.findUnique({
+        where: {
+          id: input.menuId,
+        },
+      });
+      if (menu?.restaurantId !== restaurant?.id) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "User is not authorized to delete this menu",
+        });
+      }
+
+      await ctx.db.menus.delete({
+        where: {
+          id: input.menuId,
+        },
+      });
+
+      return {
+        success: "true",
+        message: "Menu has been deleted successfully",
       };
     }),
 });

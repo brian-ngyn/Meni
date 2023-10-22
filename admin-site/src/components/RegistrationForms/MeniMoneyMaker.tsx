@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import { useUser } from "@clerk/nextjs";
 
+import { useMeniContext } from "~/context/meniContext";
 import { api } from "~/utils/api";
 
 import MeniButton from "~/components/items/MeniButton";
@@ -27,6 +28,7 @@ type MMMProps = {
 
 const MeniMoneyMaker: React.FunctionComponent<MMMProps> = (props) => {
   const { hasPaymentMethod, isPaid, currentTier, restaurantId } = props;
+  const { refetchAccountInfo, refetchRestaurantInfo } = useMeniContext();
   const { user } = useUser();
   const { mutate: pickPaymentPlan } = api.meniMoneyMaker.pickPlan.useMutation({
     onSuccess: (a) => {
@@ -36,6 +38,8 @@ const MeniMoneyMaker: React.FunctionComponent<MMMProps> = (props) => {
           "Your plan has been updated. Thanks for testing Meni!",
           "success",
         );
+        void refetchAccountInfo();
+        void refetchRestaurantInfo();
       } else {
         MeniNotification(
           "Error",

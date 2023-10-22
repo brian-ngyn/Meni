@@ -29,6 +29,7 @@ type EditContainerProps = {
 };
 
 export default function EditContainer(props: EditContainerProps) {
+  const { refetchAccountInfo, refetchRestaurantInfo } = useMeniContext();
   const {
     editableMenuState,
     setMenuLoading,
@@ -55,6 +56,29 @@ export default function EditContainer(props: EditContainerProps) {
     { clerkId: user?.id || "" },
     { enabled: false },
   );
+
+  const {
+    data: menuForContext,
+    refetch: fetchMenuForContext,
+    isLoading: isFetchMenuLoading,
+  } = api.getters.getMenu.useQuery(
+    { clerkId: user?.id || "", menuId: menuId },
+    { enabled: false },
+  );
+
+  useEffect(() => {
+    if (user && menuId !== "new") {
+      void fetchMenuForContext();
+    }
+  }, [fetchMenuForContext, menuId, user]);
+
+  useEffect(() => {
+    if (menuForContext && initialLoad) {
+      loadFromAPI(menuForContext);
+      setInitialLoad(false);
+    }
+  }, [initialLoad, loadFromAPI, menuForContext]);
+
   const { mutate: createMenu } = api.setters.createMenu.useMutation({
     onSuccess: (a) => {
       if (a.success) {
@@ -63,6 +87,8 @@ export default function EditContainer(props: EditContainerProps) {
           "Your menu has successfully been created.",
           "success",
         );
+        void refetchAccountInfo();
+        void refetchRestaurantInfo();
       } else {
         MeniNotification(
           "Error",
@@ -85,6 +111,38 @@ export default function EditContainer(props: EditContainerProps) {
     },
   });
 
+  const { mutate: updateMenu } = api.setters.updateMenu.useMutation({
+    onSuccess: (a) => {
+      if (a.success) {
+        MeniNotification(
+          "Success",
+          "Your menu has successfully been updated.",
+          "success",
+        );
+        void refetchAccountInfo();
+        void refetchRestaurantInfo();
+      } else {
+        MeniNotification(
+          "Error",
+          "Failed to update your menu. Please try again later or contact support.",
+          "error",
+        );
+      }
+    },
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors.content;
+      if (errorMessage && errorMessage[0]) {
+        MeniNotification("Error", errorMessage[0], "error");
+      } else {
+        MeniNotification(
+          "Error",
+          "Failed to update your menu. Please try again later or contact support.",
+          "error",
+        );
+      }
+    },
+  });
+
   useEffect(() => {
     if (user) {
       void fetchRestaurantInfo();
@@ -100,103 +158,36 @@ export default function EditContainer(props: EditContainerProps) {
       }
     };
 
-    if (menuId && initialLoad) {
-      console.log(menuId);
+    if (menuId && initialLoad && editableMenuState.mode === EditMode.CREATE) {
       if (menuId === "new") {
         createNewMenu();
-      } else {
-        loadMenu();
       }
       setInitialLoad(false);
     }
-  }, [menuId, router, setMenuLoading, loadNewTemplate, initialLoad]);
-
-  // Load menu
-  const loadMenu = () => {
-    return;
-    // if (userInfo) {
-    //   beginLoad();
-    //   const loadMenuParams = new URLSearchParams({
-    //     menuId: props.menuId,
-    //   });
-    //   fetch(MeniGlobals().apiRoot + "/load-menu?" + loadMenuParams, {
-    //     method: "GET",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       Authorization: `Bearer ${userInfo.meniToke}`,
-    //     },
-    //   })
-    //     .then((response) => response.json())
-    //     .then((result) => {
-    //       loadFromAPI(result);
-    //       loadRestaurant(result.restaurantId);
-    //       endLoad();
-    //     })
-    //     .catch(() => {
-    //       MeniNotification("Error", "Could not load menu", "error");
-    //       endLoad();
-    //     });
-    // }
-  };
+  }, [
+    menuId,
+    router,
+    setMenuLoading,
+    loadNewTemplate,
+    initialLoad,
+    editableMenuState.mode,
+  ]);
 
   // Save/Create
   const saveMenu = () => {
-    if (editableMenuState.mode === EditMode.CREATE) {
-      createMenu({
-        newMenu: editableMenuState.menu,
-        clerkId: user?.id || "",
-      });
+    if (user) {
+      if (editableMenuState.mode === EditMode.CREATE) {
+        createMenu({
+          newMenu: editableMenuState.menu,
+          clerkId: user.id,
+        });
+      } else {
+        updateMenu({
+          updatedMenu: editableMenuState.menu,
+          clerkId: user.id,
+        });
+      }
     }
-    return;
-    // if (userInfo) {
-    //   beginLoad();
-    //   if (editableMenuState.mode == EditMode.CREATE) {
-    //     await fetch(MeniGlobals().apiRoot + "/create-menu", {
-    //       method: "POST",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //         Authorization: `Bearer ${userInfo.meniToke}`,
-    //       },
-    //       body: JSON.stringify({ ...editableMenuState.menu }),
-    //     })
-    //       .then((response) => response.json())
-    //       .then((result) => {
-    //         router.push("/edit/" + result.id);
-    //         MeniNotification(
-    //           "Created",
-    //           "Your menu was created succesfully",
-    //           "success",
-    //         );
-    //         endLoad();
-    //       })
-    //       .catch(() => {
-    //         MeniNotification("Error", "Could not create menu", "error");
-    //         endLoad();
-    //       });
-    //   } else {
-    //     await fetch(MeniGlobals().apiRoot + "/update-menu", {
-    //       method: "PUT",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //         Authorization: `Bearer ${userInfo.meniToke}`,
-    //       },
-    //       body: JSON.stringify({ ...editableMenuState.menu }),
-    //     })
-    //       .then((response) => response.json())
-    //       .then((result) => {
-    //         MeniNotification(
-    //           "Saved",
-    //           "Your menu was saved succesfully",
-    //           "success",
-    //         );
-    //         endLoad();
-    //       })
-    //       .catch(() => {
-    //         MeniNotification("Error", "Could not save menu", "error");
-    //         endLoad();
-    //       });
-    //   }
-    // }
   };
 
   const handleSubCategoryDelete = (subCategoryId: string) => {
@@ -289,7 +280,7 @@ export default function EditContainer(props: EditContainerProps) {
     );
   };
 
-  if (isLoading) return <LoadingPage />;
+  if (isLoading || isFetchMenuLoading) return <LoadingPage />;
 
   return !editableMenuState.loading ? (
     <>

@@ -29,7 +29,7 @@ export function defaultStarterMenu(restaurantId: string): Menus {
 
   const defaultStarterMenuObj: Menus = {
     id: newObjectId(),
-    name: "Menu 1",
+    name: "Menu Name",
     restaurantId: restaurantId,
     tags: ["Vegan", "Dairy Free", "Gluten Free", "Nut Free"],
     mainCategories: [

@@ -1,10 +1,10 @@
-import { Button } from "antd";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import React, { type ChangeEvent, useEffect, useState } from "react";
 
-import MeniGlobals from "~/MeniGlobals";
+import { type IMenuBrief } from "~/constants/types";
 import { useMeniContext } from "~/context/meniContext";
+import { api } from "~/utils/api";
 
 import MenuList, { MenuCardMode } from "~/components/Dashboard/MenuList";
 import { LoadingPage } from "~/components/LoadingPage";
@@ -17,12 +17,6 @@ import MeniNotification from "~/components/items/MeniNotification";
 
 const PADDING = "xl:mx-48 md:mx-24 xs:mx-6";
 
-export type IMenuBrief = {
-  id: "string";
-  name: "string";
-  active: true;
-};
-
 const Tour = dynamic(() => import("reactour"), { ssr: false });
 
 export default function Dashboard() {
@@ -30,16 +24,34 @@ export default function Dashboard() {
     loading,
     accountInfo,
     restaurantInfo,
-    refetchAccountInfo,
-    refetchRestaurantInfo,
     updateAccountInfo,
     updateRestaurantInfo,
   } = useMeniContext();
   const router = useRouter();
 
-  const [menus, setMenus] = useState<IMenuBrief[]>([]);
   const [activeMenu, setActiveMenu] = useState<string>(""); // active menu for the restaurant
   const [tourEnable, setTourEnable] = useState(false);
+
+  const {
+    data: menus,
+    refetch: fetchMenus,
+    isLoading: isLoadingMenus,
+  } = api.getters.getMenusBrief.useQuery(
+    { clerkId: accountInfo?.clerkId || "" },
+    { enabled: false },
+  );
+
+  useEffect(() => {
+    if (!menus && accountInfo?.clerkId) {
+      void fetchMenus();
+    } else {
+      menus?.forEach((menu: IMenuBrief) => {
+        if (menu.id === restaurantInfo?.activeMenuId) {
+          setActiveMenu(menu.id);
+        }
+      });
+    }
+  }, [accountInfo?.clerkId, fetchMenus, menus, restaurantInfo?.activeMenuId]);
 
   const [newForm, setNewForm] = useState({
     firstName: "",
@@ -96,32 +108,6 @@ export default function Dashboard() {
     }
   };
 
-  const getRestaurantMenus = () => {
-    // if (userInfo) {
-    //   beginLoad();
-    //   fetch(MeniGlobals().apiRoot + "/list-restaurant-menus", {
-    //     method: "GET",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       Authorization: `Bearer ${userInfo.meniToke}`,
-    //     },
-    //   })
-    //     .then((response) => response.json())
-    //     .then((data) => {
-    //       setMenus(data);
-    //       data.forEach((m: IMenuBrief) => {
-    //         if (m.active) {
-    //           setActiveMenu(m.id);
-    //         }
-    //       });
-    //       endLoad();
-    //     })
-    //     .catch((err) => {
-    //       endLoad();
-    //     });
-    // }
-  };
-
   // useEffect(() => {
   //   setTourEnable(true);
   // }, [interactibilityLoader]);
@@ -143,7 +129,7 @@ export default function Dashboard() {
         break;
     }
 
-    if (menus.length >= maxMenus) {
+    if (menus && menus.length >= maxMenus) {
       MeniNotification(
         "Error!",
         `You have reached the maximum number of menus (${maxMenus}) for your plan.`,
@@ -197,7 +183,7 @@ export default function Dashboard() {
   //   );
   // };
 
-  if (loading) return <LoadingPage />;
+  if (loading || isLoadingMenus) return <LoadingPage />;
 
   return (
     <div className="min-h-screen w-full bg-backdrop">
@@ -226,13 +212,13 @@ export default function Dashboard() {
             <MeniButton onClick={handleCreateMenu}>+</MeniButton>
           </div>
         </div>
-        {menus.length > 0 ? (
+        {menus && menus.length > 0 ? (
           <MenuList
             mode={MenuCardMode.MENU}
             activeMenu={activeMenu}
             menus={menus}
             restaurantId={restaurantInfo?.id || ""}
-            getRestaurantMenus={getRestaurantMenus}
+            getRestaurantMenus={() => fetchMenus()}
             currentPlan={accountInfo?.currentPlan || ""}
           />
         ) : (

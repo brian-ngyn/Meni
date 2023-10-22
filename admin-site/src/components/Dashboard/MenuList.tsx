@@ -2,9 +2,12 @@ import { useRouter } from "next/router";
 import React, { useRef, useState } from "react";
 import { useDraggable } from "react-use-draggable-scroll";
 
-import MeniGlobals from "~/MeniGlobals";
+import { useUser } from "@clerk/nextjs";
+import { type UseQueryResult } from "@tanstack/react-query";
+
 import { type IMenuBrief } from "~/constants/types";
 import { useMeniContext } from "~/context/meniContext";
+import { api } from "~/utils/api";
 
 import MenuCard from "~/components/Dashboard/MenuCard";
 import MeniButton from "~/components/items/MeniButton";
@@ -20,7 +23,7 @@ type IMenuListProps = {
   menus: IMenuBrief[];
   mode: MenuCardMode;
   restaurantId: string;
-  getRestaurantMenus: () => void;
+  getRestaurantMenus: () => Promise<UseQueryResult>;
   activeMenu: string;
   currentPlan: string;
 };
@@ -28,7 +31,9 @@ type IMenuListProps = {
 type SelectedMenu = { id: string; name: string };
 
 function MenuList(props: IMenuListProps) {
+  const { refetchAccountInfo, refetchRestaurantInfo } = useMeniContext();
   const router = useRouter();
+  const { user } = useUser();
   // We will use React useRef hook to reference the wrapping div:
   const ref =
     useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;
@@ -48,7 +53,110 @@ function MenuList(props: IMenuListProps) {
     setOpenedMenu(menu);
   };
 
-  const handleSetActiveMenu = (menu: string) => {
+  const { mutate: setActiveMenu } = api.setters.setActiveMenu.useMutation({
+    onSuccess: (a) => {
+      if (a.success) {
+        MeniNotification(
+          "Success",
+          "Active menu has been set successfully.",
+          "success",
+        );
+        void refetchAccountInfo();
+        void refetchRestaurantInfo();
+        setOpenedMenu({ id: "", name: "" });
+      } else {
+        MeniNotification(
+          "Error",
+          "Failed to set your active menu. Please try again later or contact support.",
+          "error",
+        );
+      }
+    },
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors.content;
+      if (errorMessage && errorMessage[0]) {
+        MeniNotification("Error", errorMessage[0], "error");
+      } else {
+        MeniNotification(
+          "Error",
+          "Failed to set your active menu. Please try again later or contact support.",
+          "error",
+        );
+      }
+    },
+  });
+
+  const { mutate: renameMenu } = api.setters.renameMenu.useMutation({
+    onSuccess: (a) => {
+      if (a.success) {
+        MeniNotification(
+          "Success",
+          "Menu has been renamed successfully.",
+          "success",
+        );
+        void props.getRestaurantMenus();
+        void refetchAccountInfo();
+        void refetchRestaurantInfo();
+        setDialogOpened(false);
+        setOpenedMenu({ id: "", name: "" });
+      } else {
+        MeniNotification(
+          "Error",
+          "Failed to set your active menu. Please try again later or contact support.",
+          "error",
+        );
+      }
+    },
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors.content;
+      if (errorMessage && errorMessage[0]) {
+        MeniNotification("Error", errorMessage[0], "error");
+      } else {
+        MeniNotification(
+          "Error",
+          "Failed to rename this menu. Please try again later or contact support.",
+          "error",
+        );
+      }
+    },
+  });
+
+  const { mutate: deleteMenu } = api.setters.deleteMenu.useMutation({
+    onSuccess: (a) => {
+      if (a.success) {
+        MeniNotification(
+          "Success",
+          "Menu has been deleted successfully.",
+          "success",
+        );
+        void props.getRestaurantMenus();
+        void refetchAccountInfo();
+        void refetchRestaurantInfo();
+        setDialogOpened(false);
+        setOpenedMenu({ id: "", name: "" });
+      } else {
+        MeniNotification(
+          "Error",
+          "Failed to delete this menu. Please try again later or contact support.",
+          "error",
+        );
+      }
+    },
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors.content;
+      if (errorMessage && errorMessage[0]) {
+        MeniNotification("Error", errorMessage[0], "error");
+      } else {
+        MeniNotification(
+          "Error",
+          "Failed to delete this menu. Please try again later or contact support.",
+          "error",
+        );
+      }
+    },
+  });
+
+  const handleSetActiveMenu = (menuId: string) => {
     if (props.currentPlan === "tier0") {
       MeniNotification(
         "Error",
@@ -56,31 +164,9 @@ function MenuList(props: IMenuListProps) {
         "warning",
       );
     } else {
-      return;
-      // if (userInfo) {
-      //   beginLoad();
-      //   fetch(MeniGlobals().apiRoot + "/set-active-menu", {
-      //     method: "PUT",
-      //     body: JSON.stringify({
-      //       menuId: menu,
-      //       restaurantId: props.restaurantId,
-      //     }),
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //       Authorization: `Bearer ${userInfo.meniToke}`,
-      //     },
-      //   })
-      //     .then((response) => response.json())
-      //     .then((data) => {
-      //       MeniNotification("Success", "Active menu set!", "success");
-      //       console.log(data);
-      //       props.getRestaurantMenus();
-      //       endLoad();
-      //     })
-      //     .catch((err) => {
-      //       endLoad();
-      //     });
-      // }
+      if (user) {
+        setActiveMenu({ clerkId: user.id, menuId: menuId });
+      }
     }
   };
 
@@ -95,56 +181,16 @@ function MenuList(props: IMenuListProps) {
   };
 
   const handleRenameSubmit = () => {
-    const data = { menuId: openedMenu.id, newName: newName };
-    setDialogOpened(false);
-    // if (userInfo) {
-    //   beginLoad();
-    //   fetch(MeniGlobals().apiRoot + "/rename-menu", {
-    //     method: "PUT",
-    //     body: JSON.stringify(data),
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       Authorization: `Bearer ${userInfo.meniToke}`,
-    //     },
-    //   })
-    //     .then((response) => response.json())
-    //     .then((data) => {
-    //       MeniNotification("Menu Renamed", "", "info");
-    //       console.log(data);
-
-    //       router.reload();
-    //       endLoad();
-    //     })
-    //     .catch((err) => {
-    //       endLoad();
-    //     });
-    // }
-    // setNewName("");
+    if (user) {
+      renameMenu({ clerkId: user.id, menuId: openedMenu.id, newName: newName });
+    }
+    setNewName("");
   };
 
   const handleDeleteSubmit = () => {
-    return;
-    // if (userInfo) {
-    //   beginLoad();
-    //   fetch(MeniGlobals().apiRoot + "/delete-menu", {
-    //     method: "DELETE",
-    //     body: JSON.stringify({ menuId: openedMenu.id }),
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       Authorization: `Bearer ${userInfo.meniToke}`,
-    //     },
-    //   })
-    //     .then((response) => response.json())
-    //     .then((data) => {
-    //       MeniNotification("Menu Delete", "", "info");
-    //       props.getRestaurantMenus();
-    //       endLoad();
-    //     })
-    //     .catch((err) => {
-    //       endLoad();
-    //     });
-    // }
-    // setDialogOpened(false);
+    if (user) {
+      deleteMenu({ clerkId: user.id, menuId: openedMenu.id });
+    }
   };
 
   const openForEdit = (menuId: string) => {
