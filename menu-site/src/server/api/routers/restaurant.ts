@@ -12,14 +12,9 @@ export const restaurantRouter = createTRPCRouter({
     if (restaurant && restaurant.activeMenuId) {
       return ctx.db.menus.findFirst({
         where: {
-          id: restaurant.activeMenuId,
+          id: restaurant?.activeMenuId,
         },
       });
-    } else {
-      return {
-        success: false,
-        message: "Restaurant does not have an active menu.",
-      };
     }
   }),
   getRestaurant: publicProcedure
