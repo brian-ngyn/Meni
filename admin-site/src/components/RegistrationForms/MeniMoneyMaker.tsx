@@ -40,6 +40,7 @@ const MeniMoneyMaker: React.FunctionComponent<MMMProps> = (props) => {
         );
         void refetchAccountInfo();
         void refetchRestaurantInfo();
+        setPageStep(1);
       } else {
         MeniNotification(
           "Error",

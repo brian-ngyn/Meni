@@ -17,14 +17,14 @@ export const meniMoneyMakerRouter = createTRPCRouter({
       if (ctx.userId !== input.clerkId) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: "User is not authorized to view this account",
+          message: "User is not authorized to update this account",
         });
       }
       const userSubmittingRequest = await clerkClient.users.getUser(ctx.userId);
       if (!userSubmittingRequest.publicMetadata.onboardingComplete) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: "User has not completed onboarding",
+          message: "User is not authorized to update this account",
         });
       }
 
@@ -46,6 +46,25 @@ export const meniMoneyMakerRouter = createTRPCRouter({
             isPaid: input.plan === "tier0" ? false : true,
           },
         });
+        if (input.plan === "tier3") {
+          await ctx.db.restaurantInfo.update({
+            where: {
+              ownerId: owner.id,
+            },
+            data: {
+              featuredPayment: true,
+            },
+          });
+        } else {
+          await ctx.db.restaurantInfo.update({
+            where: {
+              ownerId: owner.id,
+            },
+            data: {
+              featuredPayment: false,
+            },
+          });
+        }
       } else {
         return {
           success: false,
