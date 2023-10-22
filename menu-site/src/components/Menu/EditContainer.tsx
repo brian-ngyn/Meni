@@ -47,8 +47,6 @@ export default function EditContainer(props: EditContainerProps) {
     console.log(restaurant);
   }, [menu, restaurant]);
 
-  const horizontalScrollRef = useRef<HTMLElement>(null);
-
   const [currentImage, setCurrentImage] = useState<string>("");
 
   useEffect(() => {

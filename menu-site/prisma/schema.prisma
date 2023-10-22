@@ -12,17 +12,21 @@ datasource db {
 
 model Account {
   id               String  @id @default(auto()) @map("_id") @db.ObjectId
+  email            String  @unique
+  firstName        String
+  lastName         String
   clerkId          String  @unique
-  stripeCustomerId String
-  stripePaymentId  String
+  stripeCustomerId String?
+  stripePaymentId  String?
   isPaid           Boolean @default(false)
+  isBetaTester     Boolean @default(true)
   currentPlan      String
   lastPaidAt       String? // this will be BigInt in the future
 }
 
 model RestaurantInfo {
   id              String      @id @default(auto()) @map("_id") @db.ObjectId
-  ownerId         String
+  ownerId         String      @unique
   name            String
   address         String
   phoneNumber     String
@@ -37,9 +41,9 @@ model RestaurantInfo {
 model Menus {
   id             String             @id @default(auto()) @map("_id") @db.ObjectId
   name           String
-  mainCategories MenuMainCategory[]
   restaurantId   String
   tags           String[]
+  mainCategories MenuMainCategory[]
 }
 
 type MenuMainCategory {
@@ -57,7 +61,7 @@ type MenuSubCategory {
 type MenuItem {
   id          String
   name        String
-  price       Int
+  price       String
   description String
   image       String
   tags        String[]

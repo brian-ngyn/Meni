@@ -8,11 +8,8 @@ import { useUser } from "@clerk/nextjs";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ClearIcon from "@mui/icons-material/Clear";
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
-import { type RestaurantInfo } from "@prisma/client";
 
-import MeniGlobals from "~/MeniGlobals";
 import { EditMode, useEditableMenu } from "~/context/EditableMenuContext";
 import { useMeniContext } from "~/context/meniContext";
 import { api } from "~/utils/api";
@@ -191,8 +188,8 @@ export default function EditContainer(props: EditContainerProps) {
     if (menuId && initialLoad) {
       if (menuId === "new") {
         createNewMenu();
+        setInitialLoad(false);
       }
-      setInitialLoad(false);
     }
   }, [
     menuId,
@@ -209,7 +206,7 @@ export default function EditContainer(props: EditContainerProps) {
         <div className="flex items-center gap-4 font-serif text-xl">
           <ArrowBackIosIcon
             className="cursor-pointer"
-            onClick={() => void router.push("/dashboard")}
+            onClick={() => (window.location.href = "/dashboard")} // very bad workaround
           />
           {editableMenuState.menu.name}
         </div>

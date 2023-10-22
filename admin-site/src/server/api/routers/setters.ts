@@ -123,7 +123,7 @@ export const settersRouter = createTRPCRouter({
                     z.object({
                       id: z.string(),
                       name: z.string(),
-                      price: z.number(),
+                      price: z.string(),
                       description: z.string(),
                       image: z.string(),
                       tags: z.array(z.string()),
@@ -204,7 +204,7 @@ export const settersRouter = createTRPCRouter({
                     z.object({
                       id: z.string(),
                       name: z.string(),
-                      price: z.number(),
+                      price: z.string(),
                       description: z.string(),
                       image: z.string(),
                       tags: z.array(z.string()),

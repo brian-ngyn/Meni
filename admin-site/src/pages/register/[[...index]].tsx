@@ -16,11 +16,14 @@ import RestaurantInfo from "~/components/RegistrationForms/RestaurantInfo";
 import MeniNotification from "~/components/items/MeniNotification";
 
 export default function Page() {
+  const [signupComplete, setSignupComplete] = useState(false);
   const { mutate, isLoading } = api.onboarding.signUp.useMutation({
     onSuccess: (a) => {
       if (a.success) {
+        setSignupComplete(true);
         void router.push("/dashboard");
       } else {
+        setSignupComplete(false);
         MeniNotification(
           "Error",
           "Failed to onboard you. Please try again later or contact support.",
@@ -29,6 +32,7 @@ export default function Page() {
       }
     },
     onError: (e) => {
+      setSignupComplete(false);
       const errorMessage = e.data?.zodError?.fieldErrors.content;
       if (errorMessage && errorMessage[0]) {
         MeniNotification("Error", errorMessage[0], "error");
@@ -71,6 +75,7 @@ export default function Page() {
     ) {
       return;
     }
+    setSignupComplete(true);
     const body = {
       firstName: form.firstName,
       lastName: form.lastName,
@@ -88,7 +93,7 @@ export default function Page() {
     }
   }, [isLoaded, isSignedIn, user]);
 
-  if (!isLoaded || isLoading) return <LoadingPage />;
+  if (!isLoaded || isLoading || signupComplete) return <LoadingPage />;
 
   return isLoaded && !user && !isSignedIn ? (
     <>

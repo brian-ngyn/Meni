@@ -34,7 +34,7 @@ export default function Dashboard() {
 
   const {
     data: menus,
-    refetch: fetchMenus,
+    refetch: fetchMenusBrief,
     isLoading: isLoadingMenus,
   } = api.getters.getMenusBrief.useQuery(
     { clerkId: accountInfo?.clerkId || "" },
@@ -43,7 +43,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (!menus && accountInfo?.clerkId) {
-      void fetchMenus();
+      void fetchMenusBrief();
     } else {
       menus?.forEach((menu: IMenuBrief) => {
         if (menu.id === restaurantInfo?.activeMenuId) {
@@ -51,7 +51,12 @@ export default function Dashboard() {
         }
       });
     }
-  }, [accountInfo?.clerkId, fetchMenus, menus, restaurantInfo?.activeMenuId]);
+  }, [
+    accountInfo?.clerkId,
+    fetchMenusBrief,
+    menus,
+    restaurantInfo?.activeMenuId,
+  ]);
 
   const [newForm, setNewForm] = useState({
     firstName: "",
@@ -218,7 +223,7 @@ export default function Dashboard() {
             activeMenu={activeMenu}
             menus={menus}
             restaurantId={restaurantInfo?.id || ""}
-            getRestaurantMenus={() => fetchMenus()}
+            getRestaurantMenus={() => fetchMenusBrief()}
             currentPlan={accountInfo?.currentPlan || ""}
           />
         ) : (

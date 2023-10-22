@@ -14,7 +14,7 @@ export type IFoodCardProps = {
   id: string;
   title: string;
   description: string;
-  price: number;
+  price: string;
   image: string;
   tags: string[];
 };
