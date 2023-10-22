@@ -1,13 +1,14 @@
 import Image from "next/image";
+import { createRef, useState } from "react";
 import ScrollContainer from "react-indiana-drag-scroll";
 
 import DeleteIcon from "@mui/icons-material/Delete";
-import FileUploadIcon from "@mui/icons-material/FileUpload";
 
 import MeniGlobals from "~/MeniGlobals";
 import { useEditableMenu } from "~/context/EditableMenuContext";
 
 import EditableText from "~/components/EditMenu/EditableText";
+import { ImageUploader } from "~/components/uploader";
 
 export type IFoodCardProps = {
   id: string;
@@ -21,29 +22,11 @@ export type IFoodCardProps = {
 export default function FoodCard(props: IFoodCardProps) {
   const { id, title, description, price, image, tags } = props;
   const { updateField, deleteFoodItem } = useEditableMenu();
+  const [isUploading, setIsUploading] = useState<boolean>(false);
 
-  // const uploady = useUploady();
-
-  const itemPostUpload = (batch: any) => {
-    return;
-    // if (batch.uploadStatus == 200) {
-    //   updateField(id, batch.uploadResponse.data.url, "image");
-    // }
+  const triggerInput = () => {
+    document.getElementById(id)?.click();
   };
-
-  const uploadImage = () => {
-    return;
-    // uploady.showFileUpload();
-    // uploady.on(UPLOADER_EVENTS.ITEM_FINISH, itemPostUpload);
-  };
-
-  // useItemErrorListener((item) => {
-  //   console.error(
-  //     `item ${item.id} finished uploading, response was: `,
-  //     item.uploadResponse,
-  //     item.uploadStatus,
-  //   );
-  // });
 
   return (
     <div className="group relative flex aspect-square w-full flex-col bg-card sm:aspect-[3/1] sm:flex-row md:aspect-[20/5] lg:aspect-[25/10] xl:aspect-[25/10]">
@@ -55,15 +38,24 @@ export default function FoodCard(props: IFoodCardProps) {
       </div>
       <div
         className="relative aspect-square flex-none hover:cursor-pointer sm:w-48 lg:w-48"
-        onClick={() => uploadImage()}
+        onClick={() => {
+          if (image !== "") triggerInput();
+        }}
       >
-        <div className="flex h-full w-full items-center justify-center ">
-          <FileUploadIcon fontSize="large" className="m-auto w-10" />
+        <div className="flex h-full w-full items-center justify-center">
+          <ImageUploader
+            updateField={updateField}
+            foodItemId={id}
+            isUploading={isUploading}
+            setIsUploading={setIsUploading}
+          />
         </div>
         {image !== "" ? (
           <Image
             src={MeniGlobals().cdnRoot + image}
-            className="object-cover hover:opacity-25"
+            className={`object-cover hover:opacity-25 ${
+              isUploading ? "opacity-25" : ""
+            }`}
             fill={true}
             alt="Food Item Image"
           />
@@ -72,7 +64,11 @@ export default function FoodCard(props: IFoodCardProps) {
       <div className="flex w-full flex-col justify-between overflow-hidden break-words px-4 py-2 sm:h-full">
         <div className="flex w-full flex-1 grow flex-col gap-1 overflow-hidden">
           <div className="flex-none">
-            <EditableText id={id} field="name" textClass="text-lg">
+            <EditableText
+              id={id}
+              field="name"
+              textClass="text-lg cursor-pointer"
+            >
               {title}
             </EditableText>
           </div>
@@ -80,7 +76,7 @@ export default function FoodCard(props: IFoodCardProps) {
             <EditableText
               id={id}
               field="description"
-              textClass="text-sm font-thin"
+              textClass="text-sm font-thin cursor-pointer"
             >
               {description}
             </EditableText>
@@ -103,11 +99,11 @@ export default function FoodCard(props: IFoodCardProps) {
             <div className="flex justify-end">
               <div className="flex w-full flex-row items-center justify-end">
                 <div>$</div>
-                <div className="">
+                <div>
                   <EditableText
                     id={id}
                     field="price"
-                    textClass="text-sm truncate w-full"
+                    textClass="text-sm truncate cursor-pointer"
                   >
                     {price}
                   </EditableText>

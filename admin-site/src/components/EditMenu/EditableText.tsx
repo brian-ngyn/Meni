@@ -57,7 +57,7 @@ export default function EditableText(props: IEditableTextProps) {
   }, []);
 
   return (
-    <div className="flex w-full">
+    <div className="flex w-full items-center">
       {editableMenuState.editingId === fieldIdentifier ? (
         <>
           {tags !== undefined ? (
@@ -80,11 +80,11 @@ export default function EditableText(props: IEditableTextProps) {
           )}
           <div className="ml-1 grid">
             <CheckIcon
-              className={textClass + "h-full w-full"}
+              className={textClass + "h-full w-full cursor-pointer"}
               onClick={() => setCurrentEditId("")}
             />
             <ClearIcon
-              className={textClass + "h-full w-full"}
+              className={textClass + "h-full w-full cursor-pointer"}
               onClick={() => undoChanges()}
             />
           </div>
@@ -100,16 +100,25 @@ export default function EditableText(props: IEditableTextProps) {
                       key={id}
                       label={item}
                       variant="filled"
-                      sx={{ backgroundColor: "#505050", color: "#F7F7F7" }}
+                      sx={{
+                        cursor: "pointer",
+                        backgroundColor: "#505050",
+                        color: "#F7F7F7",
+                      }}
                     />
                   ))}
                 </Stack>
               ) : (
                 <Chip
                   key={id}
+                  className="cursor-pointer"
                   label="Add Tags"
                   variant="filled"
-                  sx={{ backgroundColor: "#505050", color: "#F7F7F7" }}
+                  sx={{
+                    cursor: "pointer",
+                    backgroundColor: "#505050",
+                    color: "#F7F7F7",
+                  }}
                 />
               )}
             </div>

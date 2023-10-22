@@ -210,9 +210,9 @@ export default function EditContainer(props: EditContainerProps) {
                                       description={item.description}
                                       price={item.price}
                                       image={
-                                        item.image
+                                        item.image === ""
                                           ? "97505de7-0cf3-4849-ba07-2d4e9630580e-f1lhsm.jpg"
-                                          : ""
+                                          : item.image
                                       }
                                       tags={item.tags}
                                       isTable={tableMode}

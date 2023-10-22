@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import { type Menus } from "@prisma/client";
 
-import { defaultStarterMenu } from "~/MeniGlobals";
+import { defaultStarterMenu } from "~/constants/types";
 
 import MeniNotification from "~/components/items/MeniNotification";
 

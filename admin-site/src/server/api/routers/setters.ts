@@ -178,6 +178,7 @@ export const settersRouter = createTRPCRouter({
       return {
         success: "true",
         message: "Menu created successfully",
+        menuId: input.newMenu.id,
       };
     }),
 

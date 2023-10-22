@@ -66,19 +66,6 @@ export default function EditContainer(props: EditContainerProps) {
     { enabled: false },
   );
 
-  useEffect(() => {
-    if (user && menuId !== "new") {
-      void fetchMenuForContext();
-    }
-  }, [fetchMenuForContext, menuId, user]);
-
-  useEffect(() => {
-    if (menuForContext && initialLoad) {
-      loadFromAPI(menuForContext);
-      setInitialLoad(false);
-    }
-  }, [initialLoad, loadFromAPI, menuForContext]);
-
   const { mutate: createMenu } = api.setters.createMenu.useMutation({
     onSuccess: (a) => {
       if (a.success) {
@@ -89,6 +76,7 @@ export default function EditContainer(props: EditContainerProps) {
         );
         void refetchAccountInfo();
         void refetchRestaurantInfo();
+        void router.push("/edit/" + a.menuId);
       } else {
         MeniNotification(
           "Error",
@@ -143,36 +131,6 @@ export default function EditContainer(props: EditContainerProps) {
     },
   });
 
-  useEffect(() => {
-    if (user) {
-      void fetchRestaurantInfo();
-    }
-  }, [fetchRestaurantInfo, user]);
-
-  // create new Menu
-  useEffect(() => {
-    const createNewMenu = () => {
-      if (router.query.restaurantId) {
-        setStartGuide(true);
-        loadNewTemplate(router.query.restaurantId as string);
-      }
-    };
-
-    if (menuId && initialLoad && editableMenuState.mode === EditMode.CREATE) {
-      if (menuId === "new") {
-        createNewMenu();
-      }
-      setInitialLoad(false);
-    }
-  }, [
-    menuId,
-    router,
-    setMenuLoading,
-    loadNewTemplate,
-    initialLoad,
-    editableMenuState.mode,
-  ]);
-
   // Save/Create
   const saveMenu = () => {
     if (user) {
@@ -201,6 +159,49 @@ export default function EditContainer(props: EditContainerProps) {
   const openCategoryForEdit = (categoryId: string) => {
     setCurrentEditId(categoryId);
   };
+
+  useEffect(() => {
+    if (user) {
+      void fetchRestaurantInfo();
+    }
+  }, [fetchRestaurantInfo, user]);
+
+  useEffect(() => {
+    if (user && menuId !== "new") {
+      void fetchMenuForContext();
+    }
+  }, [fetchMenuForContext, menuId, user]);
+
+  useEffect(() => {
+    if (menuForContext && initialLoad) {
+      loadFromAPI(menuForContext);
+      setInitialLoad(false);
+    }
+  }, [initialLoad, loadFromAPI, menuForContext]);
+
+  // create new Menu
+  useEffect(() => {
+    const createNewMenu = () => {
+      if (router.query.restaurantId) {
+        setStartGuide(true);
+        loadNewTemplate(router.query.restaurantId as string);
+      }
+    };
+
+    if (menuId && initialLoad) {
+      if (menuId === "new") {
+        createNewMenu();
+      }
+      setInitialLoad(false);
+    }
+  }, [
+    menuId,
+    router,
+    setMenuLoading,
+    loadNewTemplate,
+    initialLoad,
+    editableMenuState.mode,
+  ]);
 
   const renderSaveBar = () => {
     return (
@@ -280,7 +281,12 @@ export default function EditContainer(props: EditContainerProps) {
     );
   };
 
-  if (isLoading || isFetchMenuLoading) return <LoadingPage />;
+  if (
+    isLoading ||
+    (isFetchMenuLoading && menuId !== "new") ||
+    editableMenuState.loading
+  )
+    return <LoadingPage />;
 
   return !editableMenuState.loading ? (
     <>
@@ -348,7 +354,7 @@ export default function EditContainer(props: EditContainerProps) {
                       >
                         <EditableText
                           id={category.id}
-                          textClass="font-serif text-5xl"
+                          textClass="font-serif text-5xl cursor-pointer"
                         >
                           {category.name}
                         </EditableText>
@@ -359,7 +365,7 @@ export default function EditContainer(props: EditContainerProps) {
                                 <div className="group relative flex w-fit items-center gap-4">
                                   <EditableText
                                     id={subCategory.id}
-                                    textClass="text-2xl font-medium font-sans"
+                                    textClass="text-2xl font-medium font-sans cursor-pointer"
                                   >
                                     {subCategory.name}
                                   </EditableText>
