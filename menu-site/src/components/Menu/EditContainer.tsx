@@ -50,6 +50,14 @@ export default function EditContainer(props: EditContainerProps) {
   const [currentImage, setCurrentImage] = useState<string>("");
 
   useEffect(() => {
+    if (menu) {
+      setCurrentImage(
+        menu?.mainCategories[0]?.subCategories[0]?.items[0]?.image || "",
+      );
+    }
+  }, [menu]);
+
+  useEffect(() => {
     if (!isLoadingMenu && !isLoadingRestaurant) {
       window.scroll(0, 0);
     }
@@ -144,14 +152,16 @@ export default function EditContainer(props: EditContainerProps) {
           <div className="relative">
             <div className="absolute left-0 top-0 z-40 h-full w-full bg-gradient-to-t from-backdrop via-transparent to-transparent "></div>
             <div className="h-56 w-full">
-              <Image
-                src={MeniGlobals().cdnRoot + currentImage}
-                alt={"Current Food Image"}
-                width="1000"
-                height="1000"
-                className="z-30 h-full w-full "
-                style={{ objectFit: "cover" }}
-              />
+              {currentImage !== "" && (
+                <Image
+                  src={MeniGlobals().cdnRoot + currentImage}
+                  alt={"Current Food Image"}
+                  width="1000"
+                  height="1000"
+                  className="z-30 h-full w-full "
+                  style={{ objectFit: "cover" }}
+                />
+              )}
             </div>
           </div>
         </div>
