@@ -101,7 +101,7 @@ const RestaurantInfo: React.FunctionComponent<RestaurantInfoProps> = (
         />
         <div
           className={`${
-            initial ? "col-span-3 h-48" : "col-span-2"
+            initial ? "h-48 md:col-span-3" : "md:col-span-2"
           } relative grid`}
         >
           <textarea

@@ -16,7 +16,7 @@ const PersonalInfo: React.FunctionComponent<PersonalInfoProps> = (props) => {
   return (
     <div className="font-sans" id="edit-personal-section">
       <h1 className="my-6 text-2xl">Personal Information</h1>
-      <div className="grid grid-cols-1 grid-rows-2 gap-10 md:grid-cols-2 md:grid-rows-1">
+      <div className="grid grid-cols-1 grid-rows-2 gap-3 md:grid-cols-2 md:grid-rows-1 lg:gap-10">
         <MeniTextInput
           id="firstName"
           name="firstName"
