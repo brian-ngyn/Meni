@@ -73,7 +73,10 @@ export default function EditContainer(props: EditContainerProps) {
         );
         void refetchAccountInfo();
         void refetchRestaurantInfo();
-        void router.push("/edit/" + a.menuId);
+        // wait a bit so they get to see the notification lol
+        setTimeout(() => {
+          window.location.href = "/edit/" + a.menuId;
+        }, 1500);
       } else {
         MeniNotification(
           "Error",

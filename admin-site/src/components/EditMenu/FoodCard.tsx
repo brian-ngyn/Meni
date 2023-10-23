@@ -82,9 +82,9 @@ export default function FoodCard(props: IFoodCardProps) {
             </EditableText>
           </div>
         </div>
-        <div className="mt-2 flex items-center justify-between">
+        <div className="flex items-center justify-between">
           <ScrollContainer
-            className="mt-1 box-content flex h-fit flex-auto shrink-0 grow-0 flex-nowrap items-center justify-between overflow-x-auto overflow-y-hidden py-1"
+            className="box-content flex h-fit flex-auto grow flex-nowrap items-center justify-between overflow-x-auto overflow-y-hidden py-1"
             vertical={false}
           >
             <EditableText
@@ -95,21 +95,15 @@ export default function FoodCard(props: IFoodCardProps) {
             />
           </ScrollContainer>
 
-          <div className="flex-auto">
-            <div className="flex justify-end">
-              <div className="flex w-full flex-row items-center justify-end">
-                <div>$</div>
-                <div>
-                  <EditableText
-                    id={id}
-                    field="price"
-                    textClass="text-sm truncate cursor-pointer"
-                  >
-                    {price}
-                  </EditableText>
-                </div>
-              </div>
-            </div>
+          <div className="flex w-24 flex-row items-center justify-end">
+            <div>$</div>
+            <EditableText
+              id={id}
+              field="price"
+              textClass="text-sm truncate cursor-pointer"
+            >
+              {price}
+            </EditableText>
           </div>
         </div>
       </div>

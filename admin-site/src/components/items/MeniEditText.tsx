@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 
 type MeniEditTextProps = {
   onChange: (e: any) => void;
-  onBlur?: () => void;
+  onBlur?: (e: any) => void;
   autoFocus?: boolean;
   type?: string;
   name?: string;

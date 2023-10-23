@@ -286,9 +286,9 @@ export function EditableMenuContextProvider({ children }: Props) {
     }
   }, [editableMenuState.mode]);
 
-  useEffect(() => {
-    console.log(editableMenuState.menu);
-  }, [editableMenuState.menu]);
+  // useEffect(() => {
+  //   console.log(editableMenuState.menu);
+  // }, [editableMenuState.menu]);
 
   const addTag = (values: string[]) => {
     const newTags = editableMenuState.menu.tags;

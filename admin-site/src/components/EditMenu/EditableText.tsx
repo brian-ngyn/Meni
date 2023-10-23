@@ -19,6 +19,7 @@ type IEditableTextProps = {
 
 export default function EditableText(props: IEditableTextProps) {
   const { children, textClass, id, field, tags } = props;
+  const [value, setValue] = useState<typeof children>(children);
   const { editableMenuState, updateField, addTag, setCurrentEditId } =
     useEditableMenu();
   const fieldIdentifier = field !== undefined ? id + field : id;
@@ -29,8 +30,32 @@ export default function EditableText(props: IEditableTextProps) {
     updateField(id, values, field);
   };
   const updateItem = (text: string | number | string[]) => {
+    setValue(text);
     updateField(id, text, field);
   };
+  const validate = (text: string) => {
+    if (field === "price") {
+      const input = text.trim();
+      if (input === "" || /[a-zA-Z]/.test(input)) {
+        updateItem("0.00");
+        updateField(id, "0.00", field);
+        setCurrentEditId("");
+        return;
+      }
+      const num = parseFloat(input);
+      if (isNaN(num)) {
+        updateItem("0.00");
+        updateField(id, "0.00", field);
+        setCurrentEditId("");
+        return;
+      }
+      const formattedMoney = num.toFixed(2);
+      updateItem(formattedMoney);
+      updateField(id, formattedMoney, field);
+    }
+    setCurrentEditId("");
+  };
+
   const openForEdit = () => {
     setPrevValue(children);
     setCurrentEditId(fieldIdentifier);
@@ -73,8 +98,10 @@ export default function EditableText(props: IEditableTextProps) {
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 updateItem(e.target.value)
               }
-              onBlur={() => undoChanges()}
-              value={children as string | number}
+              onBlur={(e: React.ChangeEvent<HTMLInputElement>) =>
+                validate(e.target.value)
+              }
+              value={value as string | number}
               multiline={field === "description"}
             />
           )}
@@ -124,7 +151,7 @@ export default function EditableText(props: IEditableTextProps) {
             </div>
           ) : (
             <p className={textClass} onClick={openForEdit}>
-              {children === "" ? "Add " + field : children}
+              {value === "" ? "Add " + field : value}
             </p>
           )}
         </div>
