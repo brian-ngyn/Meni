@@ -60,7 +60,7 @@ export function FoodCard(props: IFoodCardProps) {
   return (
     <div
       ref={myRef}
-      className={`group relative flex flex-col sm:flex-row ${
+      className={`group relative flex flex-col rounded sm:flex-row ${
         currentImage === image && isTable ? "bg-[#656565]" : "bg-card"
       } ${
         !isTable ? "aspect-square" : null
@@ -72,7 +72,7 @@ export function FoodCard(props: IFoodCardProps) {
           {image !== "" ? (
             <Image
               src={MeniGlobals().cdnRoot + image}
-              className="object-cover"
+              className="rounded object-cover"
               fill={true}
               alt="Food Item Image"
             />
@@ -94,7 +94,7 @@ export function FoodCard(props: IFoodCardProps) {
         </div>
         <div className="mt-2 flex items-center justify-between">
           <ScrollContainer
-            className="mt-1 box-content flex h-fit flex-none shrink-0 grow-0 flex-nowrap items-center justify-between overflow-x-auto overflow-y-hidden py-1"
+            className="mt-1 box-content flex h-fit flex-none shrink-0 grow flex-nowrap items-center justify-between overflow-x-auto overflow-y-hidden py-1"
             vertical={false}
           >
             <MeniText
@@ -104,13 +104,11 @@ export function FoodCard(props: IFoodCardProps) {
               tags={tags}
             />
           </ScrollContainer>
-          <div className="w-20">
-            <div className="flex flex-row items-center justify-center">
-              <div>$</div>
-              <MeniText id={id} field="price" textClass="text-lg">
-                {price}
-              </MeniText>
-            </div>
+          <div className="flex w-16 flex-row items-center justify-center">
+            <div>$</div>
+            <MeniText id={id} field="price" textClass="text-lg">
+              {price}
+            </MeniText>
           </div>
         </div>
       </div>
