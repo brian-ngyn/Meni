@@ -29,7 +29,7 @@ export default function FoodCard(props: IFoodCardProps) {
   };
 
   return (
-    <div className="group relative flex aspect-square w-full flex-col bg-card sm:aspect-[3/1] sm:flex-row md:aspect-[20/5] lg:aspect-[25/10] xl:aspect-[25/10]">
+    <div className="group relative flex aspect-square w-full flex-col rounded bg-card sm:aspect-[3/1] sm:flex-row md:aspect-[20/5] lg:aspect-[25/10] xl:aspect-[25/10]">
       <div className="absolute left-2 top-2 z-10 hidden rounded-full bg-accent p-1 hover:cursor-pointer group-hover:block">
         <DeleteIcon
           sx={{ color: "#f7f7f7" }}
@@ -53,7 +53,7 @@ export default function FoodCard(props: IFoodCardProps) {
         {image !== "" ? (
           <Image
             src={MeniGlobals().cdnRoot + image}
-            className={`object-cover hover:opacity-25 ${
+            className={`rounded-l object-cover hover:opacity-25 ${
               isUploading ? "opacity-25" : ""
             }`}
             fill={true}

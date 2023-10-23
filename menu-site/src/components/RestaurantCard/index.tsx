@@ -32,7 +32,7 @@ export default function RestaurantCard({
           alt="resto"
           src={MeniGlobals().cdnRoot + restaurantInfo.image}
           fill={true}
-          className="rounded object-cover"
+          className="rounded-t object-cover"
         />
       </div>
       <div className="mb-6 flex w-full flex-col justify-evenly gap-1 px-4">

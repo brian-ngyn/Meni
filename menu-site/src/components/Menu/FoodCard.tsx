@@ -72,7 +72,7 @@ export function FoodCard(props: IFoodCardProps) {
           {image !== "" ? (
             <Image
               src={MeniGlobals().cdnRoot + image}
-              className="rounded object-cover"
+              className="rounded-l object-cover"
               fill={true}
               alt="Food Item Image"
             />
