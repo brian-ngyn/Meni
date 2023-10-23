@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { clerkClient } from "@clerk/nextjs";
+import { type Menus } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 
 import { createTRPCRouter, privateProcedure } from "~/server/api/trpc";
@@ -169,9 +170,44 @@ export const settersRouter = createTRPCRouter({
         });
       }
 
+      const parsedPrices: Menus = {
+        ...input.newMenu,
+        mainCategories: input.newMenu.mainCategories.map((item) => {
+          const subCategories = item.subCategories.map((subItem) => {
+            const menuItems = subItem.items.map((menuItem) => {
+              const inputPrice = menuItem.price.trim();
+              let parsedPrice: string;
+              if (inputPrice === "" || /[a-zA-Z]/.test(inputPrice)) {
+                parsedPrice = "0.00";
+              } else {
+                const num = parseFloat(inputPrice);
+                if (isNaN(num)) {
+                  parsedPrice = "0.00";
+                } else {
+                  parsedPrice = num.toFixed(2);
+                }
+              }
+              console.log(parsedPrice);
+              return {
+                ...menuItem,
+                price: parsedPrice,
+              };
+            });
+            return {
+              ...subItem,
+              items: menuItems,
+            };
+          });
+          return {
+            ...item,
+            subCategories: subCategories,
+          };
+        }),
+      };
+
       await ctx.db.menus.create({
         data: {
-          ...input.newMenu,
+          ...parsedPrices,
         },
       });
 
@@ -250,7 +286,42 @@ export const settersRouter = createTRPCRouter({
         });
       }
 
-      const menuWithoutId = { ...input.updatedMenu, id: undefined };
+      const parsedPrices: Menus = {
+        ...input.updatedMenu,
+        mainCategories: input.updatedMenu.mainCategories.map((item) => {
+          const subCategories = item.subCategories.map((subItem) => {
+            const menuItems = subItem.items.map((menuItem) => {
+              const inputPrice = menuItem.price.trim();
+              let parsedPrice: string;
+              if (inputPrice === "" || /[a-zA-Z]/.test(inputPrice)) {
+                parsedPrice = "0.00";
+              } else {
+                const num = parseFloat(inputPrice);
+                if (isNaN(num)) {
+                  parsedPrice = "0.00";
+                } else {
+                  parsedPrice = num.toFixed(2);
+                }
+              }
+              console.log(parsedPrice);
+              return {
+                ...menuItem,
+                price: parsedPrice,
+              };
+            });
+            return {
+              ...subItem,
+              items: menuItems,
+            };
+          });
+          return {
+            ...item,
+            subCategories: subCategories,
+          };
+        }),
+      };
+
+      const menuWithoutId = { ...parsedPrices, id: undefined };
       await ctx.db.menus.update({
         where: {
           id: input.updatedMenu.id,
