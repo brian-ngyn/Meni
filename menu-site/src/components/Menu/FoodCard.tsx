@@ -75,6 +75,7 @@ export function FoodCard(props: IFoodCardProps) {
               className="rounded-l object-cover"
               fill={true}
               alt="Food Item Image"
+              priority
             />
           ) : null}
         </div>

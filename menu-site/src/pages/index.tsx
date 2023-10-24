@@ -144,6 +144,7 @@ export default function Home() {
                 height="200"
                 src="/Explore/rhombus.svg"
                 alt="rhombus"
+                priority
               />
             </div>
             {searchedRestaurants &&
