@@ -18,7 +18,11 @@ export default function Navbar(props: NavbarProps) {
 
   return (
     isLoaded && (
-      <div className="sticky top-0 z-40 hidden h-16 min-w-full bg-backdrop md:block lg:block">
+      <div
+        className={`sticky top-0 z-40 ${
+          props.hidden ? "hidden" : ""
+        } h-16 min-w-full bg-backdrop md:block lg:block`}
+      >
         <div className="min-h-full min-w-full border-b-[1px] border-[#353535] bg-backdrop px-12 py-2 md:px-28">
           <div className="flex flex-row items-center justify-between">
             <Link href="/">
