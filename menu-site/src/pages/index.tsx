@@ -11,7 +11,9 @@ import { api } from "~/utils/api";
 
 import { LoadingPage } from "~/components/LoadingPage";
 import Navbar from "~/components/Navbar";
-import RestaurantCard from "~/components/RestaurantCard";
+import RestaurantCard, {
+  RestaurantCardSkeleton,
+} from "~/components/RestaurantCard";
 
 const HEADER = "text-3xl md:text-5xl mb-5 font-serif";
 const GRID_CONTAINER =
@@ -30,14 +32,27 @@ export default function Home() {
     flag: false,
   });
 
-  const { data: featuredRestaurants, isLoading } =
+  const [isUserLocationEnabled, setIsUserLocationEnabled] = useState(true);
+
+  const { data: featuredRestaurants, isLoading: isFeaturedRestaurantsLoading } =
     api.home.getFeaturedRestaurants.useQuery();
-  const { data: localRestaurants, refetch: refetchLocalRestaurants } =
-    api.home.getLocalRestaurants.useQuery(coordinates, { enabled: false });
+  const {
+    data: localRestaurants,
+    refetch: refetchLocalRestaurants,
+    isLoading: isLocalRestaurantsLoading,
+  } = api.home.getLocalRestaurants.useQuery(coordinates, { enabled: false });
   const { data: searchedRestaurants, refetch: refetchSearchedRestaurants } =
     api.home.search.useQuery(search.searchString, {
       enabled: false,
     });
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (isLocalRestaurantsLoading) {
+        setIsUserLocationEnabled(false);
+      }
+    }, 5000);
+  });
 
   useEffect(() => {
     if (coordinates.latitude !== -1 && coordinates.longitude !== -1) {
@@ -89,7 +104,7 @@ export default function Home() {
 
   return (
     <>
-      {isLoading ? (
+      {isFeaturedRestaurantsLoading ? (
         <LoadingPage />
       ) : (
         <>
@@ -177,29 +192,46 @@ export default function Home() {
                     })}
                   </div>
                 </div>
-                <div className="mb-8">
-                  <h2 className={HEADER}>Restaurants Near You</h2>
-                  <div className="flex">
-                    <div className="flex flex-wrap justify-center gap-10 pb-10 md:justify-start">
-                      {localRestaurants?.map((data, index) => {
-                        return (
-                          <div
-                            key={index}
-                            className="h-[375px] w-[320px] md:h-[325px] md:w-[275px]"
-                          >
-                            <RestaurantCard
-                              restaurantInfo={{
-                                ...data,
-                              }}
-                              distance={data.distance / 1000}
-                              key={index}
-                            />
-                          </div>
-                        );
-                      })}
+                {isLocalRestaurantsLoading && isUserLocationEnabled && (
+                  <div className="mb-8">
+                    <h2 className={HEADER}>Restaurants Near You</h2>
+                    <div className="flex">
+                      <div className="flex flex-wrap justify-center gap-10 pb-10 md:justify-start">
+                        <RestaurantCardSkeleton />
+                        <RestaurantCardSkeleton />
+                        <RestaurantCardSkeleton />
+                        <RestaurantCardSkeleton />
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
+                {!isLocalRestaurantsLoading &&
+                  localRestaurants &&
+                  localRestaurants.length > 0 && (
+                    <div className="mb-8">
+                      <h2 className={HEADER}>Restaurants Near You</h2>
+                      <div className="flex">
+                        <div className="flex flex-wrap justify-center gap-10 pb-10 md:justify-start">
+                          {localRestaurants?.map((data, index) => {
+                            return (
+                              <div
+                                key={index}
+                                className="h-[375px] w-[320px] md:h-[325px] md:w-[275px]"
+                              >
+                                <RestaurantCard
+                                  restaurantInfo={{
+                                    ...data,
+                                  }}
+                                  distance={data.distance / 1000}
+                                  key={index}
+                                />
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  )}
               </>
             )}
           </div>
