@@ -23,7 +23,7 @@ export default function Navbar(props: NavbarProps) {
           props.hidden ? "hidden" : ""
         } h-16 min-w-full bg-backdrop md:block lg:block`}
       >
-        <div className="min-h-full min-w-full border-b-[1px] border-[#353535] bg-backdrop px-12 py-2 md:px-28">
+        <div className="min-h-full min-w-full border-b-[1px] border-[#353535] bg-backdrop px-4 py-2 md:px-28">
           <div className="flex flex-row items-center justify-between">
             <Link href="/">
               <IconButton
@@ -48,15 +48,17 @@ export default function Navbar(props: NavbarProps) {
                       </MeniButton>
                     </div>
                   ) : (
-                    <div className="flex flex-row items-center gap-10">
+                    <div className="flex flex-row items-center gap-6 md:gap-10">
                       <Link href="/login">
                         <div className="relative font-sans text-lg before:absolute before:bottom-0 before:left-0 before:h-0.5 before:w-full before:origin-right before:scale-x-0 before:bg-[#545454] before:transition-transform before:duration-500 hover:before:origin-left hover:before:scale-x-100">
                           Login
                         </div>
                       </Link>
-                      <MeniButton link="/register" rounded>
-                        Join Now
-                      </MeniButton>
+                      <Link href="/register">
+                        <div className="relative font-sans text-lg before:absolute before:bottom-0 before:left-0 before:h-0.5 before:w-full before:origin-right before:scale-x-0 before:bg-[#545454] before:transition-transform before:duration-500 hover:before:origin-left hover:before:scale-x-100">
+                          Join Now
+                        </div>
+                      </Link>
                     </div>
                   )}
                 </>

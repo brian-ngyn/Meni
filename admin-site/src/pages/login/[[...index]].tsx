@@ -40,8 +40,8 @@ export default function Page() {
         <div className="font-sans">
           <div className="pt-14" />
           <div className="min-w-screen flex justify-center">
-            <div className="flex min-w-full justify-center space-x-16 py-[20%] pr-[15%] md:py-[7%] md:pl-[15%] md:pr-[17%] lg:py-[7%]">
-              <div className="hidden w-1/2 md:block lg:block">
+            <div className="mt-24 flex justify-evenly">
+              <div className="mx-8 hidden w-1/2 md:block lg:block">
                 <motion.div
                   initial={{ x: -200, position: "relative", y: 0, opacity: 0 }}
                   animate={{ x: 0, position: "relative", y: 0, opacity: 1 }}
