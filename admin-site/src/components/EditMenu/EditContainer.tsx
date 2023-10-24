@@ -206,7 +206,7 @@ export default function EditContainer(props: EditContainerProps) {
   const renderSaveBar = () => {
     return (
       <div className="fixed top-0 z-30 flex w-full justify-between gap-24 bg-card/50 px-10 py-5 backdrop-blur-lg xs:gap-2 md:gap-16">
-        <div className="flex items-center gap-4 font-serif text-xl">
+        <div className="flex items-center gap-4 font-sans text-xl font-semibold">
           <ArrowBackIosIcon
             className="cursor-pointer"
             onClick={() => (window.location.href = "/dashboard")} // very bad workaround
