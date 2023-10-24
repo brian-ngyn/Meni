@@ -38,7 +38,7 @@ export function defaultStarterMenu(restaurantId: string): Menus {
               {
                 id: uuidv4(),
                 name: "Food Item",
-                price: "0",
+                price: "0.00",
                 description: "",
                 image: "fd347148-f0ae-4fe1-bcd0-81eacaf60bdb-jedoig.png",
                 tags: ["Gluten Free", "Vegan"],
@@ -52,7 +52,7 @@ export function defaultStarterMenu(restaurantId: string): Menus {
               {
                 id: uuidv4(),
                 name: "Food Item",
-                price: "0",
+                price: "0.00",
                 description: "",
                 image: "fd347148-f0ae-4fe1-bcd0-81eacaf60bdb-jedoig.png",
                 tags: [],
@@ -72,7 +72,7 @@ export function defaultStarterMenu(restaurantId: string): Menus {
               {
                 id: uuidv4(),
                 name: "Food Item",
-                price: "0",
+                price: "0.00",
                 description: "",
                 image: "fd347148-f0ae-4fe1-bcd0-81eacaf60bdb-jedoig.png",
                 tags: [],
@@ -86,7 +86,7 @@ export function defaultStarterMenu(restaurantId: string): Menus {
               {
                 id: uuidv4(),
                 name: "Food Item",
-                price: "0",
+                price: "0.00",
                 description: "",
                 image: "fd347148-f0ae-4fe1-bcd0-81eacaf60bdb-jedoig.png",
                 tags: [],
@@ -106,7 +106,7 @@ export function defaultStarterMenu(restaurantId: string): Menus {
               {
                 id: uuidv4(),
                 name: "Food Item",
-                price: "0",
+                price: "0.00",
                 description: "",
                 image: "fd347148-f0ae-4fe1-bcd0-81eacaf60bdb-jedoig.png",
                 tags: [],
@@ -120,7 +120,7 @@ export function defaultStarterMenu(restaurantId: string): Menus {
               {
                 id: uuidv4(),
                 name: "Food Item",
-                price: "0",
+                price: "0.00",
                 description: "",
                 image: "fd347148-f0ae-4fe1-bcd0-81eacaf60bdb-jedoig.png",
                 tags: [],
