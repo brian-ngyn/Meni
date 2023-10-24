@@ -30,6 +30,11 @@ export default function EditableText(props: IEditableTextProps) {
     updateField(id, values, field);
   };
   const updateItem = (text: string | number | string[]) => {
+    if (field === "price") {
+      if (/[a-zA-Z]/.test(text as string)) {
+        return;
+      }
+    }
     setValue(text);
     updateField(id, text, field);
   };
