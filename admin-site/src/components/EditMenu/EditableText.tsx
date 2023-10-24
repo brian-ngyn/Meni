@@ -20,13 +20,12 @@ type IEditableTextProps = {
 export default function EditableText(props: IEditableTextProps) {
   const { children, textClass, id, field, tags } = props;
   const [value, setValue] = useState<typeof children>(children);
-  const { editableMenuState, updateField, addTag, setCurrentEditId } =
+  const { editableMenuState, updateField, setCurrentEditId } =
     useEditableMenu();
   const fieldIdentifier = field !== undefined ? id + field : id;
   const [prevValue, setPrevValue] = useState<typeof children>(children);
 
   const updateItemTag = (event: any, values: string[]) => {
-    addTag(values);
     updateField(id, values, field);
   };
   const updateItem = (text: string | number | string[]) => {

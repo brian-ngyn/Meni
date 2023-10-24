@@ -42,7 +42,6 @@ interface IEditableMenuReturn {
     newValue: string | number | string[],
     field: string | undefined,
   ) => void;
-  addTag: (value: string[]) => void;
   loadFromAPI: (loadMenu: Menus) => void;
   addCategory: () => void;
   addSubCategory: (id: string) => void;
@@ -286,28 +285,24 @@ export function EditableMenuContextProvider({ children }: Props) {
     }
   }, [editableMenuState.mode]);
 
-  // useEffect(() => {
-  //   console.log(editableMenuState.menu);
-  // }, [editableMenuState.menu]);
-
-  const addTag = (values: string[]) => {
-    const newTags = editableMenuState.menu.tags;
-    newTags.push(...values);
-    const uniqueTags = [...new Set(newTags)];
-    setEditableMenuState({
-      ...editableMenuState,
-      menu: { ...editableMenuState.menu, tags: uniqueTags },
-    });
-  };
   const updateField = (
     id: string,
     newValue: string | number | string[],
     field: string | undefined,
   ) => {
+    let combinedTags = editableMenuState.menu.tags;
+    if (field === "tags" && Array.isArray(newValue)) {
+      const currentTags = editableMenuState.menu.tags;
+      const newTagsToInsert = newValue.filter(
+        (item) => !currentTags.includes(item),
+      );
+      combinedTags = [...currentTags, ...newTagsToInsert];
+    }
     setEditableMenuState({
       ...editableMenuState,
       menu: {
         ...editableMenuState.menu,
+        tags: combinedTags,
         mainCategories: [
           ...editableMenuState.menu.mainCategories.map((item) => {
             const subCategories = item.subCategories.map((subItem) => {
@@ -372,7 +367,6 @@ export function EditableMenuContextProvider({ children }: Props) {
         setCurrentEditId,
         updateField,
         loadNewTemplate,
-        addTag,
         loadFromAPI,
         addCategory,
         addSubCategory,
