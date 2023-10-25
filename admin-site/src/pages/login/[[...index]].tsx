@@ -37,53 +37,50 @@ export default function Page() {
         <Head>
           <title>Login | Meni</title>
         </Head>
-        <div className="font-sans">
-          <div className="pt-14" />
-          <div className="min-w-screen flex justify-center">
-            <div className="mt-24 flex justify-evenly">
-              <div className="mx-8 hidden w-1/2 md:block lg:block">
-                <motion.div
-                  initial={{ x: -200, position: "relative", y: 0, opacity: 0 }}
-                  animate={{ x: 0, position: "relative", y: 0, opacity: 1 }}
-                  transition={{
-                    x: { type: "spring", stiffness: 35, duration: 1.25 },
-                  }}
-                  className="flex min-h-full flex-col justify-center space-y-12"
-                >
-                  <div className="font-serif text-6xl">Welcome Back</div>
-                  <div className="flex flex-col text-lg">
-                    <div>{quote?.quote}</div>
-                    <div>--- {quote?.author}</div>
-                  </div>
-                </motion.div>
-              </div>
-
-              <div className="hidden h-full w-px bg-white md:block lg:block" />
-
-              <div className="w-full md:w-1/2 lg:w-1/2">
-                <div className="flex flex-col items-center">
-                  <div className="col-span-2 row-span-2 pb-10">
-                    <Link href="/">
-                      <Image
-                        onClick={() => {}}
-                        alt="logo"
-                        src="/landingPage/logo.svg"
-                        width="175"
-                        height="175"
-                      />
-                    </Link>
-                  </div>
-                  <SignIn
-                    path="/login"
-                    signUpUrl="/register"
-                    redirectUrl="/register"
-                    appearance={{
-                      variables: {
-                        colorPrimary: "#4D4D4F",
-                      },
-                    }}
-                  />
+        <div className="min-w-screen flex justify-center font-sans">
+          <div className="mt-8 flex justify-evenly md:mt-24">
+            <div className="mx-8 hidden w-1/2 md:block lg:block">
+              <motion.div
+                initial={{ x: -200, position: "relative", y: 0, opacity: 0 }}
+                animate={{ x: 0, position: "relative", y: 0, opacity: 1 }}
+                transition={{
+                  x: { type: "spring", stiffness: 35, duration: 1.25 },
+                }}
+                className="flex min-h-full flex-col justify-center space-y-12"
+              >
+                <div className="font-serif text-6xl">Welcome Back</div>
+                <div className="flex flex-col text-lg">
+                  <div>{quote?.quote}</div>
+                  <div>--- {quote?.author}</div>
                 </div>
+              </motion.div>
+            </div>
+
+            <div className="hidden h-full w-px bg-white md:block lg:block" />
+
+            <div className="w-full md:w-1/2 lg:w-1/2">
+              <div className="flex flex-col items-center">
+                <div className="col-span-2 row-span-2 pb-10">
+                  <Link href="/">
+                    <Image
+                      onClick={() => {}}
+                      alt="logo"
+                      src="/landingPage/logo.svg"
+                      width="175"
+                      height="175"
+                    />
+                  </Link>
+                </div>
+                <SignIn
+                  path="/login"
+                  signUpUrl="/register"
+                  redirectUrl="/register"
+                  appearance={{
+                    variables: {
+                      colorPrimary: "#4D4D4F",
+                    },
+                  }}
+                />
               </div>
             </div>
           </div>
