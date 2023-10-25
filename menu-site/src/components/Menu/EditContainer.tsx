@@ -110,7 +110,7 @@ export default function EditContainer(props: EditContainerProps) {
   const renderCategoryBar = () => (
     <div className="flex justify-center">
       <ScrollContainer
-        className={`sticky top-0 z-50 flex w-full gap-16 overflow-x-auto bg-backdrop py-2 align-middle text-xl font-thin`}
+        className={`sticky top-0 z-50 flex w-full gap-16 overflow-x-auto bg-backdrop py-3 align-middle text-xl font-thin`}
       >
         {menu?.mainCategories.map((category, index) => (
           <Link
