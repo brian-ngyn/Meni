@@ -19,12 +19,12 @@ export default function Navbar(props: NavbarProps) {
   return (
     isLoaded && (
       <div
-        className={`sticky top-0 z-40 ${
+        className={`sticky ${
           props.hidden ? "hidden" : ""
-        } h-16 min-w-full bg-backdrop md:block lg:block`}
+        } top-0 z-40 flex h-20 w-screen items-center border-b-[1px] border-[#353535] bg-backdrop px-4 font-thin md:block md:px-12 lg:px-24`}
       >
-        <div className="min-h-full min-w-full border-b-[1px] border-[#353535] bg-backdrop px-4 py-2 md:px-28">
-          <div className="flex flex-row items-center justify-between">
+        <div className="h-full w-full bg-backdrop">
+          <div className="flex h-full flex-row items-center justify-between">
             <Link href="/">
               <IconButton
                 disableRipple
@@ -33,8 +33,8 @@ export default function Navbar(props: NavbarProps) {
                 <Image
                   alt="logo"
                   src="/landingPage/logo.svg"
-                  width="90"
-                  height="90"
+                  width="70"
+                  height="70"
                 />
               </IconButton>
             </Link>

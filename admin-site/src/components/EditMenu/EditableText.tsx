@@ -155,7 +155,9 @@ export default function EditableText(props: IEditableTextProps) {
             </div>
           ) : (
             <p className={textClass} onClick={openForEdit}>
-              {value === "" ? "Add " + field : value}
+              {value === ""
+                ? "Add " + field?.charAt(0).toUpperCase() + field?.slice(1)
+                : value}
             </p>
           )}
         </div>
