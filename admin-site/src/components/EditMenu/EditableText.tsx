@@ -121,7 +121,7 @@ export default function EditableText(props: IEditableTextProps) {
           </div>
         </>
       ) : (
-        <div className="group inline-flex truncate border-2 border-dashed border-transparent p-1 hover:cursor-text hover:border-accent">
+        <div className="group inline-flex border-2 border-dashed border-transparent p-1 hover:cursor-text hover:border-accent">
           {tags !== undefined ? (
             <div onClick={openForEdit}>
               {tags.length > 0 ? (

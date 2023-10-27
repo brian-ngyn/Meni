@@ -37,7 +37,7 @@ export default function MeniEditText(props: MeniEditTextProps) {
           autoFocus={autoFocus}
           name={name}
           value={value}
-          className="peer h-24 w-full border-none bg-grey p-2 placeholder:text-transparent focus:border-transparent focus:outline-none focus:ring-0 sm:text-sm lg:h-9"
+          className="peer h-24 w-full border-none bg-grey p-2 placeholder:text-transparent focus:border-transparent focus:outline-none focus:ring-0 sm:text-sm lg:h-20"
           id={id}
           placeholder={title}
           required
