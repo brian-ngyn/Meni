@@ -33,7 +33,7 @@ export default function MeniButton(props: MeniButtonProps) {
             props.disabled ? "gray-400" : "white"
           } ${
             !props.disabled ? "hover:bg-white hover:text-black" : ""
-          } focus:outline-none focus:ring-0`}
+          } font-medium focus:outline-none focus:ring-0`}
           data-te-ripple-init
           onClick={props.onClick}
           data-te-ripple-color="light"

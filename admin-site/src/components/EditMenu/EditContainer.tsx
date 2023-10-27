@@ -413,14 +413,14 @@ export default function EditContainer(props: EditContainerProps) {
                               </div>
                             );
                           })}
-                          <div className="relative mb-8 flex h-16 w-full flex-col items-center justify-center border-2 border-dashed border-accent hover:cursor-pointer sm:flex-row lg:aspect-[30/10]">
+                          <div
+                            className="relative mb-8 flex h-16 w-full flex-col items-center justify-center border-2 border-dashed border-accent hover:cursor-pointer sm:flex-row lg:aspect-[30/10]"
+                            onClick={() => addSubCategory(category.id)}
+                          >
                             {/* <span>
                     <AddIcon className="text-3xl text-gray-600" />
                   </span>{" "} */}
-                            <span
-                              className="text-3xl text-accent"
-                              onClick={() => addSubCategory(category.id)}
-                            >
+                            <span className="text-3xl text-accent">
                               + Sub Category
                             </span>
                           </div>
