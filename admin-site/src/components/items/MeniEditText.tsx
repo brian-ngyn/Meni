@@ -12,6 +12,7 @@ type MeniEditTextProps = {
   multiline?: boolean;
   title?: string;
   children?: ReactNode;
+  field?: string;
 };
 
 export default function MeniEditText(props: MeniEditTextProps) {
@@ -47,7 +48,7 @@ export default function MeniEditText(props: MeniEditTextProps) {
         </textarea>
       ) : (
         <input
-          type={"text"}
+          type={`${type ? type : "text"}`}
           onChange={onChange}
           onBlur={onBlur}
           autoFocus={autoFocus}

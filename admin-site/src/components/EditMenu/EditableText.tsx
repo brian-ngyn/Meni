@@ -98,6 +98,7 @@ export default function EditableText(props: IEditableTextProps) {
           ) : (
             <MeniEditText
               autoFocus
+              type={`${field === "price" ? "number" : undefined}`}
               className={textClass + "truncate text-black"}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 updateItem(e.target.value)
