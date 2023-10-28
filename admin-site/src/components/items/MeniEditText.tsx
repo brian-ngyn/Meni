@@ -49,6 +49,7 @@ export default function MeniEditText(props: MeniEditTextProps) {
       ) : (
         <input
           type={`${type ? type : "text"}`}
+          inputMode={`${type === "number" ? "decimal" : "text"}`}
           onChange={onChange}
           onBlur={onBlur}
           autoFocus={autoFocus}
