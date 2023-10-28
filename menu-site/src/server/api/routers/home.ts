@@ -44,7 +44,7 @@ export const homeRouter = createTRPCRouter({
           );
 
           // Check if the restaurant is within the specified radius
-          const isWithinRadius = distance <= 20000;
+          const isWithinRadius = distance <= 40000;
 
           return {
             ...restaurant,
