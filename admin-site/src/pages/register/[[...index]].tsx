@@ -184,7 +184,7 @@ export default function Page() {
             initial={true}
           />
         </motion.div>
-        <div className="item-stretch bottom-0 flex justify-end font-sans text-2xl font-light">
+        <div className="item-stretch bottom-0 mb-16 flex justify-end font-sans text-2xl font-light md:mb-0">
           <button
             className="h-11 w-40 border-2 border-white bg-white text-backdrop"
             onClick={handleSubmit}

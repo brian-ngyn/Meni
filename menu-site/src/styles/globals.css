@@ -5,3 +5,10 @@
 *:not(.ant-notification *, div) {
   @apply text-white;
 }
+
+@layer base {
+  html {
+    @apply bg-backdrop;
+  }
+}
+
