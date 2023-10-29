@@ -187,7 +187,6 @@ export const settersRouter = createTRPCRouter({
                   parsedPrice = num.toFixed(2);
                 }
               }
-              console.log(parsedPrice);
               return {
                 ...menuItem,
                 price: parsedPrice,
@@ -303,7 +302,6 @@ export const settersRouter = createTRPCRouter({
                   parsedPrice = num.toFixed(2);
                 }
               }
-              console.log(parsedPrice);
               return {
                 ...menuItem,
                 price: parsedPrice,

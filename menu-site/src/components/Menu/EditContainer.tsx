@@ -42,11 +42,6 @@ export default function EditContainer(props: EditContainerProps) {
     }
   }, [props.restaurantId, refetchMenus, refetchRestaurant]);
 
-  useEffect(() => {
-    console.log(menu);
-    console.log(restaurant);
-  }, [menu, restaurant]);
-
   const [currentImage, setCurrentImage] = useState<string>("");
 
   useEffect(() => {

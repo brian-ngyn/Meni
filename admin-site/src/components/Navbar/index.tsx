@@ -9,7 +9,6 @@ import MeniButton from "~/components/items/MeniButton";
 
 type NavbarProps = {
   page: string;
-  hidden?: boolean;
 };
 
 export default function Navbar(props: NavbarProps) {
@@ -18,35 +17,32 @@ export default function Navbar(props: NavbarProps) {
 
   return (
     isLoaded && (
-      <div
-        className={`sticky ${
-          props.hidden ? "hidden" : ""
-        } top-0 z-40 flex h-20 w-screen items-center border-b-[1px] border-[#353535] bg-backdrop px-4 font-thin md:block md:px-12 lg:px-24`}
-      >
-        <div className="h-full w-full bg-backdrop">
-          <div className="flex h-full flex-row items-center justify-between">
-            <Link href="/">
-              <IconButton
-                disableRipple
-                style={{ backgroundColor: "transparent" }}
-              >
-                <Image
-                  alt="logo"
-                  src="/landingPage/logo.svg"
-                  width="70"
-                  height="70"
-                />
-              </IconButton>
-            </Link>
-            <div>
+      <header className="h-20 bg-backdrop font-sans">
+        <div className="max-w-screen mx-auto flex h-full items-center justify-evenly border-b-[1px] border-[#353535] px-4 md:px-12 lg:px-24">
+          <div className="flex h-16 w-full items-center justify-between">
+            <div className="md:flex md:items-center md:gap-12">
+              <Link href="/">
+                <IconButton
+                  disableRipple
+                  style={{ backgroundColor: "transparent" }}
+                >
+                  <Image
+                    alt="logo"
+                    src="/landingPage/logo.svg"
+                    width="70"
+                    height="70"
+                  />
+                </IconButton>
+              </Link>
+            </div>
+
+            <div className="flex items-center gap-4">
               {props.page === "landingPage" ? (
                 <>
                   {user && isSignedIn ? (
-                    <div className="flex flex-row items-center gap-10">
-                      <MeniButton link="/dashboard" rounded>
-                        Dashboard
-                      </MeniButton>
-                    </div>
+                    <MeniButton link="/dashboard" rounded>
+                      Dashboard
+                    </MeniButton>
                   ) : (
                     <div className="flex flex-row items-center gap-6 md:gap-10">
                       <Link href="/login">
@@ -83,15 +79,12 @@ export default function Navbar(props: NavbarProps) {
                   </Link>
                 </div>
               ) : (
-                <div className="flex flex-row items-center gap-10"></div>
+                <></>
               )}
             </div>
           </div>
         </div>
-      </div>
+      </header>
     )
   );
 }
-
-//TODO: Add conditional rendering for logged in users.
-//If a user is logged in they should see a sign out button instead of the login and join now buttons.

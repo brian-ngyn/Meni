@@ -67,44 +67,44 @@ export function EditableMenuContextProvider({ children }: Props) {
 
   const setCurrentEditId = (id: string) => {
     if (editableMenuState.editingId !== id) {
-      setEditableMenuState({ ...editableMenuState, editingId: id });
+      setEditableMenuState((prev) => ({ ...prev, editingId: id }));
     }
   };
 
   const setMenuLoading = (val: boolean) => {
-    setEditableMenuState({ ...editableMenuState, loading: val });
+    setEditableMenuState((prev) => ({ ...prev, loading: val }));
   };
 
   // LOAD FUNCTIONS
   const loadFromAPI = (loadMenu: Menus) => {
-    setEditableMenuState({
-      ...editableMenuState,
+    setEditableMenuState((prev) => ({
+      ...prev,
       menu: loadMenu,
       originalMenu: loadMenu,
       mode: EditMode.EDIT,
       loading: false,
-    });
+    }));
     MeniNotification("Menu loaded", "", "success");
   };
 
   const loadNewTemplate = (restaurantId: string) => {
-    setEditableMenuState({
-      ...editableMenuState,
+    setEditableMenuState((prev) => ({
+      ...prev,
       menu: defaultStarterMenu(restaurantId),
       originalMenu: defaultStarterMenu(restaurantId),
       mode: EditMode.CREATE,
       loading: false,
-    });
+    }));
   };
 
   // ADD FUNCTIONS
   const addCategory = () => {
-    setEditableMenuState({
-      ...editableMenuState,
+    setEditableMenuState((prev) => ({
+      ...prev,
       menu: {
-        ...editableMenuState.menu,
+        ...prev.menu,
         mainCategories: [
-          ...editableMenuState.menu.mainCategories,
+          ...prev.menu.mainCategories,
           {
             id: uuidv4(),
             name: "New Category",
@@ -112,15 +112,15 @@ export function EditableMenuContextProvider({ children }: Props) {
           },
         ],
       },
-    });
+    }));
   };
   const addSubCategory = (id: string) => {
-    setEditableMenuState({
-      ...editableMenuState,
+    setEditableMenuState((prev) => ({
+      ...prev,
       menu: {
-        ...editableMenuState.menu,
+        ...prev.menu,
         mainCategories: [
-          ...editableMenuState.menu.mainCategories.map((item) => {
+          ...prev.menu.mainCategories.map((item) => {
             const subCategories = item.subCategories.map((subItem) => {
               const menuItems = subItem.items.map((menuItem) => {
                 return {
@@ -160,16 +160,16 @@ export function EditableMenuContextProvider({ children }: Props) {
           }),
         ],
       },
-    });
+    }));
   };
 
   const addFoodItem = (subCategoryId: string) => {
-    setEditableMenuState({
-      ...editableMenuState,
+    setEditableMenuState((prev) => ({
+      ...prev,
       menu: {
-        ...editableMenuState.menu,
+        ...prev.menu,
         mainCategories: [
-          ...editableMenuState.menu.mainCategories.map((item) => {
+          ...prev.menu.mainCategories.map((item) => {
             const subCategories = item.subCategories.map((subItem) => {
               const menuItems = subItem.items.map((menuItem) => {
                 return {
@@ -212,32 +212,30 @@ export function EditableMenuContextProvider({ children }: Props) {
           }),
         ],
       },
-    });
+    }));
   };
 
   // Delete functions
 
   const deleteCategory = (id: string) => {
-    setEditableMenuState({
-      ...editableMenuState,
+    setEditableMenuState((prev) => ({
+      ...prev,
       menu: {
-        ...editableMenuState.menu,
+        ...prev.menu,
         mainCategories: [
-          ...editableMenuState.menu.mainCategories.filter(
-            (item) => item.id !== id,
-          ),
+          ...prev.menu.mainCategories.filter((item) => item.id !== id),
         ],
       },
-    });
+    }));
   };
 
   const deleteSubCategory = (id: string) => {
-    setEditableMenuState({
-      ...editableMenuState,
+    setEditableMenuState((prev) => ({
+      ...prev,
       menu: {
-        ...editableMenuState.menu,
+        ...prev.menu,
         mainCategories: [
-          ...editableMenuState.menu.mainCategories.map((item) => {
+          ...prev.menu.mainCategories.map((item) => {
             const subCategories = item.subCategories.filter(
               (subItem) => subItem.id !== id,
             );
@@ -249,15 +247,15 @@ export function EditableMenuContextProvider({ children }: Props) {
           }),
         ],
       },
-    });
+    }));
   };
   const deleteFoodItem = (id: string) => {
-    setEditableMenuState({
-      ...editableMenuState,
+    setEditableMenuState((prev) => ({
+      ...prev,
       menu: {
-        ...editableMenuState.menu,
+        ...prev.menu,
         mainCategories: [
-          ...editableMenuState.menu.mainCategories.map((item) => {
+          ...prev.menu.mainCategories.map((item) => {
             const subCategories = item.subCategories.map((subItem) => {
               const menuItems = subItem.items.filter(
                 (menuItem) => menuItem.id !== id,
@@ -276,7 +274,7 @@ export function EditableMenuContextProvider({ children }: Props) {
           }),
         ],
       },
-    });
+    }));
   };
 
   useEffect(() => {
@@ -298,13 +296,13 @@ export function EditableMenuContextProvider({ children }: Props) {
       );
       combinedTags = [...currentTags, ...newTagsToInsert];
     }
-    setEditableMenuState({
-      ...editableMenuState,
+    setEditableMenuState((prev) => ({
+      ...prev,
       menu: {
-        ...editableMenuState.menu,
+        ...prev.menu,
         tags: combinedTags,
         mainCategories: [
-          ...editableMenuState.menu.mainCategories.map((item) => {
+          ...prev.menu.mainCategories.map((item) => {
             const subCategories = item.subCategories.map((subItem) => {
               const menuItems = subItem.items.map((menuItem) => {
                 if (menuItem.id === id && field) {
@@ -317,15 +315,9 @@ export function EditableMenuContextProvider({ children }: Props) {
                     tags: menuItem.tags,
                     [field]: newValue,
                   };
+                } else {
+                  return menuItem;
                 }
-                return {
-                  id: menuItem.id,
-                  name: menuItem.name,
-                  price: menuItem.price,
-                  description: menuItem.description,
-                  image: menuItem.image,
-                  tags: menuItem.tags,
-                };
               });
               if (subItem.id === id) {
                 return {
@@ -333,12 +325,13 @@ export function EditableMenuContextProvider({ children }: Props) {
                   name: newValue as string,
                   items: menuItems,
                 };
+              } else {
+                return {
+                  id: subItem.id,
+                  name: subItem.name,
+                  items: menuItems,
+                };
               }
-              return {
-                id: subItem.id,
-                name: subItem.name,
-                items: menuItems,
-              };
             });
             if (item.id === id) {
               return {
@@ -346,16 +339,17 @@ export function EditableMenuContextProvider({ children }: Props) {
                 name: newValue as string,
                 subCategories: subCategories,
               };
+            } else {
+              return {
+                id: item.id,
+                name: item.name,
+                subCategories: subCategories,
+              };
             }
-            return {
-              id: item.id,
-              name: item.name,
-              subCategories: subCategories,
-            };
           }),
         ],
       },
-    });
+    }));
   };
 
   return (
