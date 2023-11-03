@@ -25,6 +25,7 @@
     "@trpc/next": "^10.37.1",
     "@trpc/react-query": "^10.37.1",
     "@trpc/server": "^10.37.1",
+    "@vercel/analytics": "^1.1.1",
     "antd": "^5.10.1",
     "geolib": "^3.3.4",
     "lodash.debounce": "^4.0.8",

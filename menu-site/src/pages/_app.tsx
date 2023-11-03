@@ -1,6 +1,8 @@
 import { type AppType } from "next/app";
 import { Abril_Fatface, Montserrat } from "next/font/google";
 
+import { Analytics } from "@vercel/analytics/react";
+
 import "~/styles/globals.css";
 import { api } from "~/utils/api";
 
@@ -21,6 +23,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
       className={`min-h-screen bg-backdrop ${body.variable} font-body ${header.variable} font-header`}
     >
       <Component {...pageProps} />
+      <Analytics />
     </main>
   );
 };

@@ -3,6 +3,7 @@ import { Abril_Fatface, Montserrat } from "next/font/google";
 import Head from "next/head";
 
 import { ClerkProvider } from "@clerk/nextjs";
+import { Analytics } from "@vercel/analytics/react";
 
 import { MeniContextProvider } from "~/context/meniContext";
 import "~/styles/globals.css";
@@ -34,6 +35,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         <ClerkProvider {...pageProps}>
           <MeniContextProvider>
             <Component {...pageProps} />
+            <Analytics />
           </MeniContextProvider>
         </ClerkProvider>
       </main>

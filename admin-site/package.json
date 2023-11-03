@@ -30,6 +30,7 @@
     "@trpc/react-query": "^10.37.1",
     "@trpc/server": "^10.37.1",
     "@uploadthing/react": "^5.7.0",
+    "@vercel/analytics": "^1.1.1",
     "antd": "^5.10.2",
     "bson": "^6.2.0",
     "framer-motion": "^10.16.4",
