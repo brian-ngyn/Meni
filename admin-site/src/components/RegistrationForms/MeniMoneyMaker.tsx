@@ -259,7 +259,7 @@ const MeniMoneyMaker: React.FunctionComponent<MMMProps> = (props) => {
                   </div>
                   <QRCode
                     id="qr-gen"
-                    value={"https://meniapp.ca/table/" + restaurantId}
+                    value={"https://meniapp.ca/restaurant/" + restaurantId}
                     size={290}
                     level={"H"}
                     includeMargin={true}
@@ -417,7 +417,7 @@ const MeniMoneyMaker: React.FunctionComponent<MMMProps> = (props) => {
                     </div>
                     <QRCode
                       id="qr-gen"
-                      value={"https://meniapp.ca/table/" + restaurantId}
+                      value={"https://meniapp.ca/restaurant/" + restaurantId}
                       size={290}
                       level={"H"}
                       includeMargin={true}
