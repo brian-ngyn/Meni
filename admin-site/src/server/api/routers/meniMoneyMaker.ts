@@ -55,6 +55,16 @@ export const meniMoneyMakerRouter = createTRPCRouter({
               featuredPayment: true,
             },
           });
+        } else if (input.plan === "tier0") {
+          await ctx.db.restaurantInfo.update({
+            where: {
+              ownerId: owner.id,
+            },
+            data: {
+              featuredPayment: false,
+              activeMenuId: null,
+            },
+          });
         } else {
           await ctx.db.restaurantInfo.update({
             where: {
