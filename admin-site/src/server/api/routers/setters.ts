@@ -540,6 +540,23 @@ export const settersRouter = createTRPCRouter({
         },
       });
 
+      const menuLength = await ctx.db.menus.count({
+        where: {
+          restaurantId: restaurant?.id,
+        },
+      });
+
+      if (menuLength === 0 || restaurant?.activeMenuId === input.menuId) {
+        await ctx.db.restaurantInfo.update({
+          where: {
+            ownerId: owner?.id,
+          },
+          data: {
+            activeMenuId: null,
+          },
+        });
+      }
+
       return {
         success: "true",
         message: "Menu has been deleted successfully",
