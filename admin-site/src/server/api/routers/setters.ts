@@ -1,9 +1,12 @@
 import { z } from "zod";
 
 import { clerkClient } from "@clerk/nextjs";
+import { geocode } from "@esri/arcgis-rest-geocoding";
+import { ApiKeyManager } from "@esri/arcgis-rest-request";
 import { type Menus } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 
+import { env } from "~/env.mjs";
 import { createTRPCRouter, privateProcedure } from "~/server/api/trpc";
 
 export const settersRouter = createTRPCRouter({
@@ -39,18 +42,47 @@ export const settersRouter = createTRPCRouter({
         },
       });
 
-      await ctx.db.restaurantInfo.update({
+      const currentRestaurant = await ctx.db.restaurantInfo.findFirst({
         where: {
           ownerId: owner?.id,
         },
-        data: {
-          name: input.name,
-          address: input.address,
-          phoneNumber: input.phoneNumber,
-          description: input.description,
-          image: input.image,
-        },
       });
+      if (currentRestaurant?.address !== input.address) {
+        const ArcGIS_auth = ApiKeyManager.fromKey(env.ARCGIS_KEY);
+        const geoLocation = await geocode({
+          address: input.address,
+          authentication: ArcGIS_auth,
+        });
+        await ctx.db.restaurantInfo.update({
+          where: {
+            ownerId: owner?.id,
+          },
+          data: {
+            name: input.name,
+            address: input.address,
+            phoneNumber: input.phoneNumber,
+            description: input.description,
+            image: input.image,
+            geoLocation: {
+              latitude: geoLocation.candidates[0]?.location.y || 0,
+              longitude: geoLocation.candidates[0]?.location.x || 0,
+            },
+          },
+        });
+      } else {
+        await ctx.db.restaurantInfo.update({
+          where: {
+            ownerId: owner?.id,
+          },
+          data: {
+            name: input.name,
+            address: input.address,
+            phoneNumber: input.phoneNumber,
+            description: input.description,
+            image: input.image,
+          },
+        });
+      }
 
       return {
         success: true,
