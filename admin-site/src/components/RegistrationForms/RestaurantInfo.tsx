@@ -34,7 +34,7 @@ const RestaurantInfo: React.FunctionComponent<RestaurantInfoProps> = (
   } = props;
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    onChange(e);
+        onChange(e);
   };
   // set character count on initial render
   useEffect(() => {
@@ -70,7 +70,13 @@ const RestaurantInfo: React.FunctionComponent<RestaurantInfoProps> = (
             },
           }}
         />
-        <MeniAddressSuggester />
+        <MeniAddressSuggester
+          id="address"
+          name="address"
+          value={address}
+          onChange={handleChange}
+          title="Address"
+        />
         {/* <MeniTextInput
           id="address"
           name="address"

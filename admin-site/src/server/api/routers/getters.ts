@@ -193,7 +193,7 @@ export const gettersRouter = createTRPCRouter({
         });
       }
       const response = await fetch(
-        `https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer/suggest?text=${input.address}&f=json&category=Address&token=${env.ARCGIS_KEY}`,
+        `https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer/suggest?text=${input.address}&f=json&token=${env.ARCGIS_KEY}`,
         {
           method: "GET",
         },
