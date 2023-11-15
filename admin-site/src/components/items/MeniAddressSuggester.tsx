@@ -120,7 +120,7 @@ export default function MeniAddressSuggester(props: MeniAddressSuggesterProps) {
             </span>
           ) : null}
         </label>
-        {!isLoadingSuggestions && options && options.length > 0 && open && (
+        {!loading && options && options.length > 0 && open && (
           <ul className="absolute z-50 mt-1 max-h-[200px] w-full overflow-y-auto rounded-lg border-[1px] bg-grey px-2 py-1 shadow-lg">
             {options.map((option: Suggestion, index: number) => {
               return (
@@ -146,10 +146,17 @@ export default function MeniAddressSuggester(props: MeniAddressSuggesterProps) {
             })}
           </ul>
         )}
-        {isLoadingSuggestions && open && search !== "" && (
-          <ul className="absolute z-50 mt-2 max-h-[200px] w-full overflow-y-auto rounded-lg border-[1px] bg-grey p-2 shadow-lg">
-            <li className="min-h-10 w-full cursor-pointer border-solid border-l-gray-300 py-2">
+        {loading && (
+          <ul className="absolute z-50 mt-1 max-h-[200px] w-full overflow-y-auto rounded-lg border-[1px] bg-grey px-2 py-1 shadow-lg">
+            <li className="min-h-10 w-full border-b-[1px] border-solid border-l-gray-300 py-2 last:border-b-0">
               Loading...
+            </li>
+          </ul>
+        )}
+        {open && search === "" && (
+          <ul className="absolute z-50 mt-1 max-h-[200px] w-full overflow-y-auto rounded-lg border-[1px] bg-grey px-2 py-1 shadow-lg">
+            <li className="min-h-10 w-full border-b-[1px] border-solid border-l-gray-300 py-2 last:border-b-0">
+              Begin typing to see address suggestions...
             </li>
           </ul>
         )}
