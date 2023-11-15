@@ -1,15 +1,6 @@
-import { debounce } from "lodash";
-import {
-  type ChangeEvent,
-  type ReactNode,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { type ReactNode, useEffect, useState } from "react";
 
-import Autocomplete from "@mui/material/Autocomplete";
-import CircularProgress from "@mui/material/CircularProgress";
-import TextField from "@mui/material/TextField";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 
 import { api } from "~/utils/api";
 
@@ -130,32 +121,12 @@ export default function MeniAddressSuggester(props: MeniAddressSuggesterProps) {
           ) : null}
         </label>
         {!isLoadingSuggestions && options && options.length > 0 && open && (
-          <ul className="absolute z-50 mt-2 max-h-[200px] w-full overflow-y-auto rounded-lg border-[1px] bg-grey p-2 shadow-lg">
+          <ul className="absolute z-50 mt-1 max-h-[200px] w-full overflow-y-auto rounded-lg border-[1px] bg-grey px-2 py-1 shadow-lg">
             {options.map((option: Suggestion, index: number) => {
-              if (index === options.length - 1) {
-                return (
-                  <li
-                    key={index}
-                    className="min-h-10 w-full cursor-pointer border-solid border-l-gray-300 py-2"
-                    onMouseDown={() => {
-                      const fakeE = {
-                        target: {
-                          name: "address",
-                          value: option.address,
-                        },
-                      };
-                      onChange(fakeE);
-                      setOpen(false);
-                    }}
-                  >
-                    📍 {option.address}
-                  </li>
-                );
-              }
               return (
                 <li
                   key={index}
-                  className="min-h-10 z-50 w-full cursor-pointer border-b-[1px] border-solid border-l-gray-300 py-2"
+                  className="min-h-10 w-full cursor-pointer border-b-[1px] border-solid border-l-gray-300 py-2 last:border-b-0"
                   onMouseDown={() => {
                     const fakeE = {
                       target: {
@@ -167,7 +138,9 @@ export default function MeniAddressSuggester(props: MeniAddressSuggesterProps) {
                     setOpen(false);
                   }}
                 >
-                  📍 {option.address}
+                  <div className="flex items-center gap-1">
+                    <LocationOnIcon /> {option.address}
+                  </div>
                 </li>
               );
             })}
