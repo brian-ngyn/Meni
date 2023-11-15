@@ -34,7 +34,7 @@ const RestaurantInfo: React.FunctionComponent<RestaurantInfoProps> = (
   } = props;
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        onChange(e);
+    onChange(e);
   };
   // set character count on initial render
   useEffect(() => {
