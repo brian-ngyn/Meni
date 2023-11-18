@@ -86,7 +86,8 @@ export default function EditableText(props: IEditableTextProps) {
     const handleEnterPress = (keyEvent: KeyboardEvent) => {
       if (
         keyEvent.key === "Enter" &&
-        editableMenuState.editingId === fieldIdentifier
+        editableMenuState.editingId === fieldIdentifier &&
+        field !== "description"
       ) {
         setCurrentEditId("");
       }

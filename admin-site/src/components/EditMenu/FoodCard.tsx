@@ -76,7 +76,7 @@ export default function FoodCard(props: IFoodCardProps) {
             <EditableText
               id={id}
               field="description"
-              textClass="text-sm font-thin cursor-pointer"
+              textClass="text-sm font-thin cursor-pointer whitespace-pre"
             >
               {description}
             </EditableText>
