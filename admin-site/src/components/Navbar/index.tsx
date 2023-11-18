@@ -41,7 +41,7 @@ export default function Navbar(props: NavbarProps) {
                 <>
                   {user && isSignedIn ? (
                     <MeniButton link="/dashboard" rounded>
-                      {user.publicMetadata.isOnboarded
+                      {user.publicMetadata.onboardingComplete
                         ? "Dashboard"
                         : "Finish Onboarding"}
                     </MeniButton>
