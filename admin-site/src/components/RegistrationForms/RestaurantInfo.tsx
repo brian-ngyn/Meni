@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import MeniGlobals from "~/MeniGlobals";
 import { UploadButton } from "~/utils/uploadthing";
 
+import MeniAddressSuggester from "~/components/items/MeniAddressSuggester";
 import MeniNotification from "~/components/items/MeniNotification";
 import MeniTextInput from "~/components/items/MeniTextInput";
 
@@ -69,7 +70,14 @@ const RestaurantInfo: React.FunctionComponent<RestaurantInfoProps> = (
             },
           }}
         />
-        <MeniTextInput
+        <MeniAddressSuggester
+          id="address"
+          name="address"
+          value={address}
+          onChange={handleChange}
+          title="Address"
+        />
+        {/* <MeniTextInput
           id="address"
           name="address"
           value={address}
@@ -82,7 +90,7 @@ const RestaurantInfo: React.FunctionComponent<RestaurantInfoProps> = (
               required: "Address is required",
             },
           }}
-        />
+        /> */}
         <MeniTextInput
           id="tel"
           type="tel"

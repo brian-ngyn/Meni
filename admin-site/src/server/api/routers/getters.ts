@@ -3,7 +3,16 @@ import { z } from "zod";
 import { clerkClient } from "@clerk/nextjs";
 import { TRPCError } from "@trpc/server";
 
+import { env } from "~/env.mjs";
 import { createTRPCRouter, privateProcedure } from "~/server/api/trpc";
+
+interface Suggestions {
+  suggestions: [
+    {
+      text: string;
+    },
+  ];
+}
 
 export const gettersRouter = createTRPCRouter({
   getAccountInfo: privateProcedure
@@ -168,5 +177,33 @@ export const gettersRouter = createTRPCRouter({
       }
 
       return menu;
+    }),
+
+  getAddressSuggestions: privateProcedure
+    .input(
+      z.object({
+        address: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      if (!ctx.userId) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "User is not authorized fetch address suggestions",
+        });
+      }
+      const response = await fetch(
+        `https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer/suggest?text=${input.address}&f=json&token=${env.ARCGIS_KEY}`,
+        {
+          method: "GET",
+        },
+      );
+      const suggestions = response.json().then((data: Suggestions) => {
+        return data.suggestions.map((suggestion, i) => ({
+          address: suggestion.text,
+          id: i,
+        }));
+      });
+      return suggestions;
     }),
 });
