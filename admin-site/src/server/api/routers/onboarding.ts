@@ -59,6 +59,28 @@ export const onboardingRouter = createTRPCRouter({
           },
         });
 
+        // SET TIER 3
+        // REMOVE IN FUTURE
+        await ctx.db.account.update({
+          where: {
+            clerkId: userSubmittingRequest.id,
+          },
+          data: {
+            currentPlan: "tier3",
+            isPaid: true,
+          },
+        });
+        await ctx.db.restaurantInfo.update({
+          where: {
+            ownerId: newAccount.id,
+          },
+          data: {
+            featuredPayment: true,
+          },
+        });
+        // SET TIER 3
+        // REMOVE IN FUTURE
+
         // update the user's public metadata to indicate onboarding is complete
         await clerkClient.users.updateUser(userSubmittingRequest.id, {
           publicMetadata: {
