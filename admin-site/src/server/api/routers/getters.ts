@@ -192,6 +192,7 @@ export const gettersRouter = createTRPCRouter({
           message: "User is not authorized fetch address suggestions",
         });
       }
+
       const cleanInput = input.address.replace(/[^a-zA-Z ]/g, "");
       const response = await fetch(
         `https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer/suggest?text=${cleanInput}&f=json&token=${env.ARCGIS_KEY}`,
@@ -199,7 +200,7 @@ export const gettersRouter = createTRPCRouter({
           method: "GET",
         },
       );
-      console.log(response);
+
       const suggestions = response.json().then((data: Suggestions) => {
         return data.suggestions.map((suggestion, i) => ({
           address: suggestion.text,
