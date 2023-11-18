@@ -71,19 +71,31 @@ export default function EditableText(props: IEditableTextProps) {
   };
   // Allow keyboard shortcuts to cancel or save changes if on client side
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      window.document.addEventListener("keydown", (keyEvent) => {
-        if (keyEvent.key === "Escape") {
-          undoChanges();
-        }
-      });
-      window.document.addEventListener("keydown", (keyEvent) => {
-        if (keyEvent.key === "Enter") {
-          setCurrentEditId("");
-        }
-      });
-    }
-  }, []);
+    const handleEscPress = (keyEvent: KeyboardEvent) => {
+      if (
+        keyEvent.key === "Escape" &&
+        editableMenuState.editingId === fieldIdentifier
+      ) {
+        undoChanges();
+      }
+    };
+    const handleEnterPress = (keyEvent: KeyboardEvent) => {
+      if (
+        keyEvent.key === "Enter" &&
+        editableMenuState.editingId === fieldIdentifier
+      ) {
+        setCurrentEditId("");
+      }
+    };
+
+    window.addEventListener("keydown", handleEscPress);
+    window.addEventListener("keydown", handleEnterPress);
+
+    return () => {
+      window.removeEventListener("keydown", handleEscPress);
+      window.removeEventListener("keydown", handleEnterPress);
+    };
+  }, [editableMenuState.editingId, fieldIdentifier, setCurrentEditId]);
 
   return (
     <div className="flex w-full items-center">
@@ -113,11 +125,11 @@ export default function EditableText(props: IEditableTextProps) {
           <div className="ml-1 grid">
             <CheckIcon
               className={textClass + "h-full w-full cursor-pointer"}
-              onClick={() => setCurrentEditId("")}
+              onMouseDown={() => setCurrentEditId("")}
             />
             <ClearIcon
               className={textClass + "h-full w-full cursor-pointer"}
-              onClick={() => undoChanges()}
+              onMouseDown={() => undoChanges()}
             />
           </div>
         </>
