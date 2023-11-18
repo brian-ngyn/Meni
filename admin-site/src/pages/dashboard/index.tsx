@@ -2,6 +2,8 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import React, { type ChangeEvent, useEffect, useState } from "react";
 
+import { useUser } from "@clerk/nextjs";
+
 import { type IMenuBrief } from "~/constants/types";
 import { useMeniContext } from "~/context/meniContext";
 import { api } from "~/utils/api";
@@ -28,6 +30,7 @@ export default function Dashboard() {
     updateRestaurantInfo,
   } = useMeniContext();
   const router = useRouter();
+  const { user } = useUser();
 
   const [activeMenu, setActiveMenu] = useState<string>(""); // active menu for the restaurant
   const [tourEnable, setTourEnable] = useState(false);
@@ -187,6 +190,9 @@ export default function Dashboard() {
   //     />
   //   );
   // };
+  if (user && !user.publicMetadata.onboardingComplete) {
+    void router.push("/register");
+  }
 
   if (loading || isLoadingMenus) return <LoadingPage />;
 

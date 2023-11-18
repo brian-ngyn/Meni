@@ -21,9 +21,11 @@ export default function Page() {
     onSuccess: (a) => {
       if (a.success) {
         setSignupComplete(true);
+        void user?.reload();
         void router.push("/dashboard");
       } else {
         setSignupComplete(false);
+        void user?.reload();
         MeniNotification(
           "Error",
           "Failed to onboard you. Please try again later or contact support.",
@@ -149,7 +151,10 @@ export default function Page() {
         </div>
       </div>
     </>
-  ) : !isLoading && isSignedIn && !user?.publicMetadata.onboardingComplete ? (
+  ) : !isLoading &&
+    isSignedIn &&
+    !user?.publicMetadata.onboardingComplete &&
+    !signupComplete ? (
     <div className="min-h-screen w-full bg-backdrop">
       <Head>
         <title>Registration | Meni</title>

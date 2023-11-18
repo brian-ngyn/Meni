@@ -216,12 +216,14 @@ const MeniMoneyMaker: React.FunctionComponent<MMMProps> = (props) => {
             <div className="m-auto grid gap-y-10">
               {isPaid && currentTier !== "tier0" ? (
                 <p className="text-center">
-                  The Meni Team appreciates your continued support. Your current
+                  {/* The Meni Team appreciates your continued support. Your current
                   plan is{" "}
                   {paymentPlans
                     .find((tier) => tier.key === currentTier)
                     ?.tier.replace(/Tier(\d)/, "Tier $1")}
-                  {". "}
+                  {". "} */}
+                  The Meni Team appreciates your continued support. Thanks for
+                  helping Beta test!
                   {/* paying $
                   {
                     paymentPlans.find(
@@ -265,13 +267,13 @@ const MeniMoneyMaker: React.FunctionComponent<MMMProps> = (props) => {
                     includeMargin={true}
                     className="hidden"
                   />
-                  <MeniButton
+                  {/* <MeniButton
                     onClick={() => {
                       setPageStep(2);
                     }}
                   >
                     Change your plan
-                  </MeniButton>
+                  </MeniButton> */}
                 </div>
               ) : (
                 <MeniButton

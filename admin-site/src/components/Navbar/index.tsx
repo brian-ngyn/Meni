@@ -41,7 +41,9 @@ export default function Navbar(props: NavbarProps) {
                 <>
                   {user && isSignedIn ? (
                     <MeniButton link="/dashboard" rounded>
-                      Dashboard
+                      {user.publicMetadata.isOnboarded
+                        ? "Dashboard"
+                        : "Finish Onboarding"}
                     </MeniButton>
                   ) : (
                     <div className="flex flex-row items-center gap-6 md:gap-10">
