@@ -19,11 +19,15 @@ type IEditableTextProps = {
 
 export default function EditableText(props: IEditableTextProps) {
   const { children, textClass, id, field, tags } = props;
-  const [value, setValue] = useState<typeof children>(children);
+  const [value, setValue] = useState<typeof children>(
+    field === "tags" ? tags : children,
+  );
   const { editableMenuState, updateField, setCurrentEditId } =
     useEditableMenu();
   const fieldIdentifier = field !== undefined ? id + field : id;
-  const [prevValue, setPrevValue] = useState<typeof children>(children);
+  const [prevValue, setPrevValue] = useState<typeof children>(
+    field === "tags" ? tags : children,
+  );
 
   const updateItemTag = (event: any, values: string[]) => {
     updateField(id, values, field);
@@ -61,7 +65,7 @@ export default function EditableText(props: IEditableTextProps) {
   };
 
   const openForEdit = () => {
-    setPrevValue(children);
+    setPrevValue(field === "tags" ? tags : children);
     setCurrentEditId(fieldIdentifier);
   };
 
@@ -104,6 +108,7 @@ export default function EditableText(props: IEditableTextProps) {
           {tags !== undefined ? (
             <MeniMultiSelect
               onChange={updateItemTag}
+              onBlur={() => setCurrentEditId("")}
               value={tags}
               options={editableMenuState.menu.tags}
             />

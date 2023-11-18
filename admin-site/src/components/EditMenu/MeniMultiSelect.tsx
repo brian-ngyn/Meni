@@ -11,10 +11,11 @@ import { useEditableMenu } from "~/context/EditableMenuContext";
 type IMeniMultiSelect = {
   value: string[];
   onChange: (e: any, values: any) => void;
+  onBlur: () => void;
   options: string[];
 };
 export default function MeniMultiSelect(props: IMeniMultiSelect) {
-  const { value, onChange, options } = props;
+  const { value, onChange, onBlur, options } = props;
 
   return (
     <Stack spacing={3} className="w-full">
@@ -41,7 +42,9 @@ export default function MeniMultiSelect(props: IMeniMultiSelect) {
         renderInput={(params) => (
           <TextField
             {...params}
+            autoFocus
             placeholder="Tags"
+            onBlur={onBlur}
             sx={{
               "& fieldset.MuiOutlinedInput-notchedOutline": {
                 borderColor: "#505050",
