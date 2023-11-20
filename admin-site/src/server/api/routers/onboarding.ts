@@ -25,7 +25,7 @@ export const onboardingRouter = createTRPCRouter({
       if (userSubmittingRequest.publicMetadata.onboardingComplete) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: "User has already completed onboarding1",
+          message: "User has already completed onboarding",
         });
       } else {
         const ArcGIS_auth = ApiKeyManager.fromKey(env.ARCGIS_KEY);
@@ -44,7 +44,7 @@ export const onboardingRouter = createTRPCRouter({
           },
         });
 
-        await ctx.db.restaurantInfo.create({
+        const newRestaurant = await ctx.db.restaurantInfo.create({
           data: {
             ownerId: newAccount.id,
             name: input.restaurantName,
@@ -84,7 +84,7 @@ export const onboardingRouter = createTRPCRouter({
         // update the user's public metadata to indicate onboarding is complete
         await clerkClient.users.updateUser(userSubmittingRequest.id, {
           publicMetadata: {
-            onboardingComplete: true,
+            onboardingComplete: newAccount && newRestaurant ? true : false,
           },
         });
 
