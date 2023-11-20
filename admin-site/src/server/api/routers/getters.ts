@@ -193,7 +193,7 @@ export const gettersRouter = createTRPCRouter({
         });
       }
 
-      const cleanInput = input.address.replace(/[^a-zA-Z ]/g, "");
+      const cleanInput = input.address.replace(/[^a-zA-Z0-9 ]/g, "");
       const response = await fetch(
         `https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer/suggest?text=${cleanInput}&f=json&token=${env.ARCGIS_KEY}`,
         {
