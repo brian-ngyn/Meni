@@ -1,3 +1,4 @@
+import { feedbackRouter } from "~/server/api/routers/feedback";
 import { gettersRouter } from "~/server/api/routers/getters";
 import { meniMoneyMakerRouter } from "~/server/api/routers/meniMoneyMaker";
 import { onboardingRouter } from "~/server/api/routers/onboarding";
@@ -14,6 +15,7 @@ export const appRouter = createTRPCRouter({
   getters: gettersRouter,
   setters: settersRouter,
   meniMoneyMaker: meniMoneyMakerRouter,
+  feedback: feedbackRouter,
 });
 
 // export type definition of API

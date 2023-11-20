@@ -9,6 +9,8 @@ import { MeniContextProvider } from "~/context/meniContext";
 import "~/styles/globals.css";
 import { api } from "~/utils/api";
 
+import Feedback from "~/components/Feedback";
+
 const abrilFatface = Abril_Fatface({
   subsets: ["latin"],
   weight: "400",
@@ -36,6 +38,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
           <MeniContextProvider>
             <Component {...pageProps} />
             <Analytics />
+            <Feedback />
           </MeniContextProvider>
         </ClerkProvider>
       </main>
