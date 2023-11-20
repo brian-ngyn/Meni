@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { useUser } from "@clerk/nextjs";
 import CloseIcon from "@mui/icons-material/Close";
+import FeedbackOutlinedIcon from "@mui/icons-material/FeedbackOutlined";
 
 import { api } from "~/utils/api";
 
@@ -9,7 +10,7 @@ import MeniNotification from "~/components/items/MeniNotification";
 
 const Feedback = () => {
   const { user } = useUser();
-  const [feedbackModalOpen, setFeedbackModalOpen] = useState(true);
+  const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState("");
 
   const { mutate } = api.feedback.sendFeedback.useMutation({
@@ -50,14 +51,14 @@ const Feedback = () => {
         <>
           <button
             onClick={() => setFeedbackModalOpen((prev) => !prev)}
-            className="fixed bottom-2 left-2 rounded bg-blue-400 p-3 font-sans text-white"
+            className="fixed bottom-2 left-2 rounded bg-white p-2 font-sans text-white"
           >
-            Feedback
+            <FeedbackOutlinedIcon style={{ fill: "#000000" }} />
           </button>
           {feedbackModalOpen && (
             <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center bg-black/50">
               <div className="flex h-full w-full items-center justify-center">
-                <div className="relative rounded-md bg-white/100 px-48 py-60 shadow-xl">
+                <div className="relative rounded-md bg-white/100 px-48 py-64 shadow-xl">
                   <div className="absolute left-0 top-0 flex h-full w-full flex-col gap-y-2 p-8 font-sans text-xl text-black">
                     <div className="flex w-full items-center justify-between">
                       <div className="text-xl font-semibold">Feedback</div>
