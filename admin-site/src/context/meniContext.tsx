@@ -31,11 +31,14 @@ interface EditedRestaurantInfo {
 type MeniContextReturnType = {
   loading: boolean;
   accountInfo: Account | null | undefined;
-  restaurantInfo: RestaurantInfo | null | undefined;
+  allRestaurantInfo: RestaurantInfo[] | null | undefined;
   refetchAccountInfo: () => Promise<UseQueryResult>;
-  refetchRestaurantInfo: () => Promise<UseQueryResult>;
+  refetchAllRestaurantInfo: () => Promise<UseQueryResult>;
   updateAccountInfo: (newInfo: EditedAccount) => void;
   updateRestaurantInfo: (newInfo: EditedRestaurantInfo) => void;
+  currentRestaurantSelectedIndex: number;
+  setCurrentRestaurantSelectedIndex: Dispatch<SetStateAction<number>>;
+  currentRestaurantSelected: RestaurantInfo | undefined;
 };
 
 const MeniContext = createContext<MeniContextReturnType>(
@@ -44,6 +47,8 @@ const MeniContext = createContext<MeniContextReturnType>(
 
 export function MeniContextProvider({ children }: Props) {
   const { user, isSignedIn, isLoaded: isClerkLoaded } = useUser();
+  const [currentRestaurantSelectedIndex, setCurrentRestaurantSelectedIndex] =
+    useState(0);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -56,13 +61,18 @@ export function MeniContextProvider({ children }: Props) {
     { enabled: false },
   );
   const {
-    data: restaurantInfo,
-    refetch: refetchRestaurantInfo,
-    isLoading: isRestaurantInfoLoading,
-  } = api.getters.getRestaurantInfo.useQuery(
+    data: allRestaurantInfo,
+    refetch: refetchAllRestaurantInfo,
+    isLoading: isAllRestaurantInfoLoading,
+  } = api.getters.getAllRestaurantInfo.useQuery(
     { clerkId: user?.id || "" },
     { enabled: false },
   );
+
+  const currentRestaurantSelected = allRestaurantInfo
+    ? allRestaurantInfo[currentRestaurantSelectedIndex]
+    : undefined;
+
   const { mutate: mutateRestaurantInfo } =
     api.setters.updateRestaurantInfo.useMutation({
       onSuccess: (a) => {
@@ -124,10 +134,13 @@ export function MeniContextProvider({ children }: Props) {
   });
 
   const updateRestaurantInfo = (newInfo: EditedRestaurantInfo) => {
-    mutateRestaurantInfo({
-      ...newInfo,
-      clerkId: user?.id || "",
-    });
+    if (user && currentRestaurantSelected) {
+      mutateRestaurantInfo({
+        ...newInfo,
+        clerkId: user.id,
+        restaurantId: currentRestaurantSelected.id,
+      });
+    }
   };
 
   const updateAccountInfo = (newInfo: EditedAccount) => {
@@ -140,34 +153,37 @@ export function MeniContextProvider({ children }: Props) {
   useEffect(() => {
     if (user && isSignedIn && router.pathname === "/dashboard") {
       void refetchAccountInfo();
-      void refetchRestaurantInfo();
+      void refetchAllRestaurantInfo();
     }
   }, [
     isSignedIn,
     refetchAccountInfo,
-    refetchRestaurantInfo,
+    refetchAllRestaurantInfo,
     router.pathname,
     user,
   ]);
 
   useEffect(() => {
-    if (isAccountInfoLoading || isRestaurantInfoLoading || !isClerkLoaded) {
+    if (isAccountInfoLoading || isAllRestaurantInfoLoading || !isClerkLoaded) {
       setLoading(true);
     } else {
       setLoading(false);
     }
-  }, [isAccountInfoLoading, isClerkLoaded, isRestaurantInfoLoading]);
+  }, [isAccountInfoLoading, isClerkLoaded, isAllRestaurantInfoLoading]);
 
   return (
     <MeniContext.Provider
       value={{
         loading,
         accountInfo,
-        restaurantInfo,
+        allRestaurantInfo,
+        currentRestaurantSelectedIndex,
+        setCurrentRestaurantSelectedIndex,
         refetchAccountInfo,
-        refetchRestaurantInfo,
+        refetchAllRestaurantInfo,
         updateAccountInfo,
         updateRestaurantInfo,
+        currentRestaurantSelected,
       }}
     >
       {children}

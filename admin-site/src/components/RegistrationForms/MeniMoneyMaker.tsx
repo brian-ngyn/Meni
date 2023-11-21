@@ -1,4 +1,3 @@
-import router from "next/router";
 import QRCode from "qrcode.react";
 import { useEffect, useState } from "react";
 
@@ -28,7 +27,7 @@ type MMMProps = {
 
 const MeniMoneyMaker: React.FunctionComponent<MMMProps> = (props) => {
   const { hasPaymentMethod, isPaid, currentTier, restaurantId } = props;
-  const { refetchAccountInfo, refetchRestaurantInfo } = useMeniContext();
+  const { refetchAccountInfo, refetchAllRestaurantInfo } = useMeniContext();
   const { user } = useUser();
   const { mutate: pickPaymentPlan } = api.meniMoneyMaker.pickPlan.useMutation({
     onSuccess: (a) => {
@@ -39,7 +38,7 @@ const MeniMoneyMaker: React.FunctionComponent<MMMProps> = (props) => {
           "success",
         );
         void refetchAccountInfo();
-        void refetchRestaurantInfo();
+        void refetchAllRestaurantInfo();
         setPageStep(1);
       } else {
         MeniNotification(
@@ -452,7 +451,7 @@ const MeniMoneyMaker: React.FunctionComponent<MMMProps> = (props) => {
                   </button>
                   <QRCode
                     id="qr-gen"
-                    value={"https://meniapp.ca/table/" + restaurantId}
+                    value={"https://meniapp.ca/restaurant/" + restaurantId}
                     size={290}
                     level={"H"}
                     includeMargin={true}

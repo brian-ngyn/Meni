@@ -1,10 +1,4 @@
-import {
-  type RefObject,
-  forwardRef,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { useCallback, useEffect, useState } from "react";
 import { generateClientDropzoneAccept } from "uploadthing/client";
 
 import FileUploadIcon from "@mui/icons-material/FileUpload";

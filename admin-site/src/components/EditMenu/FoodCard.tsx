@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { createRef, useState } from "react";
+import { useState } from "react";
 import ScrollContainer from "react-indiana-drag-scroll";
 
 import DeleteIcon from "@mui/icons-material/Delete";

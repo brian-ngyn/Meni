@@ -23,10 +23,15 @@ import MeniNotification from "~/components/items/MeniNotification";
 
 type EditContainerProps = {
   menuId: string;
+  restaurantId: string;
 };
 
 export default function EditContainer(props: EditContainerProps) {
-  const { refetchAccountInfo, refetchRestaurantInfo } = useMeniContext();
+  const {
+    refetchAccountInfo,
+    currentRestaurantSelected,
+    refetchAllRestaurantInfo,
+  } = useMeniContext();
   const {
     editableMenuState,
     setMenuLoading,
@@ -50,7 +55,10 @@ export default function EditContainer(props: EditContainerProps) {
     isLoading,
     refetch: fetchRestaurantInfo,
   } = api.getters.getRestaurantInfo.useQuery(
-    { clerkId: user?.id || "" },
+    {
+      clerkId: user?.id || "",
+      restaurantId: props.restaurantId,
+    },
     { enabled: false },
   );
 
@@ -59,7 +67,11 @@ export default function EditContainer(props: EditContainerProps) {
     refetch: fetchMenuForContext,
     isLoading: isFetchMenuLoading,
   } = api.getters.getMenu.useQuery(
-    { clerkId: user?.id || "", menuId: menuId },
+    {
+      clerkId: user?.id as string,
+      menuId: menuId,
+      restaurantId: props.restaurantId,
+    },
     { enabled: false },
   );
 
@@ -72,10 +84,11 @@ export default function EditContainer(props: EditContainerProps) {
           "success",
         );
         void refetchAccountInfo();
-        void refetchRestaurantInfo();
+        void refetchAllRestaurantInfo();
         // wait a bit so they get to see the notification lol
         setTimeout(() => {
-          window.location.href = "/edit/" + a.menuId;
+          window.location.href =
+            `/edit/${currentRestaurantSelected?.id}/` + a.menuId;
         }, 1500);
       } else {
         MeniNotification(
@@ -108,7 +121,7 @@ export default function EditContainer(props: EditContainerProps) {
           "success",
         );
         void refetchAccountInfo();
-        void refetchRestaurantInfo();
+        void refetchAllRestaurantInfo();
       } else {
         MeniNotification(
           "Error",
@@ -138,10 +151,12 @@ export default function EditContainer(props: EditContainerProps) {
         createMenu({
           newMenu: editableMenuState.menu,
           clerkId: user.id,
+          restaurantId: props.restaurantId,
         });
       } else {
         updateMenu({
           updatedMenu: editableMenuState.menu,
+          restaurantId: props.restaurantId,
           clerkId: user.id,
         });
       }
@@ -161,10 +176,10 @@ export default function EditContainer(props: EditContainerProps) {
   };
 
   useEffect(() => {
-    if (user) {
+    if (user && props.restaurantId) {
       void fetchRestaurantInfo();
     }
-  }, [fetchRestaurantInfo, user]);
+  }, [fetchRestaurantInfo, user, props.restaurantId]);
 
   useEffect(() => {
     if (user && menuId !== "new") {
@@ -182,9 +197,9 @@ export default function EditContainer(props: EditContainerProps) {
   // create new Menu
   useEffect(() => {
     const createNewMenu = () => {
-      if (router.query.restaurantId) {
+      if (props.restaurantId) {
         setStartGuide(true);
-        loadNewTemplate(router.query.restaurantId as string);
+        loadNewTemplate(props.restaurantId);
       }
     };
 
@@ -201,6 +216,7 @@ export default function EditContainer(props: EditContainerProps) {
     loadNewTemplate,
     initialLoad,
     editableMenuState.mode,
+    props.restaurantId,
   ]);
 
   const renderSaveBar = () => {

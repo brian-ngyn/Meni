@@ -61,7 +61,7 @@ type MenuSubCategory {
 type MenuItem {
   id          String
   name        String
-  price       String 
+  price       String
   description String
   image       String
   tags        String[]

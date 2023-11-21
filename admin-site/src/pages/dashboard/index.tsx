@@ -25,7 +25,10 @@ export default function Dashboard() {
   const {
     loading,
     accountInfo,
-    restaurantInfo,
+    allRestaurantInfo,
+    currentRestaurantSelected,
+    currentRestaurantSelectedIndex,
+    setCurrentRestaurantSelectedIndex,
     updateAccountInfo,
     updateRestaurantInfo,
   } = useMeniContext();
@@ -40,16 +43,18 @@ export default function Dashboard() {
     refetch: fetchMenusBrief,
     isLoading: isLoadingMenus,
   } = api.getters.getMenusBrief.useQuery(
-    { clerkId: accountInfo?.clerkId || "" },
+    {
+      clerkId: accountInfo?.clerkId as string,
+      restaurantId: currentRestaurantSelected?.id as string,
+    },
     { enabled: false },
   );
 
   useEffect(() => {
-    if (!menus && accountInfo?.clerkId) {
+    if (accountInfo?.clerkId && currentRestaurantSelected?.id) {
       void fetchMenusBrief();
-    } else {
       menus?.forEach((menu: IMenuBrief) => {
-        if (menu.id === restaurantInfo?.activeMenuId) {
+        if (menu.id === currentRestaurantSelected?.activeMenuId) {
           setActiveMenu(menu.id);
         }
       });
@@ -58,7 +63,8 @@ export default function Dashboard() {
     accountInfo?.clerkId,
     fetchMenusBrief,
     menus,
-    restaurantInfo?.activeMenuId,
+    currentRestaurantSelected?.id,
+    currentRestaurantSelected?.activeMenuId,
   ]);
 
   const [newForm, setNewForm] = useState({
@@ -73,19 +79,19 @@ export default function Dashboard() {
   });
 
   useEffect(() => {
-    if (accountInfo && restaurantInfo) {
+    if (accountInfo && currentRestaurantSelected) {
       setNewForm({
         firstName: accountInfo.firstName,
         lastName: accountInfo.lastName,
-        restaurantName: restaurantInfo.name,
-        address: restaurantInfo.address,
-        restaurantPhoneNumber: restaurantInfo.phoneNumber,
-        description: restaurantInfo.description,
-        image: restaurantInfo.image,
+        restaurantName: currentRestaurantSelected.name,
+        address: currentRestaurantSelected.address,
+        restaurantPhoneNumber: currentRestaurantSelected.phoneNumber,
+        description: currentRestaurantSelected.description,
+        image: currentRestaurantSelected.image,
         edited: false,
       });
     }
-  }, [accountInfo, restaurantInfo]);
+  }, [accountInfo, currentRestaurantSelected]);
 
   const handleInfoChange = (
     e: ChangeEvent<HTMLTextAreaElement> | ChangeEvent<HTMLInputElement>,
@@ -145,8 +151,7 @@ export default function Dashboard() {
       );
     } else {
       void router.push({
-        pathname: "/edit/new",
-        query: { restaurantId: restaurantInfo?.id },
+        pathname: `/edit/${currentRestaurantSelected?.id}/new`,
       });
     }
   };
@@ -201,8 +206,41 @@ export default function Dashboard() {
       {/* {renderTour()} */}
       <Navbar page="dashboard" />
       <div className="pb-8">
-        <div className={`pt-20 font-serif text-6xl ${PADDING}`}>
-          <h1>Dashboard</h1>
+        <div
+          className={`flex justify-between pt-20 font-serif text-6xl ${PADDING} flex-col md:flex-row`}
+        >
+          <div>Dashboard</div>
+          <div className="mt-3 flex w-full flex-row-reverse items-center justify-end gap-x-1 text-xl md:mt-0 md:w-1/4 md:flex-row md:justify-end md:gap-x-4">
+            {allRestaurantInfo?.length === 1 ? (
+              <div className="text-md text-center font-sans">
+                {allRestaurantInfo[0]?.name}
+              </div>
+            ) : (
+              <select
+                onChange={(e) =>
+                  setCurrentRestaurantSelectedIndex(Number(e.target.value))
+                }
+                value={currentRestaurantSelectedIndex}
+                className="bg-transparent text-center font-sans md:text-end"
+              >
+                {allRestaurantInfo &&
+                  allRestaurantInfo.map((restaurant, index: number) => {
+                    return (
+                      <option key={index} value={index}>
+                        {restaurant.name}
+                      </option>
+                    );
+                  })}
+              </select>
+            )}
+            <MeniButton
+              tooltip="Create new restaurant"
+              square
+              onClick={() => void router.push("/new-restaurant")}
+            >
+              +
+            </MeniButton>
+          </div>
         </div>
         <div className={`my-6 font-sans text-3xl font-medium ${PADDING}`}>
           <h2>Welcome Back, {accountInfo?.firstName}!</h2>{" "}
@@ -228,7 +266,7 @@ export default function Dashboard() {
             mode={MenuCardMode.MENU}
             activeMenu={activeMenu}
             menus={menus}
-            restaurantId={restaurantInfo?.id || ""}
+            restaurantId={currentRestaurantSelected?.id || ""}
             getRestaurantMenus={() => fetchMenusBrief()}
             currentPlan={accountInfo?.currentPlan || ""}
           />
@@ -255,7 +293,7 @@ export default function Dashboard() {
               }
               isPaid={accountInfo?.isPaid || false}
               currentTier={accountInfo?.currentPlan || ""}
-              restaurantId={restaurantInfo?.id || ""}
+              restaurantId={currentRestaurantSelected?.id || ""}
             />
           </div>
           <h1 className="my-6 font-serif text-4xl">Edit Account Information</h1>

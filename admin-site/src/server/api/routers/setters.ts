@@ -14,6 +14,7 @@ export const settersRouter = createTRPCRouter({
     .input(
       z.object({
         clerkId: z.string(),
+        restaurantId: z.string(),
         name: z.string(),
         address: z.string(),
         phoneNumber: z.string(),
@@ -42,12 +43,13 @@ export const settersRouter = createTRPCRouter({
         },
       });
 
-      const currentRestaurant = await ctx.db.restaurantInfo.findFirst({
+      const currentRestaurant = await ctx.db.restaurantInfo.findUnique({
         where: {
           ownerId: owner?.id,
+          id: input.restaurantId,
         },
       });
-      if (currentRestaurant?.address !== input.address) {
+      if (currentRestaurant && currentRestaurant?.address !== input.address) {
         const ArcGIS_auth = ApiKeyManager.fromKey(env.ARCGIS_KEY);
         const geoLocation = await geocode({
           address: input.address,
@@ -56,6 +58,7 @@ export const settersRouter = createTRPCRouter({
         await ctx.db.restaurantInfo.update({
           where: {
             ownerId: owner?.id,
+            id: input.restaurantId,
           },
           data: {
             name: input.name,
@@ -69,10 +72,11 @@ export const settersRouter = createTRPCRouter({
             },
           },
         });
-      } else {
+      } else if (currentRestaurant) {
         await ctx.db.restaurantInfo.update({
           where: {
             ownerId: owner?.id,
+            id: input.restaurantId,
           },
           data: {
             name: input.name,
@@ -81,6 +85,11 @@ export const settersRouter = createTRPCRouter({
             description: input.description,
             image: input.image,
           },
+        });
+      } else {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "User is not authorized to update this restaurant info",
         });
       }
 
@@ -139,6 +148,7 @@ export const settersRouter = createTRPCRouter({
       // this needs to be fixed to use the prisma type.. idk how to do that yet.
       z.object({
         clerkId: z.string(),
+        restaurantId: z.string(),
         newMenu: z.object({
           id: z.string(),
           name: z.string(),
@@ -192,13 +202,14 @@ export const settersRouter = createTRPCRouter({
       const restaurant = await ctx.db.restaurantInfo.findUnique({
         where: {
           ownerId: owner?.id,
+          id: input.restaurantId,
         },
       });
 
       if (restaurant?.id !== input.newMenu.restaurantId) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: "User is not authorized to update this account info",
+          message: "User is not authorized to update this restaurant info",
         });
       }
 
@@ -254,6 +265,7 @@ export const settersRouter = createTRPCRouter({
       // this needs to be fixed to use the prisma type.. idk how to do that yet.
       z.object({
         clerkId: z.string(),
+        restaurantId: z.string(),
         updatedMenu: z.object({
           id: z.string(),
           name: z.string(),
@@ -307,13 +319,14 @@ export const settersRouter = createTRPCRouter({
       const restaurant = await ctx.db.restaurantInfo.findUnique({
         where: {
           ownerId: owner?.id,
+          id: input.restaurantId,
         },
       });
 
-      if (restaurant?.id !== input.updatedMenu.restaurantId) {
+      if (!restaurant || restaurant?.id !== input.updatedMenu.restaurantId) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: "User is not authorized to update this menu",
+          message: "User is not authorized to update this restaurant's menu",
         });
       }
 
@@ -355,6 +368,7 @@ export const settersRouter = createTRPCRouter({
       await ctx.db.menus.update({
         where: {
           id: input.updatedMenu.id,
+          restaurantId: restaurant.id,
         },
         data: {
           ...menuWithoutId,
@@ -372,6 +386,7 @@ export const settersRouter = createTRPCRouter({
       z.object({
         clerkId: z.string(),
         menuId: z.string(),
+        restaurantId: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -399,30 +414,30 @@ export const settersRouter = createTRPCRouter({
       const restaurant = await ctx.db.restaurantInfo.findUnique({
         where: {
           ownerId: owner?.id,
+          id: input.restaurantId,
         },
       });
       const menu = await ctx.db.menus.findUnique({
         where: {
           id: input.menuId,
+          restaurantId: restaurant?.id,
         },
       });
-      if (menu?.restaurantId !== restaurant?.id) {
+      if (!menu) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message:
             "User is not authorized to update this account's active menu",
         });
       }
-      if (restaurant?.id) {
-        await ctx.db.restaurantInfo.update({
-          where: {
-            id: restaurant.id,
-          },
-          data: {
-            activeMenuId: input.menuId,
-          },
-        });
-      }
+      await ctx.db.restaurantInfo.update({
+        where: {
+          id: restaurant?.id,
+        },
+        data: {
+          activeMenuId: input.menuId,
+        },
+      });
 
       return {
         success: "true",
@@ -434,6 +449,7 @@ export const settersRouter = createTRPCRouter({
     .input(
       z.object({
         clerkId: z.string(),
+        restaurantId: z.string(),
         menuId: z.string(),
         newName: z.string(),
       }),
@@ -461,39 +477,49 @@ export const settersRouter = createTRPCRouter({
       const restaurant = await ctx.db.restaurantInfo.findUnique({
         where: {
           ownerId: owner?.id,
+          id: input.restaurantId,
         },
       });
-      const menu = await ctx.db.menus.findUnique({
-        where: {
-          id: input.menuId,
-        },
-      });
-      if (menu?.restaurantId !== restaurant?.id) {
+      if (restaurant) {
+        const menu = await ctx.db.menus.findUnique({
+          where: {
+            id: input.menuId,
+            restaurantId: restaurant.id,
+          },
+        });
+        if (menu?.restaurantId !== restaurant?.id) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "User is not authorized to rename this menu",
+          });
+        }
+
+        await ctx.db.menus.update({
+          where: {
+            id: input.menuId,
+          },
+          data: {
+            name: input.newName,
+          },
+        });
+
+        return {
+          success: "true",
+          message: "Menu has been renamed successfully",
+        };
+      } else {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: "User is not authorized to rename this menu",
+          message: "User is not authorized to delete this menu",
         });
       }
-
-      await ctx.db.menus.update({
-        where: {
-          id: input.menuId,
-        },
-        data: {
-          name: input.newName,
-        },
-      });
-
-      return {
-        success: "true",
-        message: "Menu has been renamed successfully",
-      };
     }),
 
   deleteMenu: privateProcedure
     .input(
       z.object({
         clerkId: z.string(),
+        restaurantId: z.string(),
         menuId: z.string(),
       }),
     )
@@ -520,46 +546,54 @@ export const settersRouter = createTRPCRouter({
       const restaurant = await ctx.db.restaurantInfo.findUnique({
         where: {
           ownerId: owner?.id,
+          id: input.restaurantId,
         },
       });
-      const menu = await ctx.db.menus.findUnique({
-        where: {
-          id: input.menuId,
-        },
-      });
-      if (menu?.restaurantId !== restaurant?.id) {
+      if (restaurant) {
+        const menu = await ctx.db.menus.findUnique({
+          where: {
+            id: input.menuId,
+          },
+        });
+        if (menu?.restaurantId !== restaurant?.id) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "User is not authorized to delete this menu",
+          });
+        }
+
+        await ctx.db.menus.delete({
+          where: {
+            id: input.menuId,
+          },
+        });
+
+        const menuLength = await ctx.db.menus.count({
+          where: {
+            restaurantId: restaurant?.id,
+          },
+        });
+
+        if (menuLength === 0 || restaurant?.activeMenuId === input.menuId) {
+          await ctx.db.restaurantInfo.update({
+            where: {
+              ownerId: owner?.id,
+            },
+            data: {
+              activeMenuId: null,
+            },
+          });
+        }
+
+        return {
+          success: "true",
+          message: "Menu has been deleted successfully",
+        };
+      } else {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "User is not authorized to delete this menu",
         });
       }
-
-      await ctx.db.menus.delete({
-        where: {
-          id: input.menuId,
-        },
-      });
-
-      const menuLength = await ctx.db.menus.count({
-        where: {
-          restaurantId: restaurant?.id,
-        },
-      });
-
-      if (menuLength === 0 || restaurant?.activeMenuId === input.menuId) {
-        await ctx.db.restaurantInfo.update({
-          where: {
-            ownerId: owner?.id,
-          },
-          data: {
-            activeMenuId: null,
-          },
-        });
-      }
-
-      return {
-        success: "true",
-        message: "Menu has been deleted successfully",
-      };
     }),
 });

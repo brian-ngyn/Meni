@@ -6,8 +6,6 @@ import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 
-import { useEditableMenu } from "~/context/EditableMenuContext";
-
 type IMeniMultiSelect = {
   value: string[];
   onChange: (e: any, values: any) => void;

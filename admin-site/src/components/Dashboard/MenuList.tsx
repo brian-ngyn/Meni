@@ -31,7 +31,11 @@ type IMenuListProps = {
 type SelectedMenu = { id: string; name: string };
 
 function MenuList(props: IMenuListProps) {
-  const { refetchAccountInfo, refetchRestaurantInfo } = useMeniContext();
+  const {
+    refetchAccountInfo,
+    currentRestaurantSelected,
+    refetchAllRestaurantInfo,
+  } = useMeniContext();
   const router = useRouter();
   const { user } = useUser();
   // We will use React useRef hook to reference the wrapping div:
@@ -62,7 +66,7 @@ function MenuList(props: IMenuListProps) {
           "success",
         );
         void refetchAccountInfo();
-        void refetchRestaurantInfo();
+        void refetchAllRestaurantInfo();
         setOpenedMenu({ id: "", name: "" });
       } else {
         MeniNotification(
@@ -96,7 +100,7 @@ function MenuList(props: IMenuListProps) {
         );
         void props.getRestaurantMenus();
         void refetchAccountInfo();
-        void refetchRestaurantInfo();
+        void refetchAllRestaurantInfo();
         setDialogOpened(false);
         setOpenedMenu({ id: "", name: "" });
       } else {
@@ -131,7 +135,7 @@ function MenuList(props: IMenuListProps) {
         );
         void props.getRestaurantMenus();
         void refetchAccountInfo();
-        void refetchRestaurantInfo();
+        void refetchAllRestaurantInfo();
         setDialogOpened(false);
         setOpenedMenu({ id: "", name: "" });
       } else {
@@ -165,7 +169,11 @@ function MenuList(props: IMenuListProps) {
       );
     } else {
       if (user) {
-        setActiveMenu({ clerkId: user.id, menuId: menuId });
+        setActiveMenu({
+          clerkId: user.id,
+          menuId: menuId,
+          restaurantId: props.restaurantId,
+        });
       }
     }
   };
@@ -182,19 +190,28 @@ function MenuList(props: IMenuListProps) {
 
   const handleRenameSubmit = () => {
     if (user) {
-      renameMenu({ clerkId: user.id, menuId: openedMenu.id, newName: newName });
+      renameMenu({
+        clerkId: user.id,
+        restaurantId: currentRestaurantSelected?.id as string,
+        menuId: openedMenu.id,
+        newName: newName,
+      });
     }
     setNewName("");
   };
 
   const handleDeleteSubmit = () => {
     if (user) {
-      deleteMenu({ clerkId: user.id, menuId: openedMenu.id });
+      deleteMenu({
+        clerkId: user.id,
+        restaurantId: currentRestaurantSelected?.id as string,
+        menuId: openedMenu.id,
+      });
     }
   };
 
   const openForEdit = (menuId: string) => {
-    void router.push("/edit/" + menuId);
+    void router.push(`/edit/${currentRestaurantSelected?.id}/` + menuId);
   };
 
   const renderDialog = () => {

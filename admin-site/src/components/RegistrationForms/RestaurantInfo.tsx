@@ -76,21 +76,15 @@ const RestaurantInfo: React.FunctionComponent<RestaurantInfoProps> = (
           value={address}
           onChange={handleChange}
           title="Address"
-        />
-        {/* <MeniTextInput
-          id="address"
-          name="address"
-          value={address}
-          onChange={handleChange}
-          title="Address"
           validate={{
             required: true,
             pattern: /[a-zA-Z0-9\s\-@#$%&*]+[^\s\-@#$%&*]$/i,
             errorMessages: {
               required: "Address is required",
+              pattern: "Address is not valid",
             },
           }}
-        /> */}
+        />
         <MeniTextInput
           id="tel"
           type="tel"

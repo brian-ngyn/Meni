@@ -1,15 +1,13 @@
 import { getDistance } from "geolib";
 import { z } from "zod";
 
-import { type RestaurantInfo } from "@prisma/client";
-
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const homeRouter = createTRPCRouter({
   getFeaturedRestaurants: publicProcedure.query(({ ctx }) => {
     return ctx.db.restaurantInfo.findMany({
       where: {
-        featuredPayment: true,
+        // featuredPayment: true, // need to change this to use entitlements !
         activeMenuId: {
           not: null,
         },

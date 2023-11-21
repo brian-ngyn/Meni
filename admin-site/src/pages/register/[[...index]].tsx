@@ -78,15 +78,7 @@ export default function Page() {
       return;
     }
     setSignupComplete(true);
-    const body = {
-      firstName: form.firstName,
-      lastName: form.lastName,
-      restaurantName: form.restaurantName,
-      address: form.address,
-      restaurantPhoneNumber: form.restaurantPhoneNumber,
-      description: form.description,
-    };
-    mutate(body);
+    mutate(form);
   };
 
   useEffect(() => {

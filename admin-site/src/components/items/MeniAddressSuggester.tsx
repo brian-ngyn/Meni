@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useState } from "react";
+import { type FocusEvent, type ReactNode, useEffect, useState } from "react";
 
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 
@@ -88,6 +88,21 @@ export default function MeniAddressSuggester(props: MeniAddressSuggesterProps) {
     setTimeoutId(newTimeoutId);
   };
 
+  const [error, setError] = useState("");
+
+  const handleBlur = (e: FocusEvent<HTMLInputElement, Element>) => {
+    if (validate) {
+      const { required, pattern, errorMessages } = validate;
+      if (required && !value) {
+        setError(errorMessages?.required || "This field is required.");
+      } else if (pattern && !pattern.test(value.toString())) {
+        setError(errorMessages?.pattern || "Invalid input.");
+      } else {
+        setError("");
+      }
+    }
+  };
+
   return (
     <div className="flex w-full flex-col ">
       <div className="relative w-full">
@@ -102,7 +117,10 @@ export default function MeniAddressSuggester(props: MeniAddressSuggesterProps) {
               handleSearchChange(e.target.value);
             }}
             onFocus={() => setOpen(true)}
-            onBlur={() => setOpen(false)}
+            onBlur={(e) => {
+              setOpen(false);
+              handleBlur(e);
+            }}
             autoFocus={autoFocus}
             name={name}
             value={value}
@@ -161,6 +179,11 @@ export default function MeniAddressSuggester(props: MeniAddressSuggesterProps) {
           </ul>
         )}
       </div>
+      {error && (
+        <div className="relative-absolute inset-y-0 right-0 flex items-center pr-3 text-sm text-red-500">
+          {error}
+        </div>
+      )}
     </div>
   );
 }

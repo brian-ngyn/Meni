@@ -1,22 +1,20 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
 
-import {
-  EditableMenuContextProvider,
-  useEditableMenu,
-} from "~/context/EditableMenuContext";
-import { useMeniContext } from "~/context/meniContext";
+import { EditableMenuContextProvider } from "~/context/EditableMenuContext";
 
 import EditContainer from "~/components/EditMenu/EditContainer";
 
 export default function EditMenu(props: any) {
   const router = useRouter();
-  const { id } = router.query;
+  const { restaurantId, menuId } = router.query;
 
   return (
     <>
       <EditableMenuContextProvider>
-        <EditContainer menuId={id as string} />
+        <EditContainer
+          menuId={menuId as string}
+          restaurantId={restaurantId as string}
+        />
       </EditableMenuContextProvider>
     </>
   );
