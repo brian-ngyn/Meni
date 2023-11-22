@@ -210,37 +210,6 @@ export default function Dashboard() {
           className={`flex justify-between pt-20 font-serif text-6xl ${PADDING} flex-col md:flex-row`}
         >
           <div>Dashboard</div>
-          <div className="mt-3 flex w-full flex-row-reverse items-center justify-end gap-x-1 text-xl md:mt-0 md:w-1/4 md:flex-row md:justify-end md:gap-x-4">
-            {allRestaurantInfo?.length === 1 ? (
-              <div className="text-md text-center font-sans">
-                {allRestaurantInfo[0]?.name}
-              </div>
-            ) : (
-              <select
-                onChange={(e) =>
-                  setCurrentRestaurantSelectedIndex(Number(e.target.value))
-                }
-                value={currentRestaurantSelectedIndex}
-                className="bg-transparent text-center font-sans md:text-end"
-              >
-                {allRestaurantInfo &&
-                  allRestaurantInfo.map((restaurant, index: number) => {
-                    return (
-                      <option key={index} value={index}>
-                        {restaurant.name}
-                      </option>
-                    );
-                  })}
-              </select>
-            )}
-            <MeniButton
-              tooltip="Create new restaurant"
-              square
-              onClick={() => void router.push("/new-restaurant")}
-            >
-              +
-            </MeniButton>
-          </div>
         </div>
         <div className={`my-6 font-sans text-3xl font-medium ${PADDING}`}>
           <h2>Welcome Back, {accountInfo?.firstName}!</h2>{" "}
