@@ -106,7 +106,7 @@ export default function Navbar(props: NavbarProps) {
                     <div className="relative">
                       <button
                         ref={hamburgerButton}
-                        className="group flex h-10 w-10 flex-col items-center justify-center rounded bg-grey"
+                        className="group flex h-10 w-10 flex-col items-center justify-center rounded"
                         onClick={() => setDropdownOpen((prev) => !prev)}
                       >
                         <div
@@ -130,21 +130,23 @@ export default function Navbar(props: NavbarProps) {
                           <motion.div
                             id="hamburgerMenu"
                             key="hamburgerMenu"
-                            className="absolute right-0 mt-2 w-[calc(100vw-125px)] rounded-md border bg-grey py-4 text-white md:w-[300px]"
+                            className="absolute right-0 mt-2 w-[calc(100vw-125px)] rounded-md bg-card py-4 text-white md:w-[300px]"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.33 }}
                           >
-                            <ul className="ml-4 flex flex-col gap-y-2 divide-y divide-[rgb(255,255,255,0.33)]">
+                            <ul className="mx-4 flex flex-col gap-y-2 divide-y divide-[rgb(80,80,80)]">
                               <li className="relative flex cursor-pointer gap-x-4">
-                                <div className="w-full">
+                                <div className="mr-4 w-full">
                                   {allRestaurantInfo?.length === 1 ? (
-                                    <div className="text-md text-center font-sans">
+                                    <div className="flex flex-row items-center justify-between text-lg">
                                       {allRestaurantInfo[0]?.name}
+                                      <StorefrontIcon />
                                     </div>
                                   ) : (
-                                    <div className="mr-4 flex items-center">
+                                    <div className="flex items-center gap-x-2">
+                                      <StorefrontIcon />
                                       <select
                                         onChange={(e) =>
                                           setCurrentRestaurantSelectedIndex(
@@ -168,15 +170,13 @@ export default function Navbar(props: NavbarProps) {
                                             },
                                           )}
                                       </select>
-                                      <div className="flex gap-x-4">
-                                        <KeyboardArrowDownTwoToneIcon />
-                                        <StorefrontIcon />
-                                      </div>
+                                      <KeyboardArrowDownTwoToneIcon className="-mr-3" />
                                     </div>
                                   )}
                                 </div>
                               </li>
-                              <li className="mr-4 flex cursor-pointer items-center gap-x-4 pt-2">
+                              <li className="flex cursor-pointer items-center gap-x-2 pt-2">
+                                <AddBoxIcon />
                                 <div
                                   className="flex w-full text-lg"
                                   onClick={() =>
@@ -185,18 +185,17 @@ export default function Navbar(props: NavbarProps) {
                                 >
                                   Create New Restaurant
                                 </div>
-                                <AddBoxIcon />
                               </li>
-                              <li className="mr-3.5 flex cursor-pointer items-center gap-x-4 pt-2">
+                              <li className="flex cursor-pointer items-center gap-x-2 pt-2">
+                                <LogoutIcon className="ml-0.5" />
                                 <div
-                                  className="flex w-full text-lg"
+                                  className="-ml-0.5 flex w-full text-lg"
                                   onClick={() =>
                                     void signOut(() => void router.push("/"))
                                   }
                                 >
                                   Logout
                                 </div>
-                                <LogoutIcon />
                               </li>
                             </ul>
                           </motion.div>
