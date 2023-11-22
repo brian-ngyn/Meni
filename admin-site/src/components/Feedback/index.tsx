@@ -56,7 +56,7 @@ const Feedback = () => {
             <FeedbackOutlinedIcon style={{ fill: "#000000" }} />
           </button>
           {feedbackModalOpen && (
-            <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center bg-black/50">
+            <div className="z-999 fixed left-0 top-0 flex h-full w-full items-center justify-center bg-black/50">
               <div className="flex h-full w-full items-center justify-center">
                 <div className="relative rounded-md bg-white/100 px-48 py-64 shadow-xl">
                   <div className="absolute left-0 top-0 flex h-full w-full flex-col gap-y-2 p-8 font-sans text-xl text-black">
