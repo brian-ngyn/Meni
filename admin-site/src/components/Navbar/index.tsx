@@ -140,9 +140,9 @@ export default function Navbar(props: NavbarProps) {
                               <li className="relative flex cursor-pointer gap-x-4">
                                 <div className="mr-4 w-full">
                                   {allRestaurantInfo?.length === 1 ? (
-                                    <div className="flex flex-row items-center justify-between text-lg">
-                                      {allRestaurantInfo[0]?.name}
+                                    <div className="flex flex-row items-center gap-x-2 text-lg">
                                       <StorefrontIcon />
+                                      {allRestaurantInfo[0]?.name}
                                     </div>
                                   ) : (
                                     <div className="flex items-center gap-x-2">
