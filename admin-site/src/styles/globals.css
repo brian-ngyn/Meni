@@ -13,4 +13,12 @@
   html {
     @apply bg-backdrop;
   }
+  .\[appearance\:none\] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+  }
+  .divide-opacity-50 {
+    --divide-opacity: 0.5;
+  }
 }
