@@ -130,7 +130,7 @@ export default function Navbar(props: NavbarProps) {
                           <motion.div
                             id="hamburgerMenu"
                             key="hamburgerMenu"
-                            className="absolute right-0 mt-2 w-[calc(100vw-125px)] rounded-md bg-card py-4 text-white md:w-[300px]"
+                            className="absolute right-0 mt-2 w-[calc(100vw-100px)] rounded-md bg-card py-4 text-white md:w-[300px]"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
