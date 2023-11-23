@@ -140,20 +140,27 @@ export default function EditableText(props: IEditableTextProps) {
           </div>
         </>
       ) : (
-        <div className="group inline-flex border-2 border-dashed border-transparent p-1 hover:cursor-text hover:border-accent">
+        <div className="group inline-flex overflow-scroll border-2 border-dashed border-transparent p-1 hover:cursor-text hover:border-accent">
           {tags !== undefined ? (
             <div onClick={openForEdit}>
               {tags.length > 0 ? (
-                <Stack direction="row" spacing={1} className="float-left">
+                <Stack
+                  direction="row"
+                  spacing={0.5}
+                  className="float-left overflow-scroll"
+                >
                   {tags.map((item: string, id) => (
                     <Chip
                       key={id}
                       label={item}
                       variant="filled"
+                      size="small"
+                      className="font-sans"
                       sx={{
                         cursor: "pointer",
                         backgroundColor: "#505050",
                         color: "#F7F7F7",
+                        fontFamily: "var(--font-mont);",
                       }}
                     />
                   ))}
@@ -164,10 +171,12 @@ export default function EditableText(props: IEditableTextProps) {
                   className="cursor-pointer"
                   label="Add Tags"
                   variant="filled"
+                  size="small"
                   sx={{
                     cursor: "pointer",
                     backgroundColor: "#505050",
                     color: "#F7F7F7",
+                    fontFamily: "var(--font-mont);",
                   }}
                 />
               )}

@@ -5,6 +5,7 @@ import Chip from "@mui/material/Chip";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 
 type IMeniMultiSelect = {
   value: string[];
@@ -16,7 +17,7 @@ export default function MeniMultiSelect(props: IMeniMultiSelect) {
   const { value, onChange, onBlur, options } = props;
 
   return (
-    <Stack spacing={3} className="w-full">
+    <Stack spacing={0.5} className="w-full">
       <Autocomplete
         fullWidth
         multiple
@@ -26,10 +27,18 @@ export default function MeniMultiSelect(props: IMeniMultiSelect) {
         value={value}
         onChange={onChange}
         getOptionLabel={(value) => value}
+        renderOption={(props, option) => (
+          <Typography {...props}>{option}</Typography>
+        )}
         renderTags={(value: readonly string[], getTagProps) =>
           value.map((option: string, index: number) => (
             <Chip
-              sx={{ color: "#F7F7F7", backgroundColor: "#505050" }}
+              sx={{
+                fontFamily: "var(--font-mont);",
+                color: "#F7F7F7",
+                backgroundColor: "#505050",
+              }}
+              size="small"
               variant="filled"
               label={option}
               {...getTagProps({ index })}
@@ -44,6 +53,9 @@ export default function MeniMultiSelect(props: IMeniMultiSelect) {
             placeholder="Tags"
             onBlur={onBlur}
             sx={{
+              "& .MuiInputBase-input": {
+                fontFamily: "var(--font-mont);",
+              },
               "& fieldset.MuiOutlinedInput-notchedOutline": {
                 borderColor: "#505050",
               },
