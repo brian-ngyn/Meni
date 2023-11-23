@@ -12,7 +12,7 @@ export default function EditableText(props: IEditableTextProps) {
 
   return (
     <div className="flex w-full">
-      <div className="group inline-flex border-transparent p-1 ">
+      <div className="group inline-flex border-transparent p-1">
         {tags !== undefined ? (
           <div>
             {tags.length > 0 ? (
