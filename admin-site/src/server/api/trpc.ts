@@ -9,7 +9,7 @@
 import superjson from "superjson";
 import { ZodError } from "zod";
 
-import { getAuth } from "@clerk/nextjs/server";
+import { clerkClient, getAuth } from "@clerk/nextjs/server";
 import { TRPCError, initTRPC } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 
@@ -29,15 +29,19 @@ import { db } from "~/server/db";
  *
  * @see https://trpc.io/docs/context
  */
-export const createTRPCContext = (_opts: CreateNextContextOptions) => {
+export const createTRPCContext = async (_opts: CreateNextContextOptions) => {
   const { req } = _opts;
   const sesh = getAuth(req);
 
   const userId = sesh.userId;
+  const userSubmittingRequest = await clerkClient.users.getUser(
+    userId as string,
+  );
 
   return {
     db,
     userId,
+    userSubmittingRequest,
   };
 };
 
@@ -69,10 +73,18 @@ const enforceUserIsAuthed = t.middleware(async ({ ctx, next }) => {
       code: "UNAUTHORIZED",
     });
   }
+  const userSubmittingRequest = await clerkClient.users.getUser(ctx.userId);
+  if (!userSubmittingRequest.publicMetadata.onboardingComplete) {
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "User is not authorized to send feedback",
+    });
+  }
 
   return next({
     ctx: {
       userId: ctx.userId,
+      userSubmittingRequest: ctx.userSubmittingRequest,
     },
   });
 });

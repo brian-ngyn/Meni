@@ -22,20 +22,6 @@ export const gettersRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      if (ctx.userId !== input.clerkId) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "User is not authorized to view this account",
-        });
-      }
-      const userSubmittingRequest = await clerkClient.users.getUser(ctx.userId);
-      if (!userSubmittingRequest.publicMetadata.onboardingComplete) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "User has not completed onboarding",
-        });
-      }
-
       return await ctx.db.account.findUnique({
         where: {
           clerkId: input.clerkId,
@@ -50,20 +36,6 @@ export const gettersRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      if (ctx.userId !== input.clerkId) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "User is not authorized to view this account",
-        });
-      }
-      const userSubmittingRequest = await clerkClient.users.getUser(ctx.userId);
-      if (!userSubmittingRequest.publicMetadata.onboardingComplete) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "User has not completed onboarding",
-        });
-      }
-
       const owner = await ctx.db.account.findUnique({
         where: {
           clerkId: input.clerkId,
@@ -91,20 +63,6 @@ export const gettersRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      if (ctx.userId !== input.clerkId) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "User is not authorized to view this account",
-        });
-      }
-      const userSubmittingRequest = await clerkClient.users.getUser(ctx.userId);
-      if (!userSubmittingRequest.publicMetadata.onboardingComplete) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "User has not completed onboarding",
-        });
-      }
-
       const owner = await ctx.db.account.findUnique({
         where: {
           clerkId: input.clerkId,
@@ -133,20 +91,6 @@ export const gettersRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      if (ctx.userId !== input.clerkId) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "User is not authorized to view menus for this account",
-        });
-      }
-      const userSubmittingRequest = await clerkClient.users.getUser(ctx.userId);
-      if (!userSubmittingRequest.publicMetadata.onboardingComplete) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "User has not completed onboarding",
-        });
-      }
-
       const owner = await ctx.db.account.findUnique({
         where: {
           clerkId: input.clerkId,
@@ -185,20 +129,6 @@ export const gettersRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      if (ctx.userId !== input.clerkId) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "User is not authorized to get the menu for this account",
-        });
-      }
-      const userSubmittingRequest = await clerkClient.users.getUser(ctx.userId);
-      if (!userSubmittingRequest.publicMetadata.onboardingComplete) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "User is not authorized to get the menu for this account",
-        });
-      }
-
       const owner = await ctx.db.account.findUnique({
         where: {
           clerkId: input.clerkId,
@@ -233,13 +163,6 @@ export const gettersRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      if (!ctx.userId) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "User is not authorized fetch address suggestions",
-        });
-      }
-
       const cleanInput = input.address.replace(/[^a-zA-Z0-9 ]/g, "");
       const response = await fetch(
         `https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer/suggest?text=${cleanInput}&f=json&token=${env.ARCGIS_KEY}`,

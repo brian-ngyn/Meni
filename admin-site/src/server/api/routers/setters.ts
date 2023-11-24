@@ -23,20 +23,6 @@ export const settersRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      if (ctx.userId !== input.clerkId) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "User is not authorized to update this restaurant info",
-        });
-      }
-      const userSubmittingRequest = await clerkClient.users.getUser(ctx.userId);
-      if (!userSubmittingRequest.publicMetadata.onboardingComplete) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "User is not authorized to update this restaurant info",
-        });
-      }
-
       const owner = await ctx.db.account.findUnique({
         where: {
           clerkId: input.clerkId,
@@ -107,20 +93,6 @@ export const settersRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      if (ctx.userId !== input.clerkId) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "User is not authorized to update this account info",
-        });
-      }
-      const userSubmittingRequest = await clerkClient.users.getUser(ctx.userId);
-      if (!userSubmittingRequest.publicMetadata.onboardingComplete) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "User is not authorized to update this account info",
-        });
-      }
-
       const owner = await ctx.db.account.findUnique({
         where: {
           clerkId: input.clerkId,
@@ -180,20 +152,6 @@ export const settersRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      if (ctx.userId !== input.clerkId) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "User is not authorized to create a menu",
-        });
-      }
-      const userSubmittingRequest = await clerkClient.users.getUser(ctx.userId);
-      if (!userSubmittingRequest.publicMetadata.onboardingComplete) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "User is not authorized to create a menu",
-        });
-      }
-
       const owner = await ctx.db.account.findUnique({
         where: {
           clerkId: input.clerkId,
@@ -297,20 +255,6 @@ export const settersRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      if (ctx.userId !== input.clerkId) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "User is not authorized to update a menu",
-        });
-      }
-      const userSubmittingRequest = await clerkClient.users.getUser(ctx.userId);
-      if (!userSubmittingRequest.publicMetadata.onboardingComplete) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "User is not authorized to update a menu",
-        });
-      }
-
       const owner = await ctx.db.account.findUnique({
         where: {
           clerkId: input.clerkId,
@@ -390,22 +334,6 @@ export const settersRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      if (ctx.userId !== input.clerkId) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message:
-            "User is not authorized to update this account's active menu",
-        });
-      }
-      const userSubmittingRequest = await clerkClient.users.getUser(ctx.userId);
-      if (!userSubmittingRequest.publicMetadata.onboardingComplete) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message:
-            "User is not authorized to update this account's active menu",
-        });
-      }
-
       const owner = await ctx.db.account.findUnique({
         where: {
           clerkId: input.clerkId,
@@ -455,20 +383,6 @@ export const settersRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      if (ctx.userId !== input.clerkId) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "User is not authorized to rename this menu",
-        });
-      }
-      const userSubmittingRequest = await clerkClient.users.getUser(ctx.userId);
-      if (!userSubmittingRequest.publicMetadata.onboardingComplete) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "User is not authorized to rename this menu",
-        });
-      }
-
       const owner = await ctx.db.account.findUnique({
         where: {
           clerkId: input.clerkId,
@@ -524,20 +438,6 @@ export const settersRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      if (ctx.userId !== input.clerkId) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "User is not authorized to delete this menu",
-        });
-      }
-      const userSubmittingRequest = await clerkClient.users.getUser(ctx.userId);
-      if (!userSubmittingRequest.publicMetadata.onboardingComplete) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "User is not authorized to delete this menu",
-        });
-      }
-
       const owner = await ctx.db.account.findUnique({
         where: {
           clerkId: input.clerkId,

@@ -9,20 +9,6 @@ export const feedbackRouter = createTRPCRouter({
   sendFeedback: privateProcedure
     .input(z.object({ clerkId: z.string(), content: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      if (ctx.userId !== input.clerkId) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "User is not authorized to send feedback",
-        });
-      }
-      const userSubmittingRequest = await clerkClient.users.getUser(ctx.userId);
-      if (!userSubmittingRequest.publicMetadata.onboardingComplete) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "User is not authorized to send feedback",
-        });
-      }
-
       const currentAccount = await ctx.db.account.findUnique({
         where: {
           clerkId: input.clerkId,
@@ -46,7 +32,7 @@ export const feedbackRouter = createTRPCRouter({
               {
                 title: "New User Feedback",
                 color: 5814783,
-                description: `**Clerk ID:** ${userSubmittingRequest.id}\n**Account ID:** ${currentAccount?.id}\n**Restaurant ID:** ${currentRestaurant?.id}\n\n**Message:** ${input.content}`,
+                description: `**Clerk ID:** ${ctx.userSubmittingRequest.id}\n**Account ID:** ${currentAccount?.id}\n**Restaurant ID:** ${currentRestaurant?.id}\n\n**Message:** ${input.content}`,
               },
             ],
           }),
