@@ -38,7 +38,9 @@ export default function Home() {
     data: localRestaurants,
     refetch: refetchLocalRestaurants,
     isLoading: isLocalRestaurantsLoading,
-  } = api.home.getLocalRestaurants.useQuery(coordinates, { enabled: false });
+  } = api.home.getLocalRestaurants.useQuery(coordinates, {
+    enabled: coordinates.latitude !== -1 && coordinates.longitude !== -1,
+  });
   const { data: searchedRestaurants, refetch: refetchSearchedRestaurants } =
     api.home.search.useQuery(search.searchString, {
       enabled: false,
@@ -51,12 +53,6 @@ export default function Home() {
       }
     }, 5000);
   });
-
-  useEffect(() => {
-    if (coordinates.latitude !== -1 && coordinates.longitude !== -1) {
-      void refetchLocalRestaurants();
-    }
-  }, [coordinates, refetchLocalRestaurants]);
 
   useEffect(() => {
     if ("geolocation" in navigator) {
