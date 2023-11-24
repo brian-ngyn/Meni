@@ -139,14 +139,18 @@ export default function EditableText(props: IEditableTextProps) {
           </div>
         </>
       ) : (
-        <div className="group inline-flex overflow-scroll border-2 border-dashed border-transparent p-1 hover:cursor-text hover:border-accent">
+        <div
+          className={`group inline-flex ${
+            tags !== undefined ? "overflow-scroll" : ""
+          } no-scrollbar border-2 border-dashed border-transparent p-1 hover:cursor-text hover:border-accent`}
+        >
           {tags !== undefined ? (
             <div onClick={openForEdit}>
               {tags.length > 0 ? (
                 <Stack
                   direction="row"
                   spacing={0.5}
-                  className="float-left overflow-scroll"
+                  className="no-scrollbar float-left overflow-scroll"
                 >
                   {tags.map((item: string, id) => (
                     <Chip
