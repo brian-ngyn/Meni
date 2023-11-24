@@ -276,9 +276,9 @@ function MenuList(props: IMenuListProps) {
         {...events}
         ref={ref} // add reference and events to the wrapping div
       >
-        {props.menus.map((m, index) => (
+        {props.menus.map((m) => (
           <MenuCard
-            key={index}
+            key={m.id}
             openSettings={handleOpenMenuSettings}
             setActive={handleSetActiveMenu}
             isActive={props.activeMenu === m.id}

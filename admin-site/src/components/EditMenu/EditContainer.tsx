@@ -316,7 +316,7 @@ export default function EditContainer(props: EditContainerProps) {
               <ScrollContainer className="sticky top-0 z-10 flex w-full gap-16 overflow-x-scroll border-t bg-backdrop py-4 align-middle text-xl font-thin">
                 {editableMenuState.menu.mainCategories.map(
                   (category, index) => (
-                    <div className="group" key={index}>
+                    <div className="group" key={category.id}>
                       <Link
                         activeClass="font-bold 
           before:scale-x-100 "
@@ -327,7 +327,6 @@ export default function EditContainer(props: EditContainerProps) {
           before:transition before:ease-in-out before:content-[''] ${
             index === 0 ? "ml-auto" : ""
           }`}
-                        key={category.id}
                         smooth
                         spy
                         to={category.id}
@@ -360,91 +359,89 @@ export default function EditContainer(props: EditContainerProps) {
                 </div>
               </ScrollContainer>
               <div className="my-8 flex flex-col">
-                {editableMenuState.menu.mainCategories.map(
-                  (category, index1) => {
-                    return (
-                      <section
+                {editableMenuState.menu.mainCategories.map((category) => {
+                  return (
+                    <section
+                      id={category.id}
+                      key={category.id}
+                      className="w-full border-white "
+                    >
+                      <EditableText
                         id={category.id}
-                        key={index1}
-                        className="w-full border-white "
+                        textClass="font-serif text-5xl cursor-pointer"
                       >
-                        <EditableText
-                          id={category.id}
-                          textClass="font-serif text-5xl cursor-pointer"
-                        >
-                          {category.name}
-                        </EditableText>
-                        <div className="mt-8 flex flex-col gap-16">
-                          {category.subCategories.map((subCategory, index2) => {
-                            return (
-                              <div className="grid gap-8" key={index2}>
-                                <div className="group relative flex w-fit items-center gap-4">
-                                  <EditableText
-                                    id={subCategory.id}
-                                    textClass="text-2xl font-medium font-sans cursor-pointer"
-                                  >
-                                    {subCategory.name}
-                                  </EditableText>
-                                  <div
-                                    className="border p-2 hover:cursor-pointer"
-                                    onClick={() =>
-                                      handleSubCategoryDelete(subCategory.id)
-                                    }
-                                  >
-                                    <DeleteIcon
-                                      sx={{
-                                        color: "#f7f7f7",
-                                        height: "20px",
-                                        width: "20px",
-                                      }}
-                                    />
-                                  </div>
-                                </div>
-                                <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                                  {subCategory.items.map((item, index3) => {
-                                    return (
-                                      <FoodCard
-                                        key={index3}
-                                        id={item.id}
-                                        title={item.name}
-                                        description={item.description}
-                                        price={item.price}
-                                        image={item.image}
-                                        tags={item.tags}
-                                      />
-                                    );
-                                  })}
-                                  <div
-                                    className="relative flex aspect-square flex-col items-center justify-center border-2 border-dashed border-accent hover:cursor-pointer sm:aspect-[6/1] sm:flex-row md:aspect-[20/5] lg:aspect-[25/10] xl:aspect-[25/10] "
-                                    onClick={() => addFoodItem(subCategory.id)}
-                                  >
-                                    {/* <span>
-                            <AddIcon sx={{ color: "#808082" }} />
-                          </span>{" "} */}
-                                    <span className="text-3xl text-accent">
-                                      + Food Item
-                                    </span>
-                                  </div>
+                        {category.name}
+                      </EditableText>
+                      <div className="mt-8 flex flex-col gap-16">
+                        {category.subCategories.map((subCategory, index2) => {
+                          return (
+                            <div className="grid gap-8" key={index2}>
+                              <div className="group relative flex w-fit items-center gap-4">
+                                <EditableText
+                                  id={subCategory.id}
+                                  textClass="text-2xl font-medium font-sans cursor-pointer"
+                                >
+                                  {subCategory.name}
+                                </EditableText>
+                                <div
+                                  className="border p-2 hover:cursor-pointer"
+                                  onClick={() =>
+                                    handleSubCategoryDelete(subCategory.id)
+                                  }
+                                >
+                                  <DeleteIcon
+                                    sx={{
+                                      color: "#f7f7f7",
+                                      height: "20px",
+                                      width: "20px",
+                                    }}
+                                  />
                                 </div>
                               </div>
-                            );
-                          })}
-                          <div
-                            className="relative mb-8 flex h-16 w-full flex-col items-center justify-center border-2 border-dashed border-accent hover:cursor-pointer sm:flex-row lg:aspect-[30/10]"
-                            onClick={() => addSubCategory(category.id)}
-                          >
-                            {/* <span>
+                              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                                {subCategory.items.map((item) => {
+                                  return (
+                                    <FoodCard
+                                      key={item.id}
+                                      id={item.id}
+                                      title={item.name}
+                                      description={item.description}
+                                      price={item.price}
+                                      image={item.image}
+                                      tags={item.tags}
+                                    />
+                                  );
+                                })}
+                                <div
+                                  className="relative flex aspect-square flex-col items-center justify-center border-2 border-dashed border-accent hover:cursor-pointer sm:aspect-[6/1] sm:flex-row md:aspect-[20/5] lg:aspect-[25/10] xl:aspect-[25/10] "
+                                  onClick={() => addFoodItem(subCategory.id)}
+                                >
+                                  {/* <span>
+                            <AddIcon sx={{ color: "#808082" }} />
+                          </span>{" "} */}
+                                  <span className="text-3xl text-accent">
+                                    + Food Item
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                        <div
+                          className="relative mb-8 flex h-16 w-full flex-col items-center justify-center border-2 border-dashed border-accent hover:cursor-pointer sm:flex-row lg:aspect-[30/10]"
+                          onClick={() => addSubCategory(category.id)}
+                        >
+                          {/* <span>
                     <AddIcon className="text-3xl text-gray-600" />
                   </span>{" "} */}
-                            <span className="text-3xl text-accent">
-                              + Sub Category
-                            </span>
-                          </div>
+                          <span className="text-3xl text-accent">
+                            + Sub Category
+                          </span>
                         </div>
-                      </section>
-                    );
-                  },
-                )}
+                      </div>
+                    </section>
+                  );
+                })}
               </div>
             </div>
           </div>
