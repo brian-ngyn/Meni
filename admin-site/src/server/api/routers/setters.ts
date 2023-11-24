@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-import { clerkClient } from "@clerk/nextjs";
 import { geocode } from "@esri/arcgis-rest-geocoding";
 import { ApiKeyManager } from "@esri/arcgis-rest-request";
 import { type Menus } from "@prisma/client";

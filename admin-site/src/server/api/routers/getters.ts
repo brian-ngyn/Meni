@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-import { clerkClient } from "@clerk/nextjs";
 import { TRPCError } from "@trpc/server";
 
 import { env } from "~/env.mjs";
