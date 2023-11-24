@@ -1,3 +1,4 @@
+import { AsYouType } from "libphonenumber-js";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -34,6 +35,9 @@ const RestaurantInfo: React.FunctionComponent<RestaurantInfoProps> = (
   } = props;
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (e.target.type === "tel" && e.target.value.length > 4) {
+      e.target.value = new AsYouType("US").input(e.target.value);
+    }
     onChange(e);
   };
   // set character count on initial render
@@ -94,7 +98,8 @@ const RestaurantInfo: React.FunctionComponent<RestaurantInfoProps> = (
           title="Phone Number"
           validate={{
             required: true,
-            pattern: /^\d{3}[-]?\d{3}[-]?\d{4}$|^\(\d{3}\)\s*\d{3}[-]?\d{4}$/,
+            pattern:
+              /^(\(\d{3}\)\s?\d{3}-\d{4}|\+\d{1,2}\s?\d{3}\s?\d{3}\s?\d{4})$/,
             errorMessages: {
               required: "Phone number is required",
               pattern: "Phone number is not valid",
