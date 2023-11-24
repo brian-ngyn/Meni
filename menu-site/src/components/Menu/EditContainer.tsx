@@ -10,10 +10,10 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import MeniGlobals from "~/MeniGlobals";
 import { api } from "~/utils/api";
 
-import MeniNotification from "~/components/Items/MeniNotification";
 import { LoadingPage } from "~/components/LoadingPage";
 import { FoodCard } from "~/components/Menu/FoodCard";
 import EditableText from "~/components/Menu/MenuText";
+import MeniNotification from "~/components/items/MeniNotification";
 
 interface EditContainerProps {
   restaurantId: string;
