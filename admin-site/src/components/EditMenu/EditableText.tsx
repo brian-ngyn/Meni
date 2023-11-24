@@ -42,24 +42,23 @@ export default function EditableText(props: IEditableTextProps) {
     updateField(id, text, field);
   };
   const validate = (text: string) => {
-    if (field === "price") {
+    if (field === "description" || field === "name") {
+      updateItem(text.trim());
+    } else if (field === "price") {
       const input = text.trim();
       if (input === "" || /[a-zA-Z]/.test(input)) {
         updateItem("0.00");
-        updateField(id, "0.00", field);
         setCurrentEditId("");
         return;
       }
       const num = parseFloat(input);
       if (isNaN(num)) {
         updateItem("0.00");
-        updateField(id, "0.00", field);
         setCurrentEditId("");
         return;
       }
       const formattedMoney = num.toFixed(2);
       updateItem(formattedMoney);
-      updateField(id, formattedMoney, field);
     }
     setCurrentEditId("");
   };
