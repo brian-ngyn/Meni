@@ -1,3 +1,4 @@
+import { isError } from "lodash";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -10,6 +11,7 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import MeniGlobals from "~/MeniGlobals";
 import { api } from "~/utils/api";
 
+import MeniNotification from "~/components/Items/MeniNotification";
 import { LoadingPage } from "~/components/LoadingPage";
 import { FoodCard } from "~/components/Menu/FoodCard";
 import EditableText from "~/components/Menu/MenuText";
@@ -33,7 +35,18 @@ export default function EditContainer(props: EditContainerProps) {
     data: restaurant,
     isLoading: isLoadingRestaurant,
     refetch: refetchRestaurant,
-  } = api.restaurant.getRestaurant.useQuery(restaurantId, { enabled: false });
+    isError: isErrorRestaurant,
+    error: errorRestaurant,
+  } = api.restaurant.getRestaurant.useQuery(restaurantId, {
+    enabled: false,
+    retry: 1,
+  });
+
+  useEffect(() => {
+    if (isErrorRestaurant) {
+      MeniNotification("Error", `${errorRestaurant.message}`, "error", 7.5);
+    }
+  }, [errorRestaurant?.message, isErrorRestaurant]);
 
   useEffect(() => {
     if (props.restaurantId) {
