@@ -1,4 +1,3 @@
-import { isError } from "lodash";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";

@@ -1,11 +1,9 @@
 import { debounce } from "lodash";
 import Head from "next/head";
 import Image from "next/image";
-import type { FormEvent } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import SearchIcon from "@mui/icons-material/Search";
-import { type RestaurantInfo } from "@prisma/client";
 
 import { api } from "~/utils/api";
 
