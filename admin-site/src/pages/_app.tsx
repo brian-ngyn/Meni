@@ -1,6 +1,7 @@
 import { type AppType } from "next/app";
 import { Abril_Fatface, Montserrat } from "next/font/google";
 import Head from "next/head";
+import { GoogleAnalytics } from "nextjs-google-analytics";
 
 import { ClerkProvider } from "@clerk/nextjs";
 import { Analytics } from "@vercel/analytics/react";
@@ -34,6 +35,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
       <main
         className={`min-h-screen bg-backdrop text-white ${abrilFatface.variable} font-serif ${montserrat.variable} font-sans`}
       >
+        <GoogleAnalytics trackPageViews />
         <ClerkProvider {...pageProps}>
           <MeniContextProvider>
             <Component {...pageProps} />
