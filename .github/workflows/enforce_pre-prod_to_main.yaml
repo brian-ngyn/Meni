@@ -1,0 +1,21 @@
+name: Enforce pre-prod into main
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  enforce-pr-branch:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Validate PR branch
+      run: |
+        if [ "${{ github.event.pull_request.head.ref }}" != "pre-prod" ]; then
+          echo "Invalid branch for pull request. Please create a pull request from 'pre-prod' branch."
+          exit 1
+        fi
