@@ -67,7 +67,41 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
   },
 });
 
-const enforceUserIsAuthed = t.middleware(async ({ ctx, next }) => {
+const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
+  if (!ctx.userId) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+    });
+  }
+  return next({
+    ctx: {
+      userId: ctx.userId,
+    },
+  });
+});
+
+const enforceUserIsOnboarded = t.middleware(async ({ ctx, next }) => {
+  if (!ctx.userId) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+    });
+  }
+  const userSubmittingRequest = await clerkClient.users.getUser(ctx.userId);
+  if (userSubmittingRequest.publicMetadata.onboardingComplete) {
+    return next({
+      ctx: {
+        userId: ctx.userId,
+        userSubmittingRequest: ctx.userSubmittingRequest,
+      },
+    });
+  }
+  throw new TRPCError({
+    code: "INTERNAL_SERVER_ERROR",
+    message: "User is not authorized to perform this action",
+  });
+});
+
+const enforceUserIsNotOnboarded = t.middleware(async ({ ctx, next }) => {
   if (!ctx.userId) {
     throw new TRPCError({
       code: "UNAUTHORIZED",
@@ -75,17 +109,16 @@ const enforceUserIsAuthed = t.middleware(async ({ ctx, next }) => {
   }
   const userSubmittingRequest = await clerkClient.users.getUser(ctx.userId);
   if (!userSubmittingRequest.publicMetadata.onboardingComplete) {
-    throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "User is not authorized to send feedback",
+    return next({
+      ctx: {
+        userId: ctx.userId,
+        userSubmittingRequest: ctx.userSubmittingRequest,
+      },
     });
   }
-
-  return next({
-    ctx: {
-      userId: ctx.userId,
-      userSubmittingRequest: ctx.userSubmittingRequest,
-    },
+  throw new TRPCError({
+    code: "INTERNAL_SERVER_ERROR",
+    message: "User is not authorized to perform this action",
   });
 });
 
@@ -112,3 +145,5 @@ export const createTRPCRouter = t.router;
  */
 export const publicProcedure = t.procedure;
 export const privateProcedure = t.procedure.use(enforceUserIsAuthed);
+export const onboardingProcedure = t.procedure.use(enforceUserIsNotOnboarded);
+export const onboardedProcedure = t.procedure.use(enforceUserIsOnboarded);

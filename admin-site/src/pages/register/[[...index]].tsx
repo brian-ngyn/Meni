@@ -94,51 +94,45 @@ export default function Page() {
       <Head>
         <title>Registration | Meni</title>
       </Head>
-      <div className="min-w-screen flex justify-center font-sans">
-        <div className="mt-8 flex justify-evenly md:mt-24">
-          <div className="hidden w-1/2 md:m-8 md:block lg:block">
-            <motion.div
-              initial={{ x: -200, position: "relative", y: 0, opacity: 0 }}
-              animate={{ x: 0, position: "relative", y: 0, opacity: 1 }}
-              transition={{
-                x: { type: "spring", stiffness: 35, duration: 1.25 },
-              }}
-              className="flex min-h-full flex-col justify-center space-y-12"
-            >
-              <div className="font-serif text-6xl">Welcome Back</div>
-              <div className="flex flex-col text-lg">
-                <div>{quote?.quote}</div>
-                <div>--- {quote?.author}</div>
-              </div>
-            </motion.div>
-          </div>
-
-          <div className="hidden h-full w-px bg-white md:block lg:block" />
-
-          <div className="w-full md:ml-8 md:w-1/2 lg:w-1/2">
-            <div className="flex flex-col items-center">
-              <div className="col-span-2 row-span-2 pb-10">
-                <Link href="/">
-                  <Image
-                    onClick={() => {}}
-                    alt="logo"
-                    src="/landingPage/logo.svg"
-                    width="175"
-                    height="175"
-                  />
-                </Link>
-              </div>
-              <SignUp
-                path="/register"
-                signInUrl="/login"
-                redirectUrl="/register"
-                appearance={{
-                  variables: {
-                    colorPrimary: "#4D4D4F",
-                  },
-                }}
-              />
+      <div className="flex h-screen w-screen items-center justify-center font-sans">
+        <div className="hidden grow lg:block">
+          <motion.div
+            initial={{ x: -200, position: "relative", y: 0, opacity: 0 }}
+            animate={{ x: 0, position: "relative", y: 0, opacity: 1 }}
+            transition={{
+              x: { type: "spring", stiffness: 35, duration: 1.25 },
+            }}
+            className="ml-28 flex h-full flex-col justify-center space-y-12"
+          >
+            <div className="font-serif text-6xl">Welcome Back</div>
+            <div className="flex w-[80%] flex-col text-lg">
+              <div>{quote?.quote}</div>
+              <div>--- {quote?.author}</div>
             </div>
+          </motion.div>
+        </div>
+        <div className="hidden h-[66%] w-px bg-white lg:block" />
+        <div className="h-full w-full flex-none lg:w-[40%] lg:px-24">
+          <div className="mt-32 flex h-full flex-col items-center space-y-8 lg:mt-52">
+            <Link href="/">
+              <Image
+                onClick={() => {}}
+                alt="logo"
+                src="/landingPage/logo.svg"
+                width="150"
+                height="150"
+              />
+            </Link>
+            <SignUp
+              path="/register"
+              signInUrl="/login"
+              redirectUrl="/register"
+              appearance={{
+                variables: {
+                  colorPrimary: "#4D4D4F",
+                },
+              }}
+            />
           </div>
         </div>
       </div>

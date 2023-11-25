@@ -3,13 +3,16 @@ import { z } from "zod";
 import { clerkClient } from "@clerk/nextjs";
 import { geocode } from "@esri/arcgis-rest-geocoding";
 import { ApiKeyManager } from "@esri/arcgis-rest-request";
-import { TRPCError } from "@trpc/server";
 
 import { env } from "~/env.mjs";
-import { createTRPCRouter, privateProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  onboardedProcedure,
+  onboardingProcedure,
+} from "~/server/api/trpc";
 
 export const onboardingRouter = createTRPCRouter({
-  signUp: privateProcedure
+  signUp: onboardingProcedure
     .input(
       z.object({
         firstName: z.string(),
@@ -88,7 +91,7 @@ export const onboardingRouter = createTRPCRouter({
       };
     }),
 
-  newRestaurant: privateProcedure
+  newRestaurant: onboardedProcedure
     .input(
       z.object({
         clerkId: z.string(),

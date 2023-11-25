@@ -1,10 +1,13 @@
 import { z } from "zod";
 
-import { clerkClient } from "@clerk/nextjs";
 import { TRPCError } from "@trpc/server";
 
 import { env } from "~/env.mjs";
-import { createTRPCRouter, privateProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  onboardedProcedure,
+  privateProcedure,
+} from "~/server/api/trpc";
 
 interface Suggestions {
   suggestions: [
@@ -15,7 +18,7 @@ interface Suggestions {
 }
 
 export const gettersRouter = createTRPCRouter({
-  getAccountInfo: privateProcedure
+  getAccountInfo: onboardedProcedure
     .input(
       z.object({
         clerkId: z.string(),
@@ -29,7 +32,7 @@ export const gettersRouter = createTRPCRouter({
       });
     }),
 
-  getAllRestaurantInfo: privateProcedure
+  getAllRestaurantInfo: onboardedProcedure
     .input(
       z.object({
         clerkId: z.string(),
@@ -55,7 +58,7 @@ export const gettersRouter = createTRPCRouter({
       }
     }),
 
-  getRestaurantInfo: privateProcedure
+  getRestaurantInfo: onboardedProcedure
     .input(
       z.object({
         clerkId: z.string(),
@@ -83,7 +86,7 @@ export const gettersRouter = createTRPCRouter({
       }
     }),
 
-  getMenusBrief: privateProcedure
+  getMenusBrief: onboardedProcedure
     .input(
       z.object({
         clerkId: z.string(),
@@ -120,7 +123,7 @@ export const gettersRouter = createTRPCRouter({
       }
     }),
 
-  getMenu: privateProcedure
+  getMenu: onboardedProcedure
     .input(
       z.object({
         clerkId: z.string(),

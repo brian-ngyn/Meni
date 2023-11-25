@@ -1,5 +1,6 @@
 import { type AppType } from "next/app";
 import { Abril_Fatface, Montserrat } from "next/font/google";
+import { GoogleAnalytics } from "nextjs-google-analytics";
 
 import { Analytics } from "@vercel/analytics/react";
 
@@ -22,6 +23,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
     <main
       className={`min-h-screen bg-backdrop ${body.variable} font-body ${header.variable} font-header`}
     >
+      <GoogleAnalytics trackPageViews />
       <Component {...pageProps} />
       <Analytics />
     </main>
