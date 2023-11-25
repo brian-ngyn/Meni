@@ -3,7 +3,8 @@
     "dev": "concurrently \"yarn --cwd packages/menu-site dev\" \"yarn --cwd packages/admin-site dev\"",
     "dev:explore": "yarn --cwd packages/menu-site dev",
     "dev:admin": "yarn --cwd packages/admin-site dev",
-    "install": "yarn --cwd packages/menu-site install && yarn --cwd packages/admin-site install"
+    "install": "yarn --cwd packages/menu-site install && yarn --cwd packages/admin-site install",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "husky": "^8.0.3",
