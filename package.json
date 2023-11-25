@@ -1,0 +1,31 @@
+{
+  "scripts": {
+    "dev": "concurrently \"yarn --cwd packages/menu-site dev\" \"yarn --cwd packages/admin-site dev\"",
+    "dev:explore": "yarn --cwd packages/menu-site dev",
+    "dev:admin": "yarn --cwd packages/admin-site dev",
+    "install": "yarn --cwd packages/menu-site install && yarn --cwd packages/admin-site install",
+    "prepare": "husky install"
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "devDependencies": {
+    "husky": "^8.0.3",
+    "lint-staged": "^15.1.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "packages/menu-site/**/*.{js,jsx,ts,tsx}": [
+      "yarn --cwd packages/menu-site lint",
+      "yarn --cwd packages/menu-site build"
+    ],
+    "packages/admin-site/**/*.{js,jsx,ts,tsx}": [
+      "yarn --cwd packages/admin-site lint",
+      "yarn --cwd packages/admin-site build"
+    ]
+  }
+}
