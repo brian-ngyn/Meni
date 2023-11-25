@@ -8,5 +8,6 @@ jobs:
     steps:
       - uses: hkusu/review-assign-action@v1
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           assignees: ${{ github.actor }}
           reviewers: dimitar-j, ideen1, Jacobbs123, jjason-nn, brian-ngyn
