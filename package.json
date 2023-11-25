@@ -6,6 +6,9 @@
     "install": "yarn --cwd packages/menu-site install && yarn --cwd packages/admin-site install",
     "prepare": "husky install"
   },
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  },
   "devDependencies": {
     "husky": "^8.0.3",
     "lint-staged": "^15.1.0"
@@ -16,15 +19,13 @@
     }
   },
   "lint-staged": {
-    "{packages/menu-site,packages/admin-site}/**/*.{js,jsx,ts,tsx}": [
+    "packages/menu-site/**/*.{js,jsx,ts,tsx}": [
       "yarn --cwd packages/menu-site lint",
+      "yarn --cwd packages/menu-site build"
+    ],
+    "packages/admin-site/**/*.{js,jsx,ts,tsx}": [
       "yarn --cwd packages/admin-site lint",
-      "yarn --cwd packages/menu-site build",
-      "yarn --cwd packages/admin-site build",
-      "git add"
+      "yarn --cwd packages/admin-site build"
     ]
-  },
-  "dependencies": {
-    "concurrently": "^8.2.2"
   }
 }
