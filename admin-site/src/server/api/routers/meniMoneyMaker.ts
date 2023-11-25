@@ -1,9 +1,9 @@
 import { z } from "zod";
 
-import { createTRPCRouter, privateProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, onboardedProcedure } from "~/server/api/trpc";
 
 export const meniMoneyMakerRouter = createTRPCRouter({
-  pickPlan: privateProcedure
+  pickPlan: onboardedProcedure
     .input(
       z.object({
         clerkId: z.string(),

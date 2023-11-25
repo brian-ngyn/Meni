@@ -27,6 +27,10 @@
       display: none; /* hide whole page */
     }
   }
+  div[class^="cl-internal-"]:not([class*=" "]),
+  div[class*=" cl-internal-"]:not([class*=" "]) {
+    display: none;
+  }
 }
 
 @layer utilities {
