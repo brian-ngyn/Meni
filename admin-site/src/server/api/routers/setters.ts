@@ -6,10 +6,10 @@ import { type Menus } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 
 import { env } from "~/env.mjs";
-import { createTRPCRouter, privateProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, onboardedProcedure } from "~/server/api/trpc";
 
 export const settersRouter = createTRPCRouter({
-  updateRestaurantInfo: privateProcedure
+  updateRestaurantInfo: onboardedProcedure
     .input(
       z.object({
         clerkId: z.string(),
@@ -83,7 +83,7 @@ export const settersRouter = createTRPCRouter({
         message: "Restaurant Info updated",
       };
     }),
-  updateAccount: privateProcedure
+  updateAccount: onboardedProcedure
     .input(
       z.object({
         clerkId: z.string(),
@@ -114,7 +114,7 @@ export const settersRouter = createTRPCRouter({
       };
     }),
 
-  createMenu: privateProcedure
+  createMenu: onboardedProcedure
     .input(
       // this needs to be fixed to use the prisma type.. idk how to do that yet.
       z.object({
@@ -217,7 +217,7 @@ export const settersRouter = createTRPCRouter({
       };
     }),
 
-  updateMenu: privateProcedure
+  updateMenu: onboardedProcedure
     .input(
       // this needs to be fixed to use the prisma type.. idk how to do that yet.
       z.object({
@@ -324,7 +324,7 @@ export const settersRouter = createTRPCRouter({
       };
     }),
 
-  setActiveMenu: privateProcedure
+  setActiveMenu: onboardedProcedure
     .input(
       z.object({
         clerkId: z.string(),
@@ -372,7 +372,7 @@ export const settersRouter = createTRPCRouter({
       };
     }),
 
-  renameMenu: privateProcedure
+  renameMenu: onboardedProcedure
     .input(
       z.object({
         clerkId: z.string(),
@@ -428,7 +428,7 @@ export const settersRouter = createTRPCRouter({
       }
     }),
 
-  deleteMenu: privateProcedure
+  deleteMenu: onboardedProcedure
     .input(
       z.object({
         clerkId: z.string(),

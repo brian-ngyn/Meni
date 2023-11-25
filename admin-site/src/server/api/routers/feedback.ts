@@ -1,9 +1,9 @@
 import { z } from "zod";
 
-import { createTRPCRouter, privateProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, onboardedProcedure } from "~/server/api/trpc";
 
 export const feedbackRouter = createTRPCRouter({
-  sendFeedback: privateProcedure
+  sendFeedback: onboardedProcedure
     .input(z.object({ clerkId: z.string(), content: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const currentAccount = await ctx.db.account.findUnique({
