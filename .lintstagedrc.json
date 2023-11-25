@@ -1,0 +1,8 @@
+{
+  "packages/menu-site/**/*.{js,jsx,ts,tsx}": [
+    "yarn --cwd packages/menu-site prettier --write ."
+  ],
+  "packages/admin-site/**/*.{js,jsx,ts,tsx}": [
+    "yarn --cwd packages/admin-site prettier --write ."
+  ]
+}
