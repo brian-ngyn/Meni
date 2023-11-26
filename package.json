@@ -1,9 +1,9 @@
 {
   "scripts": {
-    "dev": "concurrently \"yarn --cwd packages/menu-site dev\" \"yarn --cwd packages/admin-site dev\"",
-    "dev:explore": "yarn --cwd packages/menu-site dev",
-    "dev:admin": "yarn --cwd packages/admin-site dev",
-    "install": "yarn --cwd packages/menu-site install && yarn --cwd packages/admin-site install",
+    "dev": "concurrently --names explore,dashboard --prefix-colors yellow,cyan --kill-others \"yarn --cwd packages/explore-site dev\" \"yarn --cwd packages/dashboard-site dev\"",
+    "dev:explore": "yarn --cwd packages/explore-site dev",
+    "dev:admin": "yarn --cwd packages/dashboard-site dev",
+    "install": "yarn --cwd packages/explore-site install && yarn --cwd packages/dashboard-site install",
     "postinstall": "husky install",
     "prepack": "pinst --disable",
     "postpack": "pinst --enable"
