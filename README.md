@@ -71,14 +71,14 @@ Follow these instructions to set up the project locally for development.
 |   |-- dashboard-site
 |   |   |-- prisma
 |   |   |-- src
-|   |   |   |-- (react code)
-|   |   |   |   |-- server (trpc)
+|   |   |   |-- ... (react code)
+|   |   |   |-- server (trpc backend)
 |   |   |-- .env
 |   |-- explore-site
 |   |   |-- prisma
 |   |   |-- src
 |   |   |   |-- ... (react code)
-|   |   |   |   |-- server (trpc)
+|   |   |   |-- server (trpc backend)
 |   |   |-- .env
 |-- ...
 ```
