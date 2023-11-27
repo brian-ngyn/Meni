@@ -182,7 +182,7 @@ export default function EditContainer(props: EditContainerProps) {
       >
         <>
           {!tableMode && renderHeader()}
-          <div className="sticky top-0 z-50 h-1/4 w-full rounded-b-xl bg-backdrop font-sans ">
+          <div className="sticky top-0 z-50 h-1/4 w-full rounded-b-xl bg-backdrop px-0 font-sans xl:px-32">
             {!tableMode && renderCategoryBar()}
           </div>
         </>
