@@ -10,6 +10,7 @@ import {
   onboardedProcedure,
   onboardingProcedure,
 } from "~/server/api/trpc";
+import { MEC_checkCount } from "~/server/utils/helpers";
 
 export const onboardingRouter = createTRPCRouter({
   signUp: onboardingProcedure
@@ -107,6 +108,12 @@ export const onboardingRouter = createTRPCRouter({
           clerkId: ctx.userId,
         },
       });
+      const restaurantCount = await ctx.db.restaurantInfo.count({
+        where: {
+          ownerId: account?.id as string,
+        },
+      });
+      MEC_checkCount(ctx.userSubmittingRequest, "RESTAURANT", restaurantCount);
 
       const ArcGIS_auth = ApiKeyManager.fromKey(env.ARCGIS_KEY);
       const geoLocation = await geocode({
