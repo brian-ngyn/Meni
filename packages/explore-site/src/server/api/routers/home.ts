@@ -2,17 +2,34 @@ import { getDistance } from "geolib";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import {
+  type IPlanRole,
+  MEC_isFeatured,
+  MEC_isPublishable,
+} from "~/server/utils/helpers";
 
 export const homeRouter = createTRPCRouter({
-  getFeaturedRestaurants: publicProcedure.query(({ ctx }) => {
-    return ctx.db.restaurantInfo.findMany({
+  getFeaturedRestaurants: publicProcedure.query(async ({ ctx }) => {
+    const activeRestaurants = await ctx.db.restaurantInfo.findMany({
       where: {
-        // featuredPayment: true, // need to change this to use entitlements !
         activeMenuId: {
           not: null,
         },
       },
     });
+    const owners = await ctx.db.account.findMany({
+      where: {
+        id: {
+          in: activeRestaurants.map((restaurant) => restaurant.ownerId),
+        },
+      },
+    });
+    const validOwners = owners.filter((owner) =>
+      MEC_isFeatured(owner.plan as IPlanRole),
+    );
+    return activeRestaurants.filter((restaurant) =>
+      validOwners.find((owner) => owner.id === restaurant.ownerId),
+    );
   }),
   getLocalRestaurants: publicProcedure
     .input(
@@ -30,7 +47,20 @@ export const homeRouter = createTRPCRouter({
           },
         },
       });
-      const restaurantsWithinRadius = allRestaurants
+      const owners = await ctx.db.account.findMany({
+        where: {
+          id: {
+            in: allRestaurants.map((restaurant) => restaurant.ownerId),
+          },
+        },
+      });
+      const validOwners = owners.filter((owner) =>
+        MEC_isPublishable(owner.plan as IPlanRole),
+      );
+      const validRestaurants = allRestaurants.filter((restaurant) =>
+        validOwners.find((owner) => owner.id === restaurant.ownerId),
+      );
+      const restaurantsWithinRadius = validRestaurants
         .map((restaurant) => {
           const restaurantLatitude = restaurant.geoLocation.latitude;
           const restaurantLongitude = restaurant.geoLocation.longitude;
@@ -54,7 +84,7 @@ export const homeRouter = createTRPCRouter({
       return restaurantsWithinRadius;
     }),
   search: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
-    return ctx.db.restaurantInfo.findMany({
+    const foundRestaurants = await ctx.db.restaurantInfo.findMany({
       where: {
         name: {
           contains: input,
@@ -62,5 +92,18 @@ export const homeRouter = createTRPCRouter({
         },
       },
     });
+    const owners = await ctx.db.account.findMany({
+      where: {
+        id: {
+          in: foundRestaurants.map((restaurant) => restaurant.ownerId),
+        },
+      },
+    });
+    const validOwners = owners.filter((owner) =>
+      MEC_isPublishable(owner.plan as IPlanRole),
+    );
+    return foundRestaurants.filter((restaurant) =>
+      validOwners.find((owner) => owner.id === restaurant.ownerId),
+    );
   }),
 });
