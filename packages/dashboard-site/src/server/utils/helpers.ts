@@ -1,4 +1,5 @@
 import { type User } from "@clerk/nextjs/dist/types/server";
+import { IPlanRole } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 
 export enum IEntitlements {
@@ -11,11 +12,6 @@ export enum IEntitlements {
   MENU_COUNT_2 = "MENU_COUNT_2",
   MENU_COUNT_3 = "MENU_COUNT_3",
   SKIP_PAYMENT = "SKIP_PAYMENT",
-}
-
-export enum IPlanRole {
-  BETA1 = "BETA1",
-  FREE = "FREE",
 }
 
 // This should eventually be from a Mongo Table

@@ -11,17 +11,17 @@ datasource db {
 }
 
 model Account {
-  id               String  @id @default(auto()) @map("_id") @db.ObjectId
-  email            String  @unique
+  id               String    @id @default(auto()) @map("_id") @db.ObjectId
+  email            String    @unique
   firstName        String
   lastName         String
-  clerkId          String  @unique
+  clerkId          String    @unique
   stripeCustomerId String?
   stripePaymentId  String?
-  plan             String  @default("FREE1")
-  activePayment    Boolean @default(false)
-  isPaid           Boolean @default(false) // will remove this in the future, use entilements instead
-  isBetaTester     Boolean @default(true) // will remove this in the future, use entitlements instead
+  plan             IPlanRole @default(FREE)
+  activePayment    Boolean   @default(false)
+  isPaid           Boolean   @default(false) // will remove this in the future, use entilements instead
+  isBetaTester     Boolean   @default(true) // will remove this in the future, use entitlements instead
   currentPlan      String // will remove this in the future, use "plan" instead
   lastPaidAt       String? // this will be BigInt in the future, this value will change based on stripe, maybe need to rename this property as well
 }
@@ -71,4 +71,9 @@ type MenuItem {
 type GeoLocation {
   latitude  Float
   longitude Float
+}
+
+enum IPlanRole {
+  BETA1
+  FREE
 }
