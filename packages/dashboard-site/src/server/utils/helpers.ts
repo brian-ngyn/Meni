@@ -15,6 +15,7 @@ export enum IEntitlements {
 
 export enum IPlanRole {
   BETA1 = "BETA1",
+  FREE = "FREE",
 }
 
 // This should eventually be from a Mongo Table
@@ -32,14 +33,33 @@ const subscribedFeature = {
       IEntitlements.SKIP_PAYMENT,
     ],
   },
+  [IPlanRole.FREE]: {
+    inMarket: true,
+    grandfathered: false,
+    releaseDate: new Date(),
+    activeUntil: new Date(),
+    entitlements: [
+      IEntitlements.RESTAURANT_COUNT_1,
+      IEntitlements.MENU_COUNT_1,
+      IEntitlements.SKIP_PAYMENT,
+    ],
+  },
 };
 
 export const MEC_isPaid = (clerkUser: User): void => {
-  if (!clerkUser.publicMetadata.activePayment as boolean) {
-    throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "User does not have an active payment",
-    });
+  if (
+    subscribedFeature[
+      clerkUser.publicMetadata.plan as IPlanRole
+    ].entitlements.includes(IEntitlements.SKIP_PAYMENT)
+  ) {
+    return;
+  } else {
+    if (!clerkUser.publicMetadata.activePayment as boolean) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "User does not have an active payment",
+      });
+    }
   }
 };
 
