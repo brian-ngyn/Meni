@@ -3,7 +3,7 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { type IPlanRole, MEC_isPublishable } from "~/server/utils/helpers";
+import { IEntitlements, MEC_checkPermissions } from "~/server/utils/helpers";
 
 export const restaurantRouter = createTRPCRouter({
   getMenu: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
@@ -20,7 +20,7 @@ export const restaurantRouter = createTRPCRouter({
         id: restaurant?.ownerId,
       },
     });
-    if (owner && MEC_isPublishable(owner.plan as IPlanRole)) {
+    if (owner && MEC_checkPermissions(owner, IEntitlements.ALLOW_PUBLISHING)) {
       if (restaurant && restaurant.activeMenuId) {
         return ctx.db.menus.findFirst({
           where: {
@@ -56,7 +56,10 @@ export const restaurantRouter = createTRPCRouter({
           id: restaurant?.ownerId,
         },
       });
-      if (owner && MEC_isPublishable(owner.plan as IPlanRole)) {
+      if (
+        owner &&
+        MEC_checkPermissions(owner, IEntitlements.ALLOW_PUBLISHING)
+      ) {
         if (restaurant) {
           return restaurant;
         } else {

@@ -2,11 +2,7 @@ import { getDistance } from "geolib";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import {
-  type IPlanRole,
-  MEC_isFeatured,
-  MEC_isPublishable,
-} from "~/server/utils/helpers";
+import { IEntitlements, MEC_checkPermissions } from "~/server/utils/helpers";
 
 export const homeRouter = createTRPCRouter({
   getFeaturedRestaurants: publicProcedure.query(async ({ ctx }) => {
@@ -25,7 +21,7 @@ export const homeRouter = createTRPCRouter({
       },
     });
     const validOwners = owners.filter((owner) =>
-      MEC_isFeatured(owner.plan as IPlanRole),
+      MEC_checkPermissions(owner, IEntitlements.FEATURED),
     );
     return activeRestaurants.filter((restaurant) =>
       validOwners.find((owner) => owner.id === restaurant.ownerId),
@@ -55,7 +51,7 @@ export const homeRouter = createTRPCRouter({
         },
       });
       const validOwners = owners.filter((owner) =>
-        MEC_isPublishable(owner.plan as IPlanRole),
+        MEC_checkPermissions(owner, IEntitlements.ALLOW_PUBLISHING),
       );
       const validRestaurants = allRestaurants.filter((restaurant) =>
         validOwners.find((owner) => owner.id === restaurant.ownerId),
@@ -100,7 +96,7 @@ export const homeRouter = createTRPCRouter({
       },
     });
     const validOwners = owners.filter((owner) =>
-      MEC_isPublishable(owner.plan as IPlanRole),
+      MEC_checkPermissions(owner, IEntitlements.ALLOW_PUBLISHING),
     );
     return foundRestaurants.filter((restaurant) =>
       validOwners.find((owner) => owner.id === restaurant.ownerId),

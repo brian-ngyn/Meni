@@ -1,3 +1,6 @@
+import { type Account } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
+
 export enum IEntitlements {
   RESTAURANT_COUNT_1 = "RESTAURANT_COUNT_1",
   RESTAURANT_COUNT_2 = "RESTAURANT_COUNT_2",
@@ -42,12 +45,38 @@ const subscribedFeature = {
   },
 };
 
-export const MEC_isFeatured = (plan: IPlanRole): boolean => {
-  return subscribedFeature[plan].entitlements.includes(IEntitlements.FEATURED);
+export const MEC_isPaid = (account: Account): void => {
+  if (
+    subscribedFeature[account.plan as IPlanRole].entitlements.includes(
+      IEntitlements.SKIP_PAYMENT,
+    )
+  ) {
+    return;
+  } else {
+    if (!account.activePayment as boolean) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "User does not have an active payment",
+      });
+    }
+  }
 };
 
-export const MEC_isPublishable = (plan: IPlanRole): boolean => {
-  return subscribedFeature[plan].entitlements.includes(
-    IEntitlements.ALLOW_PUBLISHING,
-  );
+export const MEC_checkPermissions = (
+  account: Account,
+  entitlement: IEntitlements,
+): boolean => {
+  MEC_isPaid(account);
+  const allowed =
+    subscribedFeature[account.plan as IPlanRole].entitlements.includes(
+      entitlement,
+    );
+  if (!allowed) {
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message:
+        "User is not authorized to use this feature for the current plan",
+    });
+  }
+  return allowed;
 };
