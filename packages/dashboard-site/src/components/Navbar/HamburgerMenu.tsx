@@ -9,6 +9,9 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 
 import { useMeniContext } from "~/context/meniContext";
+import { api } from "~/utils/api";
+
+import MeniNotification from "~/components/items/MeniNotification";
 
 const HambugerMenu = () => {
   const genericHamburgerLine = `h-1 w-6 my-0.5 rounded-full bg-white transition ease transform duration-400`;
@@ -18,7 +21,15 @@ const HambugerMenu = () => {
     setCurrentRestaurantSelectedIndex,
     currentRestaurantSelectedIndex,
   } = useMeniContext();
-  const { signOut } = useClerk();
+  const { user, signOut } = useClerk();
+
+  const { refetch: fetchCanCreateRestaurant } =
+    api.meniMoneyMaker.createRestaurantCheck.useQuery(
+      {
+        clerkId: user?.id as string,
+      },
+      { enabled: false, retry: false },
+    );
 
   const hamburgerButton = useRef<HTMLButtonElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -44,6 +55,19 @@ const HambugerMenu = () => {
       document.removeEventListener("mousedown", closeHamburgerMenu);
     };
   }, [closeHamburgerMenu]);
+
+  const handleCreateRestaurant = async () => {
+    const response = await fetchCanCreateRestaurant();
+    if (response.data && response.data.success) {
+      void router.push("/new-restaurant");
+    } else {
+      MeniNotification(
+        "Error!",
+        `You have reached the maximum number of restaurants for your plan.`,
+        "error",
+      );
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -116,7 +140,7 @@ const HambugerMenu = () => {
               <AddBoxIcon />
               <div
                 className="flex w-full text-lg"
-                onClick={() => void router.push("/new-restaurant")}
+                onClick={() => void handleCreateRestaurant()}
               >
                 Create New Restaurant
               </div>

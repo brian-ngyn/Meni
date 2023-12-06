@@ -6,6 +6,7 @@ import { useUser } from "@clerk/nextjs";
 
 import { type IMenuBrief } from "~/constants/types";
 import { useMeniContext } from "~/context/meniContext";
+import { MEC_checkCount } from "~/server/utils/helpers";
 import { api } from "~/utils/api";
 
 import MenuList, { MenuCardMode } from "~/components/Dashboard/MenuList";
@@ -49,6 +50,15 @@ export default function Dashboard() {
     },
     { enabled: false },
   );
+
+  const { refetch: fetchCanCreateMenu } =
+    api.meniMoneyMaker.createMenuCheck.useQuery(
+      {
+        clerkId: accountInfo?.clerkId as string,
+        restaurantId: currentRestaurantSelected?.id as string,
+      },
+      { enabled: false, retry: false },
+    );
 
   useEffect(() => {
     if (accountInfo?.clerkId && currentRestaurantSelected?.id) {
@@ -126,33 +136,20 @@ export default function Dashboard() {
   //   setTourEnable(true);
   // }, [interactibilityLoader]);
 
-  const handleCreateMenu = () => {
-    let maxMenus = 0;
-    switch (accountInfo?.currentPlan) {
-      case "tier0":
-        maxMenus = 1;
-        break;
-      case "tier1":
-        maxMenus = 1;
-        break;
-      case "tier2":
-        maxMenus = 2;
-        break;
-      case "tier3":
-        maxMenus = 4;
-        break;
-    }
-
-    if (menus && menus.length >= maxMenus) {
-      MeniNotification(
-        "Error!",
-        `You have reached the maximum number of menus (${maxMenus}) for your plan.`,
-        "error",
-      );
-    } else {
-      void router.push({
-        pathname: `/edit/${currentRestaurantSelected?.id}/new`,
-      });
+  const handleCreateMenu = async () => {
+    if (user && menus && currentRestaurantSelected) {
+      const response = await fetchCanCreateMenu();
+      if (response.data && response.data.success) {
+        void router.push({
+          pathname: `/edit/${currentRestaurantSelected?.id}/new`,
+        });
+      } else {
+        MeniNotification(
+          "Error!",
+          `You have reached the maximum number of menus for your plan.`,
+          "error",
+        );
+      }
     }
   };
 
@@ -224,10 +221,12 @@ export default function Dashboard() {
         <div className={`flex ${PADDING} justify-between`}>
           <h3 className="font-serif text-4xl font-medium">My Menus</h3>
           <div className="hidden sm:block" id="create-menu-button">
-            <MeniButton onClick={handleCreateMenu}>Create Menu</MeniButton>
+            <MeniButton onClick={() => void handleCreateMenu()}>
+              Create Menu
+            </MeniButton>
           </div>
           <div className="block sm:hidden">
-            <MeniButton onClick={handleCreateMenu}>+</MeniButton>
+            <MeniButton onClick={() => void handleCreateMenu()}>+</MeniButton>
           </div>
         </div>
         {menus && menus.length > 0 ? (
