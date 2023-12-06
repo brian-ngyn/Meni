@@ -139,7 +139,7 @@ export default function Dashboard() {
   const handleCreateMenu = async () => {
     if (user && menus && currentRestaurantSelected) {
       const response = await fetchCanCreateMenu();
-      if (response.data && response.data.success) {
+      if (response?.data?.success) {
         void router.push({
           pathname: `/edit/${currentRestaurantSelected?.id}/new`,
         });

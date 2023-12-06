@@ -58,7 +58,7 @@ const HambugerMenu = () => {
 
   const handleCreateRestaurant = async () => {
     const response = await fetchCanCreateRestaurant();
-    if (response.data && response.data.success) {
+    if (response?.data?.success) {
       void router.push("/new-restaurant");
     } else {
       MeniNotification(
@@ -140,7 +140,7 @@ const HambugerMenu = () => {
               <AddBoxIcon />
               <div
                 className="flex w-full text-lg"
-                onClick={() => void handleCreateRestaurant()}
+                onClick={() => void handleCreateRestaurant}
               >
                 Create New Restaurant
               </div>

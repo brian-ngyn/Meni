@@ -50,7 +50,7 @@ export const MEC_isPaid = (clerkUser: User): void => {
   ) {
     return;
   } else {
-    if (!clerkUser.publicMetadata.activePayment as boolean) {
+    if (!!clerkUser.publicMetadata.activePayment) {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "User does not have an active payment",

@@ -21,7 +21,7 @@ export const restaurantRouter = createTRPCRouter({
       },
     });
     if (owner && MEC_checkPermissions(owner, IEntitlements.ALLOW_PUBLISHING)) {
-      if (restaurant && restaurant.activeMenuId) {
+      if (restaurant?.activeMenuId) {
         return ctx.db.menus.findFirst({
           where: {
             id: restaurant?.activeMenuId,
