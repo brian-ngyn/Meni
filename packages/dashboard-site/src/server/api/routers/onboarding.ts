@@ -70,14 +70,6 @@ export const onboardingRouter = createTRPCRouter({
           isPaid: true,
         },
       });
-      await ctx.db.restaurantInfo.update({
-        where: {
-          ownerId: newAccount.id,
-        },
-        data: {
-          featuredPayment: true,
-        },
-      });
       // SET TIER 3
       // REMOVE IN FUTURE
 
