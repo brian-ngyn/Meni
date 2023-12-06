@@ -490,8 +490,10 @@ export const settersRouter = createTRPCRouter({
         });
 
         if (menuLength === 0 || restaurant?.activeMenuId === input.menuId) {
+          // verify if the menu deleted is the active menu
           await ctx.db.restaurantInfo.update({
             where: {
+              id: restaurant?.id,
               ownerId: owner?.id,
             },
             data: {
