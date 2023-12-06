@@ -32,7 +32,7 @@ const HambugerMenu = () => {
     );
 
   const hamburgerButton = useRef<HTMLButtonElement>(null);
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  // @typescript-eslint/no-unsafe-assignment
   const closeHamburgerMenu = useCallback(
     (e: Event) => {
       if (dropdownOpen) {
