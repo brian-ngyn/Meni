@@ -39,6 +39,7 @@ export const onboardingRouter = createTRPCRouter({
           lastName: input.lastName,
           clerkId: ctx.userSubmittingRequest.id,
           currentPlan: "tier0",
+          plan: "FREE",
         },
       });
 
@@ -65,6 +66,7 @@ export const onboardingRouter = createTRPCRouter({
         },
         data: {
           currentPlan: "tier3",
+          plan: "BETA1",
           isPaid: true,
         },
       });
@@ -83,6 +85,8 @@ export const onboardingRouter = createTRPCRouter({
       await clerkClient.users.updateUser(ctx.userSubmittingRequest.id, {
         publicMetadata: {
           onboardingComplete: newAccount && newRestaurant ? true : false,
+          activePayment: newAccount && newRestaurant ? true : false, // remove in future, set this via stripe
+          plan: newAccount && newRestaurant ? "BETA1" : "FREE", // set it to BETA1 for now, FREE in the future
         },
       });
 
