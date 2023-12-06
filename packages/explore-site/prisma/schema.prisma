@@ -19,6 +19,7 @@ model Account {
   stripeCustomerId String?
   stripePaymentId  String?
   plan             String
+  activePayment    Boolean @default(false)
   isPaid           Boolean @default(false) // will remove this in the future, use entilements instead
   isBetaTester     Boolean @default(true) // will remove this in the future, use entitlements instead
   currentPlan      String // will remove this in the future, use "plan" instead
@@ -26,16 +27,16 @@ model Account {
 }
 
 model RestaurantInfo {
-  id              String      @id @default(auto()) @map("_id") @db.ObjectId
-  ownerId         String
-  name            String
-  address         String
-  phoneNumber     String
-  description     String
-  image           String
-  activeMenuId    String?
-  paidUntil       String? // remove this in the future, add this to the Account model, get this value from stripe (lastPaidAt)
-  geoLocation     GeoLocation
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
+  ownerId      String
+  name         String
+  address      String
+  phoneNumber  String
+  description  String
+  image        String
+  activeMenuId String?
+  paidUntil    String? // remove this in the future, add this to the Account model, get this value from stripe (lastPaidAt)
+  geoLocation  GeoLocation
 }
 
 model Menus {
