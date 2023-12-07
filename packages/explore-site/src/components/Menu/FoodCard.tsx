@@ -5,9 +5,9 @@ import ScrollContainer from "react-indiana-drag-scroll";
 
 import { type MenuItem } from "@prisma/client";
 
-import MeniGlobals from "~/MeniGlobals";
+import { MeniGlobals } from "~/lib/hooks";
 
-import MeniText from "~/components/Menu/MenuText";
+import { MenuTextField } from "~/components/menu/MenuTextField";
 
 export type IFoodCardProps = MenuItem & {
   isTable: boolean;
@@ -83,14 +83,18 @@ export function FoodCard(props: IFoodCardProps) {
       <div className="flex w-full flex-col justify-between overflow-hidden break-words px-4 py-2 sm:h-full">
         <div className="flex w-full flex-1 grow flex-col gap-1 overflow-hidden">
           <div className="flex-none">
-            <MeniText id={id} field="name" textClass="text-lg">
+            <MenuTextField id={id} field="name" textClass="text-lg">
               {name}
-            </MeniText>
+            </MenuTextField>
           </div>
           <div className="w-full flex-initial grow overflow-y-auto scrollbar-hide">
-            <MeniText id={id} field="description" textClass="text-sm font-thin">
+            <MenuTextField
+              id={id}
+              field="description"
+              textClass="text-sm font-thin"
+            >
               {description}
-            </MeniText>
+            </MenuTextField>
           </div>
         </div>
         <div className="mt-2 flex items-center justify-between">
@@ -98,7 +102,7 @@ export function FoodCard(props: IFoodCardProps) {
             className="mt-1 box-content flex h-fit flex-none shrink-0 grow flex-nowrap items-center justify-between overflow-x-auto overflow-y-hidden py-1"
             vertical={false}
           >
-            <MeniText
+            <MenuTextField
               id={id}
               field="tags"
               textClass="text-lg float-right"
@@ -107,9 +111,9 @@ export function FoodCard(props: IFoodCardProps) {
           </ScrollContainer>
           <div className="flex w-16 flex-row items-center justify-center">
             <div>$</div>
-            <MeniText id={id} field="price" textClass="text-lg">
+            <MenuTextField id={id} field="price" textClass="text-lg">
               {price}
-            </MeniText>
+            </MenuTextField>
           </div>
         </div>
       </div>

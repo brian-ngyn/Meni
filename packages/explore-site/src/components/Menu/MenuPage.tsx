@@ -7,20 +7,20 @@ import { Link } from "react-scroll";
 
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
-import MeniGlobals from "~/MeniGlobals";
+import { MeniGlobals } from "~/lib/hooks";
 import { api } from "~/utils/api";
 
-import { LoadingPage } from "~/components/LoadingPage";
-import { FoodCard } from "~/components/Menu/FoodCard";
-import EditableText from "~/components/Menu/MenuText";
-import MeniNotification from "~/components/items/MeniNotification";
+import { LoadingPage } from "~/components/loadingPage";
+import MeniNotification from "~/components/meniComponents/MeniNotification";
+import { FoodCard } from "~/components/menu/FoodCard";
+import { MenuTextField } from "~/components/menu/MenuTextField";
 
-interface EditContainerProps {
+interface MenuPageProps {
   restaurantId: string;
   tableMode: boolean;
 }
 
-export default function EditContainer(props: EditContainerProps) {
+export function MenuPage(props: MenuPageProps) {
   const router = useRouter();
   const barREF = useRef();
   const { restaurantId, tableMode } = props;
@@ -198,25 +198,25 @@ export default function EditContainer(props: EditContainerProps) {
                       key={index1}
                       className="w-full border-white "
                     >
-                      <EditableText
+                      <MenuTextField
                         id={category.id}
                         textClass="font-serif text-5xl"
                       >
                         {category.name}
-                      </EditableText>
+                      </MenuTextField>
                       <div className="flex flex-col gap-16">
-                        {/* <EditableText id={category.id} textClass="text-2xl">
+                        {/* <MenuTextField id={category.id} textClass="text-2xl">
                   {category.name}
-                </EditableText> */}
+                </MenuTextField> */}
                         {category.subCategories.map((subCategory, index2) => {
                           return (
                             <div className="grid gap-8" key={index2}>
-                              <EditableText
+                              <MenuTextField
                                 id={subCategory.id}
                                 textClass="text-2xl font-medium font-sans py-4"
                               >
                                 {subCategory.name}
-                              </EditableText>
+                              </MenuTextField>
                               <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                                 {subCategory.items.map((item, index3) => {
                                   return (

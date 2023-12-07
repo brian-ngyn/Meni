@@ -1,13 +1,13 @@
 import { Chip, Stack } from "@mui/material";
 
-type IEditableTextProps = {
+type IMenuTextFieldProps = {
   field?: string;
   textClass?: string;
   children?: string | number | string[];
   tags?: string[];
   id: string;
 };
-export default function EditableText(props: IEditableTextProps) {
+export function MenuTextField(props: IMenuTextFieldProps) {
   const { children, textClass, id, field, tags } = props;
 
   return (

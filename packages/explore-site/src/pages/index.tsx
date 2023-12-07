@@ -7,11 +7,12 @@ import SearchIcon from "@mui/icons-material/Search";
 
 import { api } from "~/utils/api";
 
-import { LoadingPage } from "~/components/LoadingPage";
-import Navbar from "~/components/Navbar";
-import RestaurantCard, {
+import { LoadingPage } from "~/components/loadingPage";
+import { Navbar } from "~/components/navbar";
+import {
+  RestaurantCard,
   RestaurantCardSkeleton,
-} from "~/components/RestaurantCard";
+} from "~/components/restaurantCard";
 
 const HEADER = "text-3xl md:text-5xl mb-5 font-serif";
 const GRID_CONTAINER =

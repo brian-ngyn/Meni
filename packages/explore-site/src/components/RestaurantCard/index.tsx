@@ -5,14 +5,14 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import RouteIcon from "@mui/icons-material/Route";
 import { type RestaurantInfo } from "@prisma/client";
 
-import MeniGlobals from "~/MeniGlobals";
+import { MeniGlobals } from "~/lib/hooks";
 
 interface RestaurantCardProps {
   restaurantInfo: RestaurantInfo;
   distance?: number;
 }
 
-export default function RestaurantCard({
+export function RestaurantCard({
   restaurantInfo,
   distance,
 }: RestaurantCardProps) {

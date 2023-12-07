@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { IconButton } from "@mui/material";
 
-export default function Navbar() {
+export function Navbar() {
   return (
     <header className="h-20 bg-backdrop font-sans">
       <div className="max-w-screen mx-auto flex h-full items-center justify-evenly border-b-[1px] border-[#353535] px-4 md:px-12 lg:px-24">
