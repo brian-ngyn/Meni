@@ -10,6 +10,7 @@ import {
   onboardedProcedure,
   onboardingProcedure,
 } from "~/server/api/trpc";
+import { MEC_checkCount } from "~/server/utils/helpers";
 
 export const onboardingRouter = createTRPCRouter({
   signUp: onboardingProcedure
@@ -38,6 +39,8 @@ export const onboardingRouter = createTRPCRouter({
           lastName: input.lastName,
           clerkId: ctx.userSubmittingRequest.id,
           currentPlan: "tier0",
+          activePayment: false,
+          plan: "FREE",
         },
       });
 
@@ -64,26 +67,23 @@ export const onboardingRouter = createTRPCRouter({
         },
         data: {
           currentPlan: "tier3",
+          plan: "BETA1",
           isPaid: true,
-        },
-      });
-      await ctx.db.restaurantInfo.update({
-        where: {
-          ownerId: newAccount.id,
-        },
-        data: {
-          featuredPayment: true,
         },
       });
       // SET TIER 3
       // REMOVE IN FUTURE
 
       // update the user's public metadata to indicate onboarding is complete
-      await clerkClient.users.updateUser(ctx.userSubmittingRequest.id, {
-        publicMetadata: {
-          onboardingComplete: newAccount && newRestaurant ? true : false,
-        },
-      });
+      if (newAccount && newRestaurant) {
+        await clerkClient.users.updateUser(ctx.userSubmittingRequest.id, {
+          publicMetadata: {
+            onboardingComplete: true,
+            activePayment: true, // remove in future, set this via stripe
+            plan: "BETA1", // set it to BETA1 for now, FREE in the future
+          },
+        });
+      }
 
       return {
         success: true,
@@ -107,6 +107,12 @@ export const onboardingRouter = createTRPCRouter({
           clerkId: ctx.userId,
         },
       });
+      const restaurantCount = await ctx.db.restaurantInfo.count({
+        where: {
+          ownerId: account?.id as string,
+        },
+      });
+      MEC_checkCount(ctx.userSubmittingRequest, "RESTAURANT", restaurantCount);
 
       const ArcGIS_auth = ApiKeyManager.fromKey(env.ARCGIS_KEY);
       const geoLocation = await geocode({

@@ -29,38 +29,38 @@ const MeniMoneyMaker: React.FunctionComponent<MMMProps> = (props) => {
   const { hasPaymentMethod, isPaid, currentTier, restaurantId } = props;
   const { refetchAccountInfo, refetchAllRestaurantInfo } = useMeniContext();
   const { user } = useUser();
-  const { mutate: pickPaymentPlan } = api.meniMoneyMaker.pickPlan.useMutation({
-    onSuccess: (a) => {
-      if (a.success) {
-        MeniNotification(
-          "Success",
-          "Your plan has been updated. Thanks for testing Meni!",
-          "success",
-        );
-        void refetchAccountInfo();
-        void refetchAllRestaurantInfo();
-        setPageStep(1);
-      } else {
-        MeniNotification(
-          "Error",
-          "Failed to set your payment plan. Please try again later or contact support.",
-          "error",
-        );
-      }
-    },
-    onError: (e) => {
-      const errorMessage = e.data?.zodError?.fieldErrors.content;
-      if (errorMessage && errorMessage[0]) {
-        MeniNotification("Error", errorMessage[0], "error");
-      } else {
-        MeniNotification(
-          "Error",
-          "Failed to set your payment plan. Please try again later or contact support.",
-          "error",
-        );
-      }
-    },
-  });
+  // const { mutate: pickPaymentPlan } = api.meniMoneyMaker.pickPlan.useMutation({
+  //   onSuccess: (a) => {
+  //     if (a.success) {
+  //       MeniNotification(
+  //         "Success",
+  //         "Your plan has been updated. Thanks for testing Meni!",
+  //         "success",
+  //       );
+  //       void refetchAccountInfo();
+  //       void refetchAllRestaurantInfo();
+  //       setPageStep(1);
+  //     } else {
+  //       MeniNotification(
+  //         "Error",
+  //         "Failed to set your payment plan. Please try again later or contact support.",
+  //         "error",
+  //       );
+  //     }
+  //   },
+  //   onError: (e) => {
+  //     const errorMessage = e.data?.zodError?.fieldErrors.content;
+  //     if (errorMessage && errorMessage[0]) {
+  //       MeniNotification("Error", errorMessage[0], "error");
+  //     } else {
+  //       MeniNotification(
+  //         "Error",
+  //         "Failed to set your payment plan. Please try again later or contact support.",
+  //         "error",
+  //       );
+  //     }
+  //   },
+  // });
 
   const [pageStep, setPageStep] = useState(1);
   const paymentPlans: Plan[] = [
@@ -197,14 +197,14 @@ const MeniMoneyMaker: React.FunctionComponent<MMMProps> = (props) => {
     return;
   };
 
-  useEffect(() => {
-    if (!newSelectedTier.initial && newSelectedTier.tier !== currentTier) {
-      pickPaymentPlan({
-        clerkId: user?.id || "",
-        plan: newSelectedTier.tier || "",
-      });
-    }
-  }, [currentTier, newSelectedTier, pickPaymentPlan, user]);
+  // useEffect(() => {
+  //   if (!newSelectedTier.initial && newSelectedTier.tier !== currentTier) {
+  //     pickPaymentPlan({
+  //       clerkId: user?.id || "",
+  //       plan: newSelectedTier.tier || "",
+  //     });
+  //   }
+  // }, [currentTier, newSelectedTier, pickPaymentPlan, user]);
 
   return (
     <div className="text-sans my-10">
