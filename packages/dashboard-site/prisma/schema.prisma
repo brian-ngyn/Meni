@@ -11,31 +11,32 @@ datasource db {
 }
 
 model Account {
-  id               String  @id @default(auto()) @map("_id") @db.ObjectId
-  email            String  @unique
+  id               String    @id @default(auto()) @map("_id") @db.ObjectId
+  email            String    @unique
   firstName        String
   lastName         String
-  clerkId          String  @unique
+  clerkId          String    @unique
   stripeCustomerId String?
   stripePaymentId  String?
-  isPaid           Boolean @default(false)
-  isBetaTester     Boolean @default(true)
-  currentPlan      String
-  lastPaidAt       String? // this will be BigInt in the future
+  plan             IPlanRole @default(FREE)
+  activePayment    Boolean   @default(false)
+  isPaid           Boolean   @default(false) // will remove this in the future, use entilements instead
+  isBetaTester     Boolean   @default(true) // will remove this in the future, use entitlements instead
+  currentPlan      String // will remove this in the future, use "plan" instead
+  lastPaidAt       String? // this will be BigInt in the future, this value will change based on stripe, maybe need to rename this property as well
 }
 
 model RestaurantInfo {
-  id              String      @id @default(auto()) @map("_id") @db.ObjectId
-  ownerId         String      @unique
-  name            String
-  address         String
-  phoneNumber     String
-  description     String
-  image           String
-  activeMenuId    String?
-  featuredPayment Boolean?
-  paidUntil       String? // this will be BigInt in the future
-  geoLocation     GeoLocation
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
+  ownerId      String
+  name         String
+  address      String
+  phoneNumber  String
+  description  String
+  image        String
+  activeMenuId String?
+  paidUntil    String? // remove this in the future, add this to the Account model, get this value from stripe (lastPaidAt)
+  geoLocation  GeoLocation
 }
 
 model Menus {
@@ -70,4 +71,9 @@ type MenuItem {
 type GeoLocation {
   latitude  Float
   longitude Float
+}
+
+enum IPlanRole {
+  BETA1
+  FREE
 }

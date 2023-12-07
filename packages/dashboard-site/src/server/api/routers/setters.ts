@@ -7,6 +7,11 @@ import { TRPCError } from "@trpc/server";
 
 import { env } from "~/env.mjs";
 import { createTRPCRouter, onboardedProcedure } from "~/server/api/trpc";
+import {
+  IEntitlements,
+  MEC_checkCount,
+  MEC_checkPermissions,
+} from "~/server/utils/helpers";
 
 export const settersRouter = createTRPCRouter({
   updateRestaurantInfo: onboardedProcedure
@@ -162,6 +167,13 @@ export const settersRouter = createTRPCRouter({
           id: input.restaurantId,
         },
       });
+
+      const menuLength = await ctx.db.menus.count({
+        where: {
+          restaurantId: restaurant?.id,
+        },
+      });
+      MEC_checkCount(ctx.userSubmittingRequest, "MENU", menuLength);
 
       if (restaurant?.id !== input.newMenu.restaurantId) {
         throw new TRPCError({
@@ -333,6 +345,10 @@ export const settersRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      MEC_checkPermissions(
+        ctx.userSubmittingRequest,
+        IEntitlements.ALLOW_PUBLISHING,
+      );
       const owner = await ctx.db.account.findUnique({
         where: {
           clerkId: input.clerkId,
@@ -474,8 +490,10 @@ export const settersRouter = createTRPCRouter({
         });
 
         if (menuLength === 0 || restaurant?.activeMenuId === input.menuId) {
+          // verify if the menu deleted is the active menu
           await ctx.db.restaurantInfo.update({
             where: {
+              id: restaurant?.id,
               ownerId: owner?.id,
             },
             data: {
