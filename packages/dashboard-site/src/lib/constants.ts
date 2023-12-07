@@ -1,4 +1,4 @@
-const quotes = [
+export const quotes = [
   {
     quote:
       "Cooking is like love. It should be entered into with abandon or not at all.",
@@ -93,5 +93,3 @@ const quotes = [
     author: "Curnonsky",
   },
 ];
-
-export default quotes;

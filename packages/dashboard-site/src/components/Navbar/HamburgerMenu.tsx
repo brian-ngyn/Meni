@@ -11,7 +11,7 @@ import StorefrontIcon from "@mui/icons-material/Storefront";
 import { useMeniContext } from "~/context/meniContext";
 import { api } from "~/utils/api";
 
-import MeniNotification from "~/components/items/MeniNotification";
+import MeniNotification from "~/components/meniComponents/MeniNotification";
 
 const HambugerMenu = () => {
   const genericHamburgerLine = `h-1 w-6 my-0.5 rounded-full bg-white transition ease transform duration-400`;

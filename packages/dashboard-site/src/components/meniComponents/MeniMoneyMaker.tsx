@@ -6,9 +6,9 @@ import { useUser } from "@clerk/nextjs";
 import { useMeniContext } from "~/context/meniContext";
 import { api } from "~/utils/api";
 
-import MeniButton from "~/components/items/MeniButton";
-import MeniNotification from "~/components/items/MeniNotification";
-import MeniTextInput from "~/components/items/MeniTextInput";
+import MeniButton from "~/components/meniComponents/MeniButton";
+import MeniNotification from "~/components/meniComponents/MeniNotification";
+import MeniTextInput from "~/components/meniComponents/MeniTextInput";
 
 type Plan = {
   key: string;

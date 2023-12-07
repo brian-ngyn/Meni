@@ -9,7 +9,7 @@ import { type UseQueryResult } from "@tanstack/react-query";
 
 import { api } from "~/utils/api";
 
-import MeniNotification from "~/components/items/MeniNotification";
+import MeniNotification from "~/components/meniComponents/MeniNotification";
 
 interface Props {
   children: React.ReactNode | React.ReactNode[];

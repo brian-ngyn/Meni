@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 
 import { EditableMenuContextProvider } from "~/context/EditableMenuContext";
 
-import EditContainer from "~/components/EditMenu/EditContainer";
+import EditContainer from "~/components/editMenu/EditContainer";
 
 export default function EditMenu(props: any) {
   const router = useRouter();

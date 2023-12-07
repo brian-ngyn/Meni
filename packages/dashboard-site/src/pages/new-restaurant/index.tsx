@@ -7,9 +7,9 @@ import { useUser } from "@clerk/nextjs";
 
 import { api } from "~/utils/api";
 
-import { LoadingPage } from "~/components/LoadingPage";
-import RestaurantInfo from "~/components/RegistrationForms/RestaurantInfo";
-import MeniNotification from "~/components/items/MeniNotification";
+import { LoadingPage } from "~/components/loadingPage";
+import MeniNotification from "~/components/meniComponents/MeniNotification";
+import RestaurantInfo from "~/components/registrationForms/RestaurantInfo";
 
 export default function Page() {
   const { isLoaded, user, isSignedIn } = useUser();

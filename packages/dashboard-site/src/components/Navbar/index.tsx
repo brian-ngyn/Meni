@@ -4,8 +4,8 @@ import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
 import { IconButton } from "@mui/material";
 
-import HamburgerMenu from "~/components/Navbar/HamburgerMenu";
-import MeniButton from "~/components/items/MeniButton";
+import MeniButton from "~/components/meniComponents/MeniButton";
+import HamburgerMenu from "~/components/navbar/HamburgerMenu";
 
 type NavbarProps = {
   page: string;

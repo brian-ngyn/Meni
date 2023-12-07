@@ -4,10 +4,10 @@ import ScrollContainer from "react-indiana-drag-scroll";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 
-import MeniGlobals from "~/MeniGlobals";
 import { useEditableMenu } from "~/context/EditableMenuContext";
+import { MeniGlobals } from "~/lib/hooks";
 
-import EditableText from "~/components/EditMenu/EditableText";
+import EditableText from "~/components/editMenu/EditableText";
 import { ImageUploader } from "~/components/uploader";
 
 export type IFoodCardProps = {

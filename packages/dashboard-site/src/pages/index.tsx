@@ -4,10 +4,10 @@ import Image from "next/image";
 
 import { useUser } from "@clerk/nextjs";
 
-import { ScrollTo } from "~/hooks/ScrollTo";
+import { ScrollTo } from "~/lib/hooks";
 
-import NavBar from "~/components/Navbar";
-import MeniButton from "~/components/items/MeniButton";
+import MeniButton from "~/components/meniComponents/MeniButton";
+import NavBar from "~/components/navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 

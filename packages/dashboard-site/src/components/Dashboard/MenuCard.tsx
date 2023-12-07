@@ -1,9 +1,9 @@
 import Image from "next/image";
 import React from "react";
 
-import { type IMenuBrief } from "~/constants/types";
+import { type IMenuBrief } from "~/lib/types";
 
-import { MenuCardMode } from "~/components/Dashboard/MenuList";
+import { MenuCardMode } from "~/components/dashboard/MenuList";
 
 type IMenuCard = {
   menu: IMenuBrief;
@@ -87,7 +87,7 @@ function MenuCard(props: IMenuCard) {
         {props.isActive ? (
           <div className="absolute -right-3 -top-3">
             <Image
-              src="/dashboard/ActiveCheck.svg"
+              src="/dashboardPage/ActiveCheck.svg"
               alt="Active Menu Check"
               width="32"
               height="32"

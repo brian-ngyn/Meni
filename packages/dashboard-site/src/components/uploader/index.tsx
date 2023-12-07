@@ -7,8 +7,8 @@ import { useDropzone } from "@uploadthing/react/hooks";
 
 import { useUploadThing } from "~/utils/uploadthing";
 
-import { LoadingSpinner } from "~/components/LoadingPage";
-import MeniNotification from "~/components/items/MeniNotification";
+import { LoadingSpinner } from "~/components/loadingPage";
+import MeniNotification from "~/components/meniComponents/MeniNotification";
 
 type ImageUploaderProps = {
   updateField: (id: string, field: string, value: string) => void;

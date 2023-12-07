@@ -2,12 +2,12 @@ import { AsYouType } from "libphonenumber-js";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
-import MeniGlobals from "~/MeniGlobals";
+import { MeniGlobals } from "~/lib/hooks";
 import { UploadButton } from "~/utils/uploadthing";
 
-import MeniAddressSuggester from "~/components/items/MeniAddressSuggester";
-import MeniNotification from "~/components/items/MeniNotification";
-import MeniTextInput from "~/components/items/MeniTextInput";
+import MeniAddressSuggester from "~/components/meniComponents/MeniAddressSuggester";
+import MeniNotification from "~/components/meniComponents/MeniNotification";
+import MeniTextInput from "~/components/meniComponents/MeniTextInput";
 
 type RestaurantInfoProps = {
   restaurantName: string;

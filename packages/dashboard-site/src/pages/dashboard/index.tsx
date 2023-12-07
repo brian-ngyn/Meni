@@ -4,19 +4,18 @@ import React, { type ChangeEvent, useEffect, useState } from "react";
 
 import { useUser } from "@clerk/nextjs";
 
-import { type IMenuBrief } from "~/constants/types";
 import { useMeniContext } from "~/context/meniContext";
-import { MEC_checkCount } from "~/server/utils/helpers";
+import { type IMenuBrief } from "~/lib/types";
 import { api } from "~/utils/api";
 
-import MenuList, { MenuCardMode } from "~/components/Dashboard/MenuList";
-import { LoadingPage } from "~/components/LoadingPage";
-import Navbar from "~/components/Navbar";
-import MeniMoneyMaker from "~/components/RegistrationForms/MeniMoneyMaker";
-import PersonalInfo from "~/components/RegistrationForms/PersonalInfo";
-import RestaurantInfo from "~/components/RegistrationForms/RestaurantInfo";
-import MeniButton from "~/components/items/MeniButton";
-import MeniNotification from "~/components/items/MeniNotification";
+import MenuList, { MenuCardMode } from "~/components/dashboard/MenuList";
+import { LoadingPage } from "~/components/loadingPage";
+import MeniButton from "~/components/meniComponents/MeniButton";
+import MeniMoneyMaker from "~/components/meniComponents/MeniMoneyMaker";
+import MeniNotification from "~/components/meniComponents/MeniNotification";
+import Navbar from "~/components/navbar";
+import PersonalInfo from "~/components/registrationForms/PersonalInfo";
+import RestaurantInfo from "~/components/registrationForms/RestaurantInfo";
 
 const PADDING = "xl:mx-48 md:mx-24 xs:mx-6";
 

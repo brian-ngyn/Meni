@@ -6,8 +6,8 @@ import { Chip, Stack } from "@mui/material";
 
 import { useEditableMenu } from "~/context/EditableMenuContext";
 
-import MeniMultiSelect from "~/components/EditMenu/MeniMultiSelect";
-import MeniEditText from "~/components/items/MeniEditText";
+import MeniEditText from "~/components/meniComponents/MeniEditText";
+import MeniMultiSelect from "~/components/meniComponents/MeniMultiSelect";
 
 type IEditableTextProps = {
   field?: string;

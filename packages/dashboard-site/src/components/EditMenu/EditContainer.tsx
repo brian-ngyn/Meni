@@ -14,12 +14,12 @@ import { EditMode, useEditableMenu } from "~/context/EditableMenuContext";
 import { useMeniContext } from "~/context/meniContext";
 import { api } from "~/utils/api";
 
-import EditableText from "~/components/EditMenu/EditableText";
-import FoodCard from "~/components/EditMenu/FoodCard";
-import { LoadingPage } from "~/components/LoadingPage";
-import MeniButton from "~/components/items/MeniButton";
-import MeniDialog from "~/components/items/MeniDialog";
-import MeniNotification from "~/components/items/MeniNotification";
+import EditableText from "~/components/editMenu/EditableText";
+import FoodCard from "~/components/editMenu/FoodCard";
+import { LoadingPage } from "~/components/loadingPage";
+import MeniButton from "~/components/meniComponents/MeniButton";
+import MeniDialog from "~/components/meniComponents/MeniDialog";
+import MeniNotification from "~/components/meniComponents/MeniNotification";
 
 type EditContainerProps = {
   menuId: string;
@@ -277,7 +277,7 @@ export default function EditContainer(props: EditContainerProps) {
               width={20}
               height={20}
               alt="location icon"
-              src="/menupage/location.svg"
+              src="/menuPage/location.svg"
             ></Image>
             <p className="font-thin">{restaurant?.address}</p>
           </div>
@@ -286,7 +286,7 @@ export default function EditContainer(props: EditContainerProps) {
               width={20}
               height={20}
               alt="location icon"
-              src="/menupage/phone.svg"
+              src="/menuPage/phone.svg"
             ></Image>
             <a href="tel:403-231-8933" className="font-thin">
               {restaurant?.phoneNumber}

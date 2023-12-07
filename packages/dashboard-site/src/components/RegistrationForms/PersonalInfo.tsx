@@ -1,4 +1,4 @@
-import MeniTextInput from "~/components/items/MeniTextInput";
+import MeniTextInput from "~/components/meniComponents/MeniTextInput";
 
 type PersonalInfoProps = {
   firstName: string;

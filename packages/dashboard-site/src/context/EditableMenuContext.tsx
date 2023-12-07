@@ -9,9 +9,9 @@ import { v4 as uuidv4 } from "uuid";
 
 import { type Menus } from "@prisma/client";
 
-import { defaultStarterMenu } from "~/constants/types";
+import { defaultStarterMenu } from "~/lib/data";
 
-import MeniNotification from "~/components/items/MeniNotification";
+import MeniNotification from "~/components/meniComponents/MeniNotification";
 
 interface Props {
   children: ReactNode | ReactNode[];

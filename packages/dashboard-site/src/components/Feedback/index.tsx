@@ -6,7 +6,7 @@ import FeedbackOutlinedIcon from "@mui/icons-material/FeedbackOutlined";
 
 import { api } from "~/utils/api";
 
-import MeniNotification from "~/components/items/MeniNotification";
+import MeniNotification from "~/components/meniComponents/MeniNotification";
 
 const Feedback = () => {
   const { user } = useUser();

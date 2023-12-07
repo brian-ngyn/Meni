@@ -5,15 +5,15 @@ import { useDraggable } from "react-use-draggable-scroll";
 import { useUser } from "@clerk/nextjs";
 import { type UseQueryResult } from "@tanstack/react-query";
 
-import { type IMenuBrief } from "~/constants/types";
 import { useMeniContext } from "~/context/meniContext";
+import { type IMenuBrief } from "~/lib/types";
 import { api } from "~/utils/api";
 
-import MenuCard from "~/components/Dashboard/MenuCard";
-import MeniButton from "~/components/items/MeniButton";
-import MeniDialog from "~/components/items/MeniDialog";
-import MeniNotification from "~/components/items/MeniNotification";
-import MeniTextInput from "~/components/items/MeniTextInput";
+import MenuCard from "~/components/dashboard/MenuCard";
+import MeniButton from "~/components/meniComponents/MeniButton";
+import MeniDialog from "~/components/meniComponents/MeniDialog";
+import MeniNotification from "~/components/meniComponents/MeniNotification";
+import MeniTextInput from "~/components/meniComponents/MeniTextInput";
 
 export enum MenuCardMode {
   MENU = "menu",
