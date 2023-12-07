@@ -1,4 +1,4 @@
-name: Enforce pre-prod into main
+name: Enforce develop branch into main
 
 on:
   pull_request:
@@ -15,7 +15,7 @@ jobs:
 
     - name: Validate PR branch
       run: |
-        if [ "${{ github.event.pull_request.head.ref }}" != "pre-prod" ]; then
-          echo "Invalid branch for pull request. Please create a pull request from 'pre-prod' branch."
+        if [ "${{ github.event.pull_request.head.ref }}" != "develop" ]; then
+          echo "Invalid branch for pull request. Please create a pull request from 'develop' branch."
           exit 1
         fi
