@@ -1,4 +1,4 @@
-import clsx from "clsx";
+import clsx, { type ClassValue } from "clsx";
 import { twMerge as twMergeOriginal } from "tailwind-merge";
 
 import { type APIProps, type CDNQueryProps } from "~/lib/types";
@@ -31,6 +31,6 @@ export const ScrollTo = (id: string) => {
   }
 };
 
-export function cn(...args: unknown[]) {
+export function cn(...args: ClassValue[]) {
   return twMergeOriginal(clsx(args));
 }

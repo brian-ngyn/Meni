@@ -17,7 +17,7 @@ export function Navbar() {
           <div className="flex items-center gap-4">
             <div className="flex flex-row items-center gap-10">
               <Link href="https://dashboard.meniapp.ca">
-                <div className="font-thinrelative font-sans text-lg font-thin before:absolute before:bottom-0 before:left-0 before:h-0.5 before:w-full before:origin-right before:scale-x-0 before:bg-[#545454] before:transition-transform before:duration-500 hover:before:origin-left hover:before:scale-x-100">
+                <div className="relative font-sans text-lg font-thin before:absolute before:bottom-0 before:left-0 before:h-0.5 before:w-full before:origin-right before:scale-x-0 before:bg-[#545454] before:transition-transform before:duration-500 hover:before:origin-left hover:before:scale-x-100">
                   <h2>For Restaurants</h2>
                 </div>
               </Link>

@@ -7,7 +7,7 @@ import { Link } from "react-scroll";
 
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
-import { MeniGlobals } from "~/lib/hooks";
+import { MeniGlobals, cn } from "~/lib/hooks";
 import { api } from "~/utils/api";
 
 import { LoadingPage } from "~/components/loadingPage";
@@ -117,21 +117,23 @@ export function MenuPage(props: MenuPageProps) {
   const renderCategoryBar = () => (
     <div className="flex justify-center">
       <ScrollContainer
-        className={`sticky top-0 z-50 flex w-full gap-16 overflow-x-auto bg-backdrop py-3 align-middle text-xl font-thin ${
-          props.tableMode ? "border-b md:border-b-0" : ""
-        }`}
+        className={cn(
+          "sticky top-0 z-50 flex w-full gap-16 overflow-x-auto bg-backdrop py-3 align-middle text-xl font-thin",
+          {
+            "border-b md:border-b-0": props.tableMode,
+          },
+        )}
       >
         {menu?.mainCategories.map((category, index) => (
           <Link
             offset={tableMode ? -350 : -50}
-            activeClass="font-bold 
-          before:scale-x-100 "
-            className={`before:duration-300r relative m-auto cursor-pointer whitespace-nowrap before:absolute before:bottom-0 before:left-0 before:block 
-          before:h-[2px] before:w-full before:origin-top-left
-          before:scale-x-0 before:bg-white
-          before:transition before:ease-in-out before:content-[''] ${
-            index === 0 ? "ml-auto" : ""
-          }`}
+            activeClass="font-bold before:scale-x-100"
+            className={cn(
+              "before:duration-300r relative m-auto cursor-pointer whitespace-nowrap before:absolute before:bottom-0 before:left-0 before:block before:h-[2px] before:w-full before:origin-top-left before:scale-x-0 before:bg-white before:transition before:ease-in-out before:content-['']",
+              {
+                "ml-auto": index === 0,
+              },
+            )}
             key={category.id}
             smooth
             spy
@@ -144,9 +146,9 @@ export function MenuPage(props: MenuPageProps) {
     </div>
   );
 
-  return isLoadingMenu || isLoadingRestaurant ? (
-    <LoadingPage />
-  ) : menu && menu?.mainCategories ? (
+  if (isLoadingMenu || isLoadingRestaurant) return <LoadingPage />;
+
+  return menu && menu?.mainCategories ? (
     <>
       {tableMode && (
         <div className="sticky top-0 z-50 h-1/4 w-full rounded-b-xl bg-backdrop font-sans">
@@ -159,7 +161,7 @@ export function MenuPage(props: MenuPageProps) {
             {renderCategoryBar()}
           </>
           <div className="relative">
-            <div className="absolute left-0 top-0 z-40 h-full w-full bg-gradient-to-t from-backdrop via-transparent to-transparent "></div>
+            <div className="absolute left-0 top-0 z-40 h-full w-full bg-gradient-to-t from-backdrop via-transparent to-transparent"></div>
             <div className="h-56 w-full">
               {currentImage !== "" && (
                 <Image
@@ -167,7 +169,7 @@ export function MenuPage(props: MenuPageProps) {
                   alt={"Current Food Image"}
                   width="1000"
                   height="1000"
-                  className="z-30 h-full w-full "
+                  className="z-30 h-full w-full"
                   style={{ objectFit: "cover" }}
                 />
               )}
@@ -176,9 +178,13 @@ export function MenuPage(props: MenuPageProps) {
         </div>
       )}
       <div
-        className={`h-full w-full items-center justify-center font-sans text-white ${
-          !tableMode ? "p-10" : "px-10 pt-2"
-        } `}
+        className={cn(
+          "h-full w-full items-center justify-center font-sans text-white",
+          {
+            "p-10": !tableMode,
+            "px-10 pt-2": tableMode,
+          },
+        )}
       >
         <>
           {!tableMode && renderHeader()}
@@ -188,15 +194,15 @@ export function MenuPage(props: MenuPageProps) {
         </>
 
         <div className="m-auto mb-36 grid h-fit max-w-[1460px] gap-4 xl:w-4/5">
-          <div className=" relative grid gap-4 ">
-            <div className="relative overflow-hidden " id="">
+          <div className="relative grid gap-4">
+            <div className="relative overflow-hidden">
               <div className="my-8 flex flex-col">
                 {menu?.mainCategories.map((category, index1) => {
                   return (
                     <section
                       id={category.id}
                       key={index1}
-                      className="w-full border-white "
+                      className="w-full border-white"
                     >
                       <MenuTextField
                         id={category.id}
@@ -205,9 +211,6 @@ export function MenuPage(props: MenuPageProps) {
                         {category.name}
                       </MenuTextField>
                       <div className="flex flex-col gap-16">
-                        {/* <MenuTextField id={category.id} textClass="text-2xl">
-                  {category.name}
-                </MenuTextField> */}
                         {category.subCategories.map((subCategory, index2) => {
                           return (
                             <div className="grid gap-8" key={index2}>
@@ -243,11 +246,6 @@ export function MenuPage(props: MenuPageProps) {
                             </div>
                           );
                         })}
-                        <div className="relative flex h-16 w-full flex-col items-center justify-center hover:cursor-pointer sm:flex-row lg:aspect-[30/10] ">
-                          {/* <span>
-                    <AddIcon className="text-3xl text-gray-600" />
-                  </span>{" "} */}
-                        </div>
                       </div>
                     </section>
                   );
@@ -256,18 +254,6 @@ export function MenuPage(props: MenuPageProps) {
             </div>
           </div>
         </div>
-
-        {/* Lots of fun here!! :) --> :/ --> :( */}
-        {/* <DragDropContext onDragEnd={console.log()}>
-          <Droppable droppableId="droppable" direction="horizontal">
-
-              <Draggable key={1} draggableId={1} index={1}>
-                Test
-
-              </Draggable>
- 
-          </Droppable>
-        </DragDropContext> */}
       </div>
     </>
   ) : (

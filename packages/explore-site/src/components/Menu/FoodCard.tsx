@@ -5,7 +5,7 @@ import ScrollContainer from "react-indiana-drag-scroll";
 
 import { type MenuItem } from "@prisma/client";
 
-import { MeniGlobals } from "~/lib/hooks";
+import { MeniGlobals, cn } from "~/lib/hooks";
 
 import { MenuTextField } from "~/components/menu/MenuTextField";
 
@@ -60,16 +60,19 @@ export function FoodCard(props: IFoodCardProps) {
   return (
     <div
       ref={myRef}
-      className={`group relative flex flex-col rounded sm:flex-row ${
-        currentImage === image && isTable ? "bg-[#656565]" : "bg-card"
-      } ${
-        !isTable ? "aspect-square" : null
-      }  w-full=== sm:aspect-[3/1] md:aspect-[20/5] lg:aspect-[25/10] xl:aspect-[25/10]`}
+      className={cn(
+        "group relative flex flex-col rounded sm:aspect-[3/1] sm:flex-row md:aspect-[20/5] lg:aspect-[25/10] xl:aspect-[25/10]",
+        {
+          "bg-[#656565]": currentImage === image && isTable,
+          "bg-card": !(currentImage === image && isTable),
+          "aspect-square": !isTable,
+        },
+      )}
     >
       <div className="bg-accent absolute left-2 top-2 z-10 hidden rounded-full p-1 hover:cursor-pointer group-hover:block"></div>
       {!props.isTable && (
         <div className="relative aspect-square flex-none sm:w-48 lg:w-48">
-          {image !== "" ? (
+          {image !== "" && (
             <Image
               src={MeniGlobals().cdnRoot + image}
               className="rounded-l object-cover"
@@ -77,7 +80,7 @@ export function FoodCard(props: IFoodCardProps) {
               alt="Food Item Image"
               priority
             />
-          ) : null}
+          )}
         </div>
       )}
       <div className="flex w-full flex-col justify-between overflow-hidden break-words px-4 py-2 sm:h-full">
