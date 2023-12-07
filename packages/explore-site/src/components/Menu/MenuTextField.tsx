@@ -8,7 +8,7 @@ type IMenuTextFieldProps = {
   id: string;
 };
 export function MenuTextField(props: IMenuTextFieldProps) {
-  const { children, textClass, id, field, tags } = props;
+  const { children, textClass, tags } = props;
 
   return (
     <div className="flex w-full">

@@ -35,13 +35,10 @@ export default function Home() {
 
   const { data: featuredRestaurants, isLoading: isFeaturedRestaurantsLoading } =
     api.home.getFeaturedRestaurants.useQuery();
-  const {
-    data: localRestaurants,
-    refetch: refetchLocalRestaurants,
-    isLoading: isLocalRestaurantsLoading,
-  } = api.home.getLocalRestaurants.useQuery(coordinates, {
-    enabled: coordinates.latitude !== -1 && coordinates.longitude !== -1,
-  });
+  const { data: localRestaurants, isLoading: isLocalRestaurantsLoading } =
+    api.home.getLocalRestaurants.useQuery(coordinates, {
+      enabled: coordinates.latitude !== -1 && coordinates.longitude !== -1,
+    });
   const { data: searchedRestaurants, refetch: refetchSearchedRestaurants } =
     api.home.search.useQuery(search.searchString, {
       enabled: false,
