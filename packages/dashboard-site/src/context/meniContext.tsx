@@ -58,7 +58,11 @@ export function MeniContextProvider({ children }: Props) {
     isLoading: isAccountInfoLoading,
   } = api.getters.getAccountInfo.useQuery(
     { clerkId: user?.id || "" },
-    { enabled: false },
+    {
+      enabled: (user &&
+        isSignedIn &&
+        router.pathname === "/dashboard") as boolean,
+    },
   );
   const {
     data: allRestaurantInfo,
@@ -66,7 +70,11 @@ export function MeniContextProvider({ children }: Props) {
     isLoading: isAllRestaurantInfoLoading,
   } = api.getters.getAllRestaurantInfo.useQuery(
     { clerkId: user?.id || "" },
-    { enabled: false },
+    {
+      enabled: (user &&
+        isSignedIn &&
+        router.pathname === "/dashboard") as boolean,
+    },
   );
 
   const currentRestaurantSelected = allRestaurantInfo
@@ -149,19 +157,6 @@ export function MeniContextProvider({ children }: Props) {
       clerkId: user?.id || "",
     });
   };
-
-  useEffect(() => {
-    if (user && isSignedIn && router.pathname === "/dashboard") {
-      void refetchAccountInfo();
-      void refetchAllRestaurantInfo();
-    }
-  }, [
-    isSignedIn,
-    refetchAccountInfo,
-    refetchAllRestaurantInfo,
-    router.pathname,
-    user,
-  ]);
 
   useEffect(() => {
     if (isAccountInfoLoading || isAllRestaurantInfoLoading || !isClerkLoaded) {

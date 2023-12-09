@@ -25,19 +25,17 @@ export function MenuPage(props: MenuPageProps) {
   const barREF = useRef();
   const { restaurantId, tableMode } = props;
 
-  const {
-    data: menu,
-    isLoading: isLoadingMenu,
-    refetch: refetchMenus,
-  } = api.restaurant.getMenu.useQuery(restaurantId, { enabled: false });
+  const { data: menu, isLoading: isLoadingMenu } =
+    api.restaurant.getMenu.useQuery(restaurantId, {
+      enabled: !!props.restaurantId,
+    });
   const {
     data: restaurant,
     isLoading: isLoadingRestaurant,
-    refetch: refetchRestaurant,
     isError: isErrorRestaurant,
     error: errorRestaurant,
   } = api.restaurant.getRestaurant.useQuery(restaurantId, {
-    enabled: false,
+    enabled: !!props.restaurantId,
     retry: 1,
   });
 
@@ -46,13 +44,6 @@ export function MenuPage(props: MenuPageProps) {
       MeniNotification("Error", `${errorRestaurant.message}`, "error", 7.5);
     }
   }, [errorRestaurant?.message, isErrorRestaurant]);
-
-  useEffect(() => {
-    if (props.restaurantId) {
-      void refetchMenus();
-      void refetchRestaurant();
-    }
-  }, [props.restaurantId, refetchMenus, refetchRestaurant]);
 
   const [currentImage, setCurrentImage] = useState<string>("");
 

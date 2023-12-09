@@ -55,28 +55,19 @@ export default function MeniAddressSuggester(props: MeniAddressSuggesterProps) {
     undefined,
   );
 
-  const {
-    data: options,
-    refetch: fetchAddressSuggestions,
-    isLoading: isLoadingSuggestions,
-  } = api.getters.getAddressSuggestions.useQuery(
-    {
-      address: search,
-    },
-    { enabled: false },
-  );
+  const { data: options, isLoading: isLoadingSuggestions } =
+    api.getters.getAddressSuggestions.useQuery(
+      {
+        address: search,
+      },
+      { enabled: search !== "" },
+    );
 
   useEffect(() => {
     console.log(options);
   }, [options]);
 
   const loading = isLoadingSuggestions && open && search !== "";
-
-  useEffect(() => {
-    if (search !== "") {
-      void fetchAddressSuggestions();
-    }
-  }, [fetchAddressSuggestions, search]);
 
   const handleSearchChange = (newSearch: string) => {
     if (timeoutId) {

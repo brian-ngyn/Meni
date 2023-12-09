@@ -51,30 +51,24 @@ export default function EditContainer(props: EditContainerProps) {
   const { menuId } = props;
   const router = useRouter();
 
-  const {
-    data: restaurant,
-    isLoading,
-    refetch: fetchRestaurantInfo,
-  } = api.getters.getRestaurantInfo.useQuery(
-    {
-      clerkId: user?.id || "",
-      restaurantId: props.restaurantId,
-    },
-    { enabled: false },
-  );
+  const { data: restaurant, isLoading } =
+    api.getters.getRestaurantInfo.useQuery(
+      {
+        clerkId: user?.id || "",
+        restaurantId: props.restaurantId,
+      },
+      { enabled: !!(user && props.restaurantId !== null) },
+    );
 
-  const {
-    data: menuForContext,
-    refetch: fetchMenuForContext,
-    isLoading: isFetchMenuLoading,
-  } = api.getters.getMenu.useQuery(
-    {
-      clerkId: user?.id as string,
-      menuId: menuId,
-      restaurantId: props.restaurantId,
-    },
-    { enabled: false },
-  );
+  const { data: menuForContext, isLoading: isFetchMenuLoading } =
+    api.getters.getMenu.useQuery(
+      {
+        clerkId: user?.id as string,
+        menuId: menuId,
+        restaurantId: props.restaurantId,
+      },
+      { enabled: !!(user && menuId !== "new") },
+    );
 
   const { mutate: createMenu } = api.setters.createMenu.useMutation({
     onSuccess: (a) => {
@@ -175,18 +169,6 @@ export default function EditContainer(props: EditContainerProps) {
   const openCategoryForEdit = (categoryId: string) => {
     setCurrentEditId(categoryId);
   };
-
-  useEffect(() => {
-    if (user && props.restaurantId) {
-      void fetchRestaurantInfo();
-    }
-  }, [fetchRestaurantInfo, user, props.restaurantId]);
-
-  useEffect(() => {
-    if (user && menuId !== "new") {
-      void fetchMenuForContext();
-    }
-  }, [fetchMenuForContext, menuId, user]);
 
   useEffect(() => {
     if (menuForContext && initialLoad) {
