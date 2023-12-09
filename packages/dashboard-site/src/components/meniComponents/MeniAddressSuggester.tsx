@@ -132,11 +132,11 @@ export default function MeniAddressSuggester(props: MeniAddressSuggesterProps) {
           >
             {children}
           </input>
-          {title ? (
+          {title && (
             <span className="absolute -translate-y-1/2 text-xs text-gray-400 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-base peer-focus:top-3 peer-focus:text-xs xs:left-1 xs:top-2 sm:left-2 md:left-2 lg:left-3 lg:top-3">
               {title}
             </span>
-          ) : null}
+          )}
         </label>
         {!loading && options && options.length > 0 && open && (
           <ul className="absolute z-50 mt-1 max-h-[200px] w-full overflow-y-auto rounded-lg border-[1px] bg-grey px-2 py-1 shadow-lg">

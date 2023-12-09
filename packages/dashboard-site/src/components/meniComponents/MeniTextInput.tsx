@@ -84,11 +84,11 @@ export default function MeniTextInput(props: MeniTextInputProps) {
         >
           {children}
         </input>
-        {title ? (
+        {title && (
           <span className="absolute -translate-y-1/2 text-xs text-gray-400 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-base peer-focus:top-3 peer-focus:text-xs xs:left-1 xs:top-2 sm:left-2 md:left-2 lg:left-3 lg:top-3">
             {title}
           </span>
-        ) : null}
+        )}
       </label>
       {error && (
         <div className="relative-absolute inset-y-0 right-0 flex items-center pr-3 text-sm text-red-500">

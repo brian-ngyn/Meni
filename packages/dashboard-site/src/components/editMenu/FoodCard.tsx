@@ -50,7 +50,7 @@ export default function FoodCard(props: IFoodCardProps) {
             setIsUploading={setIsUploading}
           />
         </div>
-        {image !== "" ? (
+        {image !== "" && (
           <Image
             src={MeniGlobals().cdnRoot + image}
             className={cn("rounded-l object-cover hover:opacity-25", {
@@ -59,7 +59,7 @@ export default function FoodCard(props: IFoodCardProps) {
             fill={true}
             alt="Food Item Image"
           />
-        ) : null}
+        )}
       </div>
       <div className="flex w-full flex-col justify-between overflow-hidden break-words px-4 py-2 sm:h-full">
         <div className="flex w-full flex-1 grow flex-col gap-1 overflow-hidden">

@@ -88,7 +88,7 @@ function MenuCard(props: IMenuCard) {
           }`,
         }}
       >
-        {props.isActive ? (
+        {props.isActive && (
           <div className="absolute -right-3 -top-3">
             <Image
               src="/dashboardPage/ActiveCheck.svg"
@@ -97,8 +97,8 @@ function MenuCard(props: IMenuCard) {
               height="32"
             ></Image>
           </div>
-        ) : null}
-        {props.mode === MenuCardMode.MENU ? (
+        )}
+        {props.mode === MenuCardMode.MENU && (
           <>
             {props.opened ? (
               renderSettings()
@@ -126,7 +126,7 @@ function MenuCard(props: IMenuCard) {
               </>
             )}
           </>
-        ) : null}
+        )}
       </div>
     </>
   );
