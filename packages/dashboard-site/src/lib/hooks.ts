@@ -1,3 +1,6 @@
+import clsx, { type ClassValue } from "clsx";
+import { twMerge as twMergeOriginal } from "tailwind-merge";
+
 import { type APIProps, type CDNQueryProps } from "~/lib/types";
 
 export function MeniGlobals() {
@@ -27,3 +30,7 @@ export const ScrollTo = (id: string) => {
     window.scrollTo({ top: y, behavior: "smooth" });
   }
 };
+
+export function cn(...args: ClassValue[]) {
+  return twMergeOriginal(clsx(args));
+}

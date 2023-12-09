@@ -58,7 +58,7 @@ export default function Page() {
     description: "",
   });
 
-  const quote = quotes[Math.floor(Math.random() * quotes.length)];
+  const quote = quotes[Math.floor(Math.random() * quotes.length - 1)];
 
   const handleChange = (
     e: ChangeEvent<HTMLTextAreaElement> | ChangeEvent<HTMLInputElement>,

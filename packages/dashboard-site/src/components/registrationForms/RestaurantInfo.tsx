@@ -2,7 +2,7 @@ import { AsYouType } from "libphonenumber-js";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
-import { MeniGlobals } from "~/lib/hooks";
+import { MeniGlobals, cn } from "~/lib/hooks";
 import { UploadButton } from "~/utils/uploadthing";
 
 import MeniAddressSuggester from "~/components/meniComponents/MeniAddressSuggester";
@@ -107,9 +107,10 @@ const RestaurantInfo: React.FunctionComponent<RestaurantInfoProps> = (
           }}
         />
         <div
-          className={`${
-            initial ? "h-48 md:col-span-3" : "md:col-span-2"
-          } relative grid`}
+          className={cn("relative grid", {
+            "h-48 md:col-span-3": initial,
+            "md:col-span-2": !initial,
+          })}
         >
           <textarea
             onChange={handleDescriptionChange}

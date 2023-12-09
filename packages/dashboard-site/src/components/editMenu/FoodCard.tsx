@@ -5,7 +5,7 @@ import ScrollContainer from "react-indiana-drag-scroll";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import { useEditableMenu } from "~/context/EditableMenuContext";
-import { MeniGlobals } from "~/lib/hooks";
+import { MeniGlobals, cn } from "~/lib/hooks";
 
 import EditableText from "~/components/editMenu/EditableText";
 import { ImageUploader } from "~/components/uploader";
@@ -53,9 +53,9 @@ export default function FoodCard(props: IFoodCardProps) {
         {image !== "" ? (
           <Image
             src={MeniGlobals().cdnRoot + image}
-            className={`rounded-l object-cover hover:opacity-25 ${
-              isUploading ? "opacity-25" : ""
-            }`}
+            className={cn("rounded-l object-cover hover:opacity-25", {
+              "opacity-25": isUploading,
+            })}
             fill={true}
             alt="Food Item Image"
           />

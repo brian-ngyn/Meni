@@ -26,7 +26,7 @@ export default function Page() {
     }
   }, [isLoaded, isSignedIn, user]);
 
-  const quote = quotes[Math.floor(Math.random() * quotes.length)];
+  const quote = quotes[Math.floor(Math.random() * quotes.length - 1)];
 
   if (!isLoaded) return <LoadingPage />;
 

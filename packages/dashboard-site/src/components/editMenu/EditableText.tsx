@@ -5,6 +5,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import { Chip, Stack } from "@mui/material";
 
 import { useEditableMenu } from "~/context/EditableMenuContext";
+import { cn } from "~/lib/hooks";
 
 import MeniEditText from "~/components/meniComponents/MeniEditText";
 import MeniMultiSelect from "~/components/meniComponents/MeniMultiSelect";
@@ -116,7 +117,7 @@ export default function EditableText(props: IEditableTextProps) {
             <MeniEditText
               autoFocus
               type={`${field === "price" ? "number" : undefined}`}
-              className={textClass + "truncate text-black"}
+              className={cn("truncate text-black", textClass)}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 updateItem(e.target.value)
               }
@@ -129,20 +130,23 @@ export default function EditableText(props: IEditableTextProps) {
           )}
           <div className="ml-1 grid">
             <CheckIcon
-              className={textClass + "h-full w-full cursor-pointer"}
+              className={cn("h-full w-full cursor-pointer", textClass)}
               onMouseDown={() => setCurrentEditId("")}
             />
             <ClearIcon
-              className={textClass + "h-full w-full cursor-pointer"}
+              className={cn("h-full w-full cursor-pointer", textClass)}
               onMouseDown={() => undoChanges()}
             />
           </div>
         </>
       ) : (
         <div
-          className={`group inline-flex ${
-            tags !== undefined ? "overflow-scroll" : ""
-          } no-scrollbar border-2 border-dashed border-transparent p-1 hover:cursor-text hover:border-accent`}
+          className={cn(
+            "no-scrollbar group inline-flex border-2 border-dashed border-transparent p-1 hover:cursor-text hover:border-accent",
+            {
+              "overflow-scroll": tags !== undefined,
+            },
+          )}
         >
           {tags !== undefined ? (
             <div onClick={openForEdit}>

@@ -203,7 +203,7 @@ export default function Dashboard() {
       <Navbar page="dashboard" />
       <div className="pb-8">
         <div
-          className={`flex justify-between pt-20 font-serif text-6xl ${PADDING} flex-col md:flex-row`}
+          className={`flex flex-col justify-between pt-20 font-serif text-6xl md:flex-row ${PADDING}`}
         >
           <div>Dashboard</div>
         </div>
@@ -217,7 +217,7 @@ export default function Dashboard() {
           </p>
         </div>
         <div className={`my-10 h-px bg-white ${PADDING}`}></div>
-        <div className={`flex ${PADDING} justify-between`}>
+        <div className={`flex justify-between  ${PADDING}`}>
           <h3 className="font-serif text-4xl font-medium">My Menus</h3>
           <div className="hidden sm:block" id="create-menu-button">
             <MeniButton onClick={() => void handleCreateMenu()}>
@@ -238,7 +238,7 @@ export default function Dashboard() {
             currentPlan={accountInfo?.currentPlan || ""}
           />
         ) : (
-          <div className={`w-full py-8 text-center font-sans`}>
+          <div className="w-full py-8 text-center font-sans">
             <div className="create-button hidden sm:block">
               Click CREATE MENU above to create your first menu!
             </div>

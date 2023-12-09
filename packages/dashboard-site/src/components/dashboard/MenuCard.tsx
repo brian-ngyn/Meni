@@ -1,6 +1,7 @@
 import Image from "next/image";
 import React from "react";
 
+import { cn } from "~/lib/hooks";
 import { type IMenuBrief } from "~/lib/types";
 
 import { MenuCardMode } from "~/components/dashboard/MenuList";
@@ -73,9 +74,12 @@ function MenuCard(props: IMenuCard) {
   return (
     <>
       <div
-        className={`${
-          props.isActive ? "border" : ""
-        } relative flex aspect-[236/256] h-64 flex-col justify-between rounded-xl bg-card bg-cover bg-center p-6 transition-transform duration-150 hover:scale-[1.02]`}
+        className={cn(
+          "relative flex aspect-[236/256] h-64 flex-col justify-between rounded-xl bg-card bg-cover bg-center p-6 transition-transform duration-150 hover:scale-[1.02]",
+          {
+            "border-2": props.isActive,
+          },
+        )}
         style={{
           backgroundImage: `${
             props.opened

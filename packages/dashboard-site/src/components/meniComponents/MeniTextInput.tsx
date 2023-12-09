@@ -1,5 +1,7 @@
 import { type ReactNode, useState } from "react";
 
+import { cn } from "~/lib/hooks";
+
 type MeniTextInputProps = {
   id: string;
   onChange: (e: any) => void;
@@ -69,9 +71,12 @@ export default function MeniTextInput(props: MeniTextInputProps) {
           autoFocus={autoFocus}
           name={name}
           value={value}
-          className={`peer w-full border-none bg-grey font-sans placeholder:text-transparent focus:border-transparent focus:outline-none focus:ring-0 xs:pl-3 sm:text-sm md:pl-6 lg:h-9 lg:pl-6 ${
-            error ? "border-red-500" : ""
-          }`}
+          className={cn(
+            "peer w-full border-none bg-grey font-sans placeholder:text-transparent focus:border-transparent focus:outline-none focus:ring-0 xs:pl-3 sm:text-sm md:pl-6 lg:h-9 lg:pl-6",
+            {
+              "border-red-500": error,
+            },
+          )}
           id={id}
           placeholder={title}
           pattern={pattern}

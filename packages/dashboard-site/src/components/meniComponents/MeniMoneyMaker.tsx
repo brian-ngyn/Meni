@@ -250,7 +250,7 @@ const MeniMoneyMaker: React.FunctionComponent<MMMProps> = (props) => {
             <div className="m-auto" id="edit-plan-button">
               {isPaid && currentTier !== "tier0" ? (
                 <div className="flex flex-col items-center justify-center space-y-2">
-                  <div className={`flex justify-center`}>
+                  <div className="flex justify-center">
                     <button
                       className="text-light w-full border border-white bg-white px-6 py-3 font-semibold text-black transition hover:border-white hover:bg-backdrop hover:text-white sm:w-96"
                       onClick={handleQRCodeExport}

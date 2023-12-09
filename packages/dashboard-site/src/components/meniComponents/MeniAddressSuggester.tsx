@@ -124,7 +124,7 @@ export default function MeniAddressSuggester(props: MeniAddressSuggesterProps) {
             autoFocus={autoFocus}
             name={name}
             value={value}
-            className={`peer w-full border-none bg-grey font-sans placeholder:text-transparent focus:border-transparent focus:outline-none focus:ring-0 xs:pl-3 sm:text-sm md:pl-6 lg:h-9 lg:pl-6`}
+            className="peer w-full border-none bg-grey font-sans placeholder:text-transparent focus:border-transparent focus:outline-none focus:ring-0 xs:pl-3 sm:text-sm md:pl-6 lg:h-9 lg:pl-6"
             id={id}
             placeholder={title}
             pattern={pattern}

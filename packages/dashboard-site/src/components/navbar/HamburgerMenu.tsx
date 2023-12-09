@@ -9,6 +9,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 
 import { useMeniContext } from "~/context/meniContext";
+import { cn } from "~/lib/hooks";
 import { api } from "~/utils/api";
 
 import MeniNotification from "~/components/meniComponents/MeniNotification";
@@ -77,19 +78,19 @@ const HambugerMenu = () => {
         onClick={() => setDropdownOpen((prev) => !prev)}
       >
         <div
-          className={`${genericHamburgerLine} ${
-            dropdownOpen ? "translate-y-2 rotate-45" : ""
-          }`}
+          className={cn(`${genericHamburgerLine}`, {
+            "translate-y-2 rotate-45": dropdownOpen,
+          })}
         />
         <div
-          className={`${genericHamburgerLine} ${
-            dropdownOpen ? "opacity-0" : ""
-          }`}
+          className={cn(`${genericHamburgerLine}`, {
+            "opacity-0": dropdownOpen,
+          })}
         />
         <div
-          className={`${genericHamburgerLine} ${
-            dropdownOpen ? "-translate-y-2 -rotate-45" : ""
-          }`}
+          className={cn(`${genericHamburgerLine}`, {
+            "-translate-y-2 -rotate-45": dropdownOpen,
+          })}
         />
       </button>
       {dropdownOpen && (
