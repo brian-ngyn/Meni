@@ -20,8 +20,6 @@ model Account {
   stripePaymentId  String?
   plan             IPlanRole @default(FREE)
   activePayment    Boolean   @default(false)
-  isPaid           Boolean   @default(false) // will remove this in the future, use entilements instead
-  isBetaTester     Boolean   @default(true) // will remove this in the future, use entitlements instead
   currentPlan      String // will remove this in the future, use "plan" instead
   lastPaidAt       String? // this will be BigInt in the future, this value will change based on stripe, maybe need to rename this property as well
 }
@@ -35,7 +33,6 @@ model RestaurantInfo {
   description  String
   image        String
   activeMenuId String?
-  paidUntil    String? // remove this in the future, add this to the Account model, get this value from stripe (lastPaidAt)
   geoLocation  GeoLocation
 }
 

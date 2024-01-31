@@ -1,16 +1,11 @@
 import QRCode from "qrcode.react";
 
-import { useUser } from "@clerk/nextjs";
-
 type MMMProps = {
-  hasPaymentMethod: boolean;
-  isPaid: boolean;
-  currentTier: string;
   restaurantId: string;
 };
 
-const MeniMoneyMaker: React.FunctionComponent<MMMProps> = (props) => {
-  const { hasPaymentMethod, isPaid, currentTier, restaurantId } = props;
+const MeniMoneyMaker = (props: MMMProps) => {
+  const { restaurantId } = props;
 
   const handleQRCodeExport = () => {
     // Generate download with use canvas and stream

@@ -68,7 +68,6 @@ export const onboardingRouter = createTRPCRouter({
         data: {
           currentPlan: "tier3",
           plan: "BETA1",
-          isPaid: true,
         },
       });
       // SET TIER 3

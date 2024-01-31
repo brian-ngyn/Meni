@@ -249,17 +249,8 @@ export default function Dashboard() {
         )}
         {/* space for menus components*/}
         <div className={`${PADDING}`}>
-          <div className="grid font-sans">
+          <div className="grid">
             <MeniMoneyMaker
-              hasPaymentMethod={
-                // !!(
-                //   accountInfo?.stripePaymentId && accountInfo?.stripeCustomerId
-                // ) || true
-                // WHEN WE GO OUT OF BETA UNCOMMENT THIS
-                true
-              }
-              isPaid={accountInfo?.isPaid || false}
-              currentTier={accountInfo?.currentPlan || ""}
               restaurantId={currentRestaurantSelected?.id || ""}
             />
           </div>
