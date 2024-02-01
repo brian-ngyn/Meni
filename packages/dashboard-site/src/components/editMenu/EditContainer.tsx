@@ -433,7 +433,7 @@ export default function EditContainer(props: EditContainerProps) {
                 <EditableText
                   id={editableMenuState.menu.id}
                   field={"menuFooter"}
-                  textClass="text-xl font-thin cursor-pointer whitespace-pre-line break-normal text-center w-full"
+                  textClass="text-xl font-thin whitespace-pre-line break-normal text-center w-full"
                 >
                   {editableMenuState.menu.footer
                     ? editableMenuState.menu.footer

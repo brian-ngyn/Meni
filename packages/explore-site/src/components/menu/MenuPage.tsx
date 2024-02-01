@@ -187,7 +187,7 @@ export function MenuPage(props: MenuPageProps) {
         <div className="m-auto mb-36 grid h-fit max-w-[1460px] gap-4 xl:w-4/5">
           <div className="relative grid gap-4">
             <div className="relative overflow-hidden">
-              <div className="my-8 flex flex-col">
+              <div className="my-8 flex flex-col gap-y-16">
                 {menu?.mainCategories.map((category, index1) => {
                   return (
                     <section
@@ -201,16 +201,32 @@ export function MenuPage(props: MenuPageProps) {
                       >
                         {category.name}
                       </MenuTextField>
+                      {category.description && (
+                        <MenuTextField
+                          id={category.id}
+                          textClass="text-md font-thin whitespace-pre-line break-normal"
+                        >
+                          {category.description}
+                        </MenuTextField>
+                      )}
                       <div className="flex flex-col gap-16">
                         {category.subCategories.map((subCategory, index2) => {
                           return (
-                            <div className="grid gap-8" key={index2}>
+                            <div className="grid gap-5" key={index2}>
                               <MenuTextField
                                 id={subCategory.id}
                                 textClass="text-2xl font-medium font-sans py-4"
                               >
                                 {subCategory.name}
                               </MenuTextField>
+                              {subCategory.description && (
+                                <MenuTextField
+                                  id={subCategory.id}
+                                  textClass="-mt-9 text-md font-thin whitespace-pre-line break-normal"
+                                >
+                                  {subCategory.description}
+                                </MenuTextField>
+                              )}
                               <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                                 {subCategory.items.map((item, index3) => {
                                   return (
@@ -245,6 +261,13 @@ export function MenuPage(props: MenuPageProps) {
             </div>
           </div>
         </div>
+        <MenuTextField
+          id={menu.id}
+          textClass="text-xl font-thin whitespace-pre-line break-normal text-center w-full"
+          field={"menuFooter"}
+        >
+          {menu.footer ? menu.footer : ""}
+        </MenuTextField>
       </div>
     </>
   ) : (

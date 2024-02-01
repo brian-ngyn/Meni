@@ -1,5 +1,7 @@
 import { Chip, Stack } from "@mui/material";
 
+import { cn } from "~/lib/hooks";
+
 type IMenuTextFieldProps = {
   field?: string;
   textClass?: string;
@@ -8,11 +10,15 @@ type IMenuTextFieldProps = {
   id: string;
 };
 export function MenuTextField(props: IMenuTextFieldProps) {
-  const { children, textClass, tags } = props;
+  const { field, children, textClass, tags } = props;
 
   return (
     <div className="flex w-full">
-      <div className="group inline-flex border-transparent p-1">
+      <div
+        className={cn("group inline-flex border-transparent p-1", {
+          "w-full": field === "menuFooter",
+        })}
+      >
         {tags !== undefined ? (
           <div>
             {tags.length > 0 ? (
