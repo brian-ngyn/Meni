@@ -32,8 +32,7 @@ type MeniContextReturnType = {
   loading: boolean;
   accountInfo: Account | null | undefined;
   allRestaurantInfo: RestaurantInfo[] | null | undefined;
-  refetchAccountInfo: () => Promise<UseQueryResult>;
-  refetchAllRestaurantInfo: () => Promise<UseQueryResult>;
+  refetchContextData: () => Promise<UseQueryResult>;
   updateAccountInfo: (newInfo: EditedAccount) => void;
   updateRestaurantInfo: (newInfo: EditedRestaurantInfo) => void;
   currentRestaurantSelectedIndex: number;
@@ -53,23 +52,16 @@ export function MeniContextProvider({ children }: Props) {
   const router = useRouter();
 
   const {
-    data: accountInfo,
-    refetch: refetchAccountInfo,
-    isLoading: isAccountInfoLoading,
-  } = api.getters.getAccountInfo.useQuery(
+    data: contextData,
+    refetch: refetchContextData,
+    isLoading: isContextDataLoading,
+  } = api.getters.getContextData.useQuery(
     { clerkId: user?.id || "" },
     { enabled: !!(user && isSignedIn && router.pathname === "/dashboard") },
   );
-  const {
-    data: allRestaurantInfo,
-    refetch: refetchAllRestaurantInfo,
-    isLoading: isAllRestaurantInfoLoading,
-  } = api.getters.getAllRestaurantInfo.useQuery(
-    { clerkId: user?.id || "" },
-    {
-      enabled: !!(user && isSignedIn && router.pathname === "/dashboard"),
-    },
-  );
+
+  const accountInfo = contextData?.accountInfo;
+  const allRestaurantInfo = contextData?.allRestaurantInfo;
 
   const currentRestaurantSelected = allRestaurantInfo
     ? allRestaurantInfo[currentRestaurantSelectedIndex]
@@ -153,12 +145,12 @@ export function MeniContextProvider({ children }: Props) {
   };
 
   useEffect(() => {
-    if (isAccountInfoLoading || isAllRestaurantInfoLoading || !isClerkLoaded) {
+    if (isContextDataLoading || !isClerkLoaded) {
       setLoading(true);
     } else {
       setLoading(false);
     }
-  }, [isAccountInfoLoading, isClerkLoaded, isAllRestaurantInfoLoading]);
+  }, [isContextDataLoading, isClerkLoaded]);
 
   return (
     <MeniContext.Provider
@@ -168,8 +160,7 @@ export function MeniContextProvider({ children }: Props) {
         allRestaurantInfo,
         currentRestaurantSelectedIndex,
         setCurrentRestaurantSelectedIndex,
-        refetchAccountInfo,
-        refetchAllRestaurantInfo,
+        refetchContextData,
         updateAccountInfo,
         updateRestaurantInfo,
         currentRestaurantSelected,
