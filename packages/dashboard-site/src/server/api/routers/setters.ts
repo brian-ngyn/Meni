@@ -129,15 +129,18 @@ export const settersRouter = createTRPCRouter({
           id: z.string(),
           name: z.string(),
           restaurantId: z.string(),
+          footer: z.nullable(z.string()),
           tags: z.array(z.string()),
           mainCategories: z.array(
             z.object({
               id: z.string(),
               name: z.string(),
+              description: z.nullable(z.string()),
               subCategories: z.array(
                 z.object({
                   id: z.string(),
                   name: z.string(),
+                  description: z.nullable(z.string()),
                   items: z.array(
                     z.object({
                       id: z.string(),
@@ -239,15 +242,18 @@ export const settersRouter = createTRPCRouter({
           id: z.string(),
           name: z.string(),
           restaurantId: z.string(),
+          footer: z.nullable(z.string()),
           tags: z.array(z.string()),
           mainCategories: z.array(
             z.object({
               id: z.string(),
               name: z.string(),
+              description: z.nullable(z.string()),
               subCategories: z.array(
                 z.object({
                   id: z.string(),
                   name: z.string(),
+                  description: z.nullable(z.string()),
                   items: z.array(
                     z.object({
                       id: z.string(),

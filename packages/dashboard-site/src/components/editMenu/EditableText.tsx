@@ -6,12 +6,13 @@ import { Chip, Stack } from "@mui/material";
 
 import { useEditableMenu } from "~/context/EditableMenuContext";
 import { cn } from "~/lib/hooks";
+import { type EditableFieldTypes } from "~/lib/types";
 
 import MeniEditText from "~/components/meniComponents/MeniEditText";
 import MeniMultiSelect from "~/components/meniComponents/MeniMultiSelect";
 
 type IEditableTextProps = {
-  field?: string;
+  field: EditableFieldTypes;
   textClass?: string;
   children?: string | number | string[];
   tags?: string[];
@@ -21,20 +22,20 @@ type IEditableTextProps = {
 export default function EditableText(props: IEditableTextProps) {
   const { children, textClass, id, field, tags } = props;
   const [value, setValue] = useState<typeof children>(
-    field === "tags" ? tags : children,
+    field === "foodTags" ? tags : children,
   );
   const { editableMenuState, updateField, setCurrentEditId } =
     useEditableMenu();
   const fieldIdentifier = field !== undefined ? id + field : id;
   const [prevValue, setPrevValue] = useState<typeof children>(
-    field === "tags" ? tags : children,
+    field === "foodTags" ? tags : children,
   );
 
   const updateItemTag = (event: any, values: string[]) => {
     updateField(id, values, field);
   };
   const updateItem = (text: string | number | string[]) => {
-    if (field === "price") {
+    if (field === "foodPrice") {
       if (/[a-zA-Z]/.test(text as string)) {
         return;
       }
@@ -43,9 +44,7 @@ export default function EditableText(props: IEditableTextProps) {
     updateField(id, text, field);
   };
   const validate = (text: string) => {
-    if (field === "description" || field === "name") {
-      updateItem(text.trim());
-    } else if (field === "price") {
+    if (field === "foodPrice") {
       const input = text.trim();
       if (input === "" || /[a-zA-Z]/.test(input)) {
         updateItem("0.00");
@@ -60,12 +59,14 @@ export default function EditableText(props: IEditableTextProps) {
       }
       const formattedMoney = num.toFixed(2);
       updateItem(formattedMoney);
+    } else {
+      updateItem(text.trim());
     }
     setCurrentEditId("");
   };
 
   const openForEdit = () => {
-    setPrevValue(field === "tags" ? tags : children);
+    setPrevValue(field === "foodTags" ? tags : children);
     setCurrentEditId(fieldIdentifier);
   };
 
@@ -87,7 +88,7 @@ export default function EditableText(props: IEditableTextProps) {
       if (
         keyEvent.key === "Enter" &&
         editableMenuState.editingId === fieldIdentifier &&
-        field !== "description"
+        field !== "foodDescription"
       ) {
         setCurrentEditId("");
       }
@@ -116,7 +117,7 @@ export default function EditableText(props: IEditableTextProps) {
           ) : (
             <MeniEditText
               autoFocus
-              type={`${field === "price" ? "number" : undefined}`}
+              type={`${field === "foodPrice" ? "number" : undefined}`}
               className={cn("truncate text-black", textClass)}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 updateItem(e.target.value)
@@ -125,7 +126,7 @@ export default function EditableText(props: IEditableTextProps) {
                 validate(e.target.value)
               }
               value={value as string | number}
-              multiline={field === "description"}
+              multiline={field === "foodDescription"}
             />
           )}
           <div className="ml-1 grid">
@@ -144,6 +145,8 @@ export default function EditableText(props: IEditableTextProps) {
           className={cn(
             "no-scrollbar group inline-flex border-2 border-dashed border-transparent p-1 hover:cursor-text hover:border-accent",
             {
+              "-mt-7": field === "subcategoryDescription",
+              "w-full": field === "menuFooter",
               "overflow-scroll": tags !== undefined,
             },
           )}
@@ -191,7 +194,7 @@ export default function EditableText(props: IEditableTextProps) {
           ) : (
             <p className={textClass} onClick={openForEdit}>
               {value === ""
-                ? "Add " + field?.charAt(0).toUpperCase() + field?.slice(1)
+                ? "Add " + field.match(/[A-Z][a-z]*/g)?.join(" ")
                 : value}
             </p>
           )}

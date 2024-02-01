@@ -10,9 +10,10 @@ import ClearIcon from "@mui/icons-material/Clear";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 
-import { EditMode, useEditableMenu } from "~/context/EditableMenuContext";
+import { useEditableMenu } from "~/context/EditableMenuContext";
 import { useMeniContext } from "~/context/meniContext";
 import { cn } from "~/lib/hooks";
+import { EditMode } from "~/lib/types";
 import { api } from "~/utils/api";
 
 import EditableText from "~/components/editMenu/EditableText";
@@ -28,11 +29,7 @@ type EditContainerProps = {
 };
 
 export default function EditContainer(props: EditContainerProps) {
-  const {
-    refetchAccountInfo,
-    currentRestaurantSelected,
-    refetchAllRestaurantInfo,
-  } = useMeniContext();
+  const { refetchContextData, currentRestaurantSelected } = useMeniContext();
   const {
     editableMenuState,
     setMenuLoading,
@@ -78,8 +75,7 @@ export default function EditContainer(props: EditContainerProps) {
           "Your menu has successfully been created.",
           "success",
         );
-        void refetchAccountInfo();
-        void refetchAllRestaurantInfo();
+        void refetchContextData();
         // wait a bit so they get to see the notification lol
         setTimeout(() => {
           window.location.href =
@@ -115,8 +111,7 @@ export default function EditContainer(props: EditContainerProps) {
           "Your menu has successfully been updated.",
           "success",
         );
-        void refetchAccountInfo();
-        void refetchAllRestaurantInfo();
+        void refetchContextData();
       } else {
         MeniNotification(
           "Error",
@@ -349,9 +344,17 @@ export default function EditContainer(props: EditContainerProps) {
                     >
                       <EditableText
                         id={category.id}
+                        field={"categoryName"}
                         textClass="font-serif text-5xl cursor-pointer"
                       >
                         {category.name}
+                      </EditableText>
+                      <EditableText
+                        id={category.id}
+                        field={"categoryDescription"}
+                        textClass="text-md font-thin cursor-pointer whitespace-pre-line break-normal"
+                      >
+                        {category.description ? category.description : ""}
                       </EditableText>
                       <div className="mt-8 flex flex-col gap-16">
                         {category.subCategories.map((subCategory, index2) => {
@@ -360,6 +363,7 @@ export default function EditContainer(props: EditContainerProps) {
                               <div className="group relative flex w-fit items-center gap-4">
                                 <EditableText
                                   id={subCategory.id}
+                                  field={"subcategoryName"}
                                   textClass="text-2xl font-medium font-sans cursor-pointer"
                                 >
                                   {subCategory.name}
@@ -379,13 +383,22 @@ export default function EditContainer(props: EditContainerProps) {
                                   />
                                 </div>
                               </div>
+                              <EditableText
+                                id={subCategory.id}
+                                field={"subcategoryDescription"}
+                                textClass="text-md font-thin cursor-pointer whitespace-pre-line break-normal"
+                              >
+                                {subCategory.description
+                                  ? subCategory.description
+                                  : ""}
+                              </EditableText>
                               <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                                 {subCategory.items.map((item) => {
                                   return (
                                     <FoodCard
                                       key={item.id}
                                       id={item.id}
-                                      title={item.name}
+                                      name={item.name}
                                       description={item.description}
                                       price={item.price}
                                       image={item.image}
@@ -397,9 +410,6 @@ export default function EditContainer(props: EditContainerProps) {
                                   className="relative flex aspect-square flex-col items-center justify-center border-2 border-dashed border-accent hover:cursor-pointer sm:aspect-[6/1] sm:flex-row md:aspect-[20/5] lg:aspect-[25/10] xl:aspect-[25/10] "
                                   onClick={() => addFoodItem(subCategory.id)}
                                 >
-                                  {/* <span>
-                            <AddIcon sx={{ color: "#808082" }} />
-                          </span>{" "} */}
                                   <span className="text-3xl text-accent">
                                     + Food Item
                                   </span>
@@ -412,9 +422,6 @@ export default function EditContainer(props: EditContainerProps) {
                           className="relative mb-8 flex h-16 w-full flex-col items-center justify-center border-2 border-dashed border-accent hover:cursor-pointer sm:flex-row lg:aspect-[30/10]"
                           onClick={() => addSubCategory(category.id)}
                         >
-                          {/* <span>
-                    <AddIcon className="text-3xl text-gray-600" />
-                  </span>{" "} */}
                           <span className="text-3xl text-accent">
                             + Sub Category
                           </span>
@@ -423,6 +430,15 @@ export default function EditContainer(props: EditContainerProps) {
                     </section>
                   );
                 })}
+                <EditableText
+                  id={editableMenuState.menu.id}
+                  field={"menuFooter"}
+                  textClass="text-xl font-thin cursor-pointer whitespace-pre-line break-normal text-center w-full"
+                >
+                  {editableMenuState.menu.footer
+                    ? editableMenuState.menu.footer
+                    : ""}
+                </EditableText>
               </div>
             </div>
           </div>

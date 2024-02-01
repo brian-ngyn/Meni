@@ -41,19 +41,22 @@ model Menus {
   name           String
   restaurantId   String
   tags           String[]
+  footer         String?
   mainCategories MenuMainCategory[]
 }
 
 type MenuMainCategory {
   id            String
   name          String
+  description   String?
   subCategories MenuSubCategory[]
 }
 
 type MenuSubCategory {
-  id    String
-  name  String
-  items MenuItem[]
+  id          String
+  name        String
+  description String?
+  items       MenuItem[]
 }
 
 type MenuItem {

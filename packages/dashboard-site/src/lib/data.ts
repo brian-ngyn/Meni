@@ -7,14 +7,18 @@ export const EXAMPLEMENUS: Menus[] = [
     restaurantId: "restaurant-1",
     id: "menu-1",
     name: "Main Menu",
+    tags: ["burgers", "fries", "onion rings"],
+    footer: "",
     mainCategories: [
       {
         id: "main-category-1",
         name: "Burgers",
+        description: "",
         subCategories: [
           {
             id: "sub-category-1",
             name: "Beef Burgers",
+            description: "",
             items: [
               {
                 id: "item-1",
@@ -48,6 +52,7 @@ export const EXAMPLEMENUS: Menus[] = [
           {
             id: "sub-category-2",
             name: "Chicken Burgers",
+            description: "",
             items: [
               {
                 id: "item-4",
@@ -74,10 +79,12 @@ export const EXAMPLEMENUS: Menus[] = [
       {
         id: "main-category-2",
         name: "Sides",
+        description: "",
         subCategories: [
           {
             id: "sub-category-3",
             name: "Fries",
+            description: "",
             items: [
               {
                 id: "item-6",
@@ -100,6 +107,7 @@ export const EXAMPLEMENUS: Menus[] = [
           {
             id: "sub-category-4",
             name: "Onion Rings",
+            description: "",
             items: [
               {
                 id: "item-8",
@@ -123,20 +131,23 @@ export const EXAMPLEMENUS: Menus[] = [
         ],
       },
     ],
-    tags: ["burgers", "fries", "onion rings"],
   },
   {
     restaurantId: "restaurant-2",
     id: "menu-2",
     name: "Seasonal Menu",
+    tags: ["appetizers", "entrees", "steak", "seafood"],
+    footer: "",
     mainCategories: [
       {
         id: "main-category-1",
         name: "Appetizers",
+        description: "",
         subCategories: [
           {
             id: "sub-category-1",
             name: "Hot Appetizers",
+            description: "",
             items: [
               {
                 id: "item-1",
@@ -160,6 +171,7 @@ export const EXAMPLEMENUS: Menus[] = [
           {
             id: "sub-category-2",
             name: "Cold Appetizers",
+            description: "",
             items: [
               {
                 id: "item-3",
@@ -185,10 +197,12 @@ export const EXAMPLEMENUS: Menus[] = [
       {
         id: "main-category-2",
         name: "Entrees",
+        description: "",
         subCategories: [
           {
             id: "sub-category-3",
             name: "Steak",
+            description: "",
             items: [
               {
                 id: "item-5",
@@ -213,6 +227,7 @@ export const EXAMPLEMENUS: Menus[] = [
           {
             id: "sub-category-4",
             name: "Seafood",
+            description: "",
             items: [
               {
                 id: "item-7",
@@ -237,7 +252,6 @@ export const EXAMPLEMENUS: Menus[] = [
         ],
       },
     ],
-    tags: ["appetizers", "entrees", "steak", "seafood"],
   },
 ];
 
@@ -259,15 +273,18 @@ export function defaultStarterMenu(restaurantId: string): Menus {
     id: newObjectId(),
     name: "Menu Name",
     restaurantId: restaurantId,
+    footer: "",
     tags: ["Vegan", "Dairy Free", "Gluten Free", "Nut Free"],
     mainCategories: [
       {
         id: uuidv4(),
         name: "Food",
+        description: "",
         subCategories: [
           {
             id: uuidv4(),
             name: "Appetizers",
+            description: "",
             items: [
               {
                 id: uuidv4(),
@@ -282,6 +299,7 @@ export function defaultStarterMenu(restaurantId: string): Menus {
           {
             id: uuidv4(),
             name: "Pasta",
+            description: "",
             items: [
               {
                 id: uuidv4(),
@@ -298,10 +316,12 @@ export function defaultStarterMenu(restaurantId: string): Menus {
       {
         id: uuidv4(),
         name: "Dessert",
+        description: "",
         subCategories: [
           {
             id: uuidv4(),
             name: "Cake",
+            description: "",
             items: [
               {
                 id: uuidv4(),
@@ -316,6 +336,7 @@ export function defaultStarterMenu(restaurantId: string): Menus {
           {
             id: uuidv4(),
             name: "Ice Cream",
+            description: "",
             items: [
               {
                 id: uuidv4(),
@@ -332,10 +353,12 @@ export function defaultStarterMenu(restaurantId: string): Menus {
       {
         id: uuidv4(),
         name: "Drinks",
+        description: "",
         subCategories: [
           {
             id: uuidv4(),
             name: "Pop",
+            description: "",
             items: [
               {
                 id: uuidv4(),
@@ -350,6 +373,7 @@ export function defaultStarterMenu(restaurantId: string): Menus {
           {
             id: uuidv4(),
             name: "Juices",
+            description: "",
             items: [
               {
                 id: uuidv4(),

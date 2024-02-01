@@ -31,11 +31,7 @@ type IMenuListProps = {
 type SelectedMenu = { id: string; name: string };
 
 function MenuList(props: IMenuListProps) {
-  const {
-    refetchAccountInfo,
-    currentRestaurantSelected,
-    refetchAllRestaurantInfo,
-  } = useMeniContext();
+  const { refetchContextData, currentRestaurantSelected } = useMeniContext();
   const router = useRouter();
   const { user } = useUser();
   // We will use React useRef hook to reference the wrapping div:
@@ -65,8 +61,7 @@ function MenuList(props: IMenuListProps) {
           "Active menu has been set successfully.",
           "success",
         );
-        void refetchAccountInfo();
-        void refetchAllRestaurantInfo();
+        void refetchContextData();
         setOpenedMenu({ id: "", name: "" });
       } else {
         MeniNotification(
@@ -99,8 +94,7 @@ function MenuList(props: IMenuListProps) {
           "success",
         );
         void props.getRestaurantMenus();
-        void refetchAccountInfo();
-        void refetchAllRestaurantInfo();
+        void refetchContextData();
         setDialogOpened(false);
         setOpenedMenu({ id: "", name: "" });
       } else {
@@ -134,8 +128,7 @@ function MenuList(props: IMenuListProps) {
           "success",
         );
         void props.getRestaurantMenus();
-        void refetchAccountInfo();
-        void refetchAllRestaurantInfo();
+        void refetchContextData();
         setDialogOpened(false);
         setOpenedMenu({ id: "", name: "" });
       } else {

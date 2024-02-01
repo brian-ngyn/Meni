@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ScrollContainer from "react-indiana-drag-scroll";
 
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -12,7 +12,7 @@ import { ImageUploader } from "~/components/uploader";
 
 export type IFoodCardProps = {
   id: string;
-  title: string;
+  name: string;
   description: string;
   price: string;
   image: string;
@@ -20,7 +20,7 @@ export type IFoodCardProps = {
 };
 
 export default function FoodCard(props: IFoodCardProps) {
-  const { id, title, description, price, image, tags } = props;
+  const { id, name, description, price, image, tags } = props;
   const { updateField, deleteFoodItem } = useEditableMenu();
   const [isUploading, setIsUploading] = useState<boolean>(false);
 
@@ -66,16 +66,16 @@ export default function FoodCard(props: IFoodCardProps) {
           <div className="flex-none">
             <EditableText
               id={id}
-              field="name"
+              field="foodName"
               textClass="text-lg cursor-pointer"
             >
-              {title}
+              {name}
             </EditableText>
           </div>
           <div className="w-full flex-initial grow overflow-y-auto scrollbar-hide">
             <EditableText
               id={id}
-              field="description"
+              field="foodDescription"
               textClass="text-sm font-thin cursor-pointer whitespace-pre-line break-normal"
             >
               {description}
@@ -89,7 +89,7 @@ export default function FoodCard(props: IFoodCardProps) {
           >
             <EditableText
               id={id}
-              field="tags"
+              field="foodTags"
               textClass="text-lg float-right"
               tags={tags}
             />
@@ -100,7 +100,7 @@ export default function FoodCard(props: IFoodCardProps) {
               $
               <EditableText
                 id={id}
-                field="price"
+                field="foodPrice"
                 textClass="text-sm truncate cursor-pointer"
               >
                 {price}

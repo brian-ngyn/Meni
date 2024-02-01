@@ -10,27 +10,14 @@ import { v4 as uuidv4 } from "uuid";
 import { type Menus } from "@prisma/client";
 
 import { defaultStarterMenu } from "~/lib/data";
+import { type EditableFieldTypes } from "~/lib/types";
+import { EditMode, type IEditableMenu } from "~/lib/types";
 
 import MeniNotification from "~/components/meniComponents/MeniNotification";
 
 interface Props {
   children: ReactNode | ReactNode[];
 }
-
-export enum EditMode {
-  CREATE = "Create",
-  EDIT = "Edit",
-}
-
-interface IEditableMenu {
-  loading: boolean;
-  mode: EditMode | null;
-  modified: boolean;
-  editingId: string;
-  menu: Menus;
-  originalMenu: Menus;
-}
-
 interface IEditableMenuReturn {
   editableMenuState: IEditableMenu;
   setEditableMenuState: (state: IEditableMenu) => void;
@@ -40,7 +27,7 @@ interface IEditableMenuReturn {
   updateField: (
     id: string,
     newValue: string | number | string[],
-    field: string | undefined,
+    field: EditableFieldTypes,
   ) => void;
   loadFromAPI: (loadMenu: Menus) => void;
   addCategory: () => void;
@@ -108,6 +95,7 @@ export function EditableMenuContextProvider({ children }: Props) {
           {
             id: uuidv4(),
             name: "New Category",
+            description: "",
             subCategories: [],
           },
         ],
@@ -121,42 +109,24 @@ export function EditableMenuContextProvider({ children }: Props) {
         ...prev.menu,
         mainCategories: [
           ...prev.menu.mainCategories.map((item) => {
-            const subCategories = item.subCategories.map((subItem) => {
-              const menuItems = subItem.items.map((menuItem) => {
-                return {
-                  id: menuItem.id,
-                  name: menuItem.name,
-                  price: menuItem.price,
-                  description: menuItem.description,
-                  image: menuItem.image,
-                  tags: menuItem.tags,
-                };
-              });
-              return {
-                id: subItem.id,
-                name: subItem.name,
-                items: menuItems,
-              };
-            });
             if (item.id === id) {
               return {
                 id: item.id,
                 name: item.name,
+                description: item.description,
                 subCategories: [
-                  ...subCategories,
+                  ...item.subCategories,
                   {
                     id: uuidv4(),
-                    name: "New Subcategory",
+                    name: "New Sub Category",
+                    description: "",
                     items: [],
                   },
                 ],
               };
+            } else {
+              return item;
             }
-            return {
-              id: item.id,
-              name: item.name,
-              subCategories: subCategories,
-            };
           }),
         ],
       },
@@ -185,6 +155,7 @@ export function EditableMenuContextProvider({ children }: Props) {
                 return {
                   id: subItem.id,
                   name: subItem.name,
+                  description: subItem.description,
                   items: [
                     ...menuItems,
                     {
@@ -201,12 +172,14 @@ export function EditableMenuContextProvider({ children }: Props) {
               return {
                 id: subItem.id,
                 name: subItem.name,
+                description: subItem.description,
                 items: menuItems,
               };
             });
             return {
               id: item.id,
               name: item.name,
+              description: item.description,
               subCategories: subCategories,
             };
           }),
@@ -242,6 +215,7 @@ export function EditableMenuContextProvider({ children }: Props) {
             return {
               id: item.id,
               name: item.name,
+              description: item.description,
               subCategories: subCategories,
             };
           }),
@@ -263,12 +237,14 @@ export function EditableMenuContextProvider({ children }: Props) {
               return {
                 id: subItem.id,
                 name: subItem.name,
+                description: subItem.description,
                 items: menuItems,
               };
             });
             return {
               id: item.id,
               name: item.name,
+              description: item.description,
               subCategories: subCategories,
             };
           }),
@@ -286,70 +262,139 @@ export function EditableMenuContextProvider({ children }: Props) {
   const updateField = (
     id: string,
     newValue: string | number | string[],
-    field: string | undefined,
+    field: EditableFieldTypes,
   ) => {
     let combinedTags = editableMenuState.menu.tags;
-    if (field === "tags" && Array.isArray(newValue)) {
+    if (field === "foodTags" && Array.isArray(newValue)) {
       const currentTags = editableMenuState.menu.tags;
       const newTagsToInsert = newValue.filter(
         (item) => !currentTags.includes(item),
       );
       combinedTags = [...currentTags, ...newTagsToInsert];
     }
-    setEditableMenuState((prev) => ({
-      ...prev,
-      menu: {
-        ...prev.menu,
-        tags: combinedTags,
-        mainCategories: [
-          ...prev.menu.mainCategories.map((item) => {
-            const subCategories = item.subCategories.map((subItem) => {
-              const menuItems = subItem.items.map((menuItem) => {
-                if (menuItem.id === id && field) {
+
+    switch (field) {
+      case "categoryName":
+      case "categoryDescription":
+        setEditableMenuState((prev) => {
+          return {
+            ...prev,
+            tags: combinedTags,
+            menu: {
+              ...prev.menu,
+              mainCategories: [
+                ...prev.menu.mainCategories.map((item) => {
+                  if (item.id === id) {
+                    return {
+                      id: item.id,
+                      name: item.name,
+                      description: item.description,
+                      subCategories: item.subCategories,
+                      [field.replace(/^[a-z]+/, "").toLowerCase()]: newValue,
+                    };
+                  }
+                  return item;
+                }),
+              ],
+            },
+          };
+        });
+        break;
+      case "subcategoryName":
+      case "subcategoryDescription":
+        setEditableMenuState((prev) => {
+          return {
+            ...prev,
+            tags: combinedTags,
+            menu: {
+              ...prev.menu,
+              mainCategories: [
+                ...prev.menu.mainCategories.map((item) => {
+                  const subCategories = item.subCategories.map((subItem) => {
+                    if (subItem.id === id) {
+                      return {
+                        id: subItem.id,
+                        name: subItem.name,
+                        description: subItem.description,
+                        items: subItem.items,
+                        [field.replace(/^[a-z]+/, "").toLowerCase()]: newValue,
+                      };
+                    }
+                    return subItem;
+                  });
                   return {
-                    id: menuItem.id,
-                    name: menuItem.name,
-                    price: menuItem.price,
-                    description: menuItem.description,
-                    image: menuItem.image,
-                    tags: menuItem.tags,
-                    [field]: newValue,
+                    id: item.id,
+                    name: item.name,
+                    description: item.description,
+                    subCategories: subCategories,
                   };
-                } else {
-                  return menuItem;
-                }
-              });
-              if (subItem.id === id) {
-                return {
-                  id: subItem.id,
-                  name: newValue as string,
-                  items: menuItems,
-                };
-              } else {
-                return {
-                  id: subItem.id,
-                  name: subItem.name,
-                  items: menuItems,
-                };
-              }
-            });
-            if (item.id === id) {
-              return {
-                id: item.id,
-                name: newValue as string,
-                subCategories: subCategories,
-              };
-            } else {
-              return {
-                id: item.id,
-                name: item.name,
-                subCategories: subCategories,
-              };
-            }
-          }),
-        ],
-      },
-    }));
+                }),
+              ],
+            },
+          };
+        });
+        break;
+      case "foodName":
+      case "foodDescription":
+      case "foodPrice":
+      case "foodTags":
+      case "foodImage":
+        setEditableMenuState((prev) => {
+          return {
+            ...prev,
+            menu: {
+              ...prev.menu,
+              tags: combinedTags,
+              mainCategories: [
+                ...prev.menu.mainCategories.map((item) => {
+                  const subCategories = item.subCategories.map((subItem) => {
+                    const menuItems = subItem.items.map((menuItem) => {
+                      if (menuItem.id === id) {
+                        return {
+                          id: menuItem.id,
+                          name: menuItem.name,
+                          price: menuItem.price,
+                          description: menuItem.description,
+                          image: menuItem.image,
+                          tags: menuItem.tags,
+                          [field.replace(/^[a-z]+/, "").toLowerCase()]:
+                            newValue,
+                        };
+                      }
+                      return menuItem;
+                    });
+                    return {
+                      id: subItem.id,
+                      name: subItem.name,
+                      description: subItem.description,
+                      items: menuItems,
+                    };
+                  });
+                  return {
+                    id: item.id,
+                    name: item.name,
+                    description: item.description,
+                    subCategories: subCategories,
+                  };
+                }),
+              ],
+            },
+          };
+        });
+        break;
+      case "menuFooter":
+        setEditableMenuState((prev) => {
+          return {
+            ...prev,
+            menu: {
+              ...prev.menu,
+              tags: combinedTags,
+              footer: newValue as string,
+            },
+          };
+        });
+        break;
+    }
   };
 
   return (
