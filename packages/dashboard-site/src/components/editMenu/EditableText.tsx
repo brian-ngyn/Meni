@@ -127,9 +127,14 @@ export default function EditableText(props: IEditableTextProps) {
               }
               value={value as string | number}
               multiline={field === "foodDescription"}
+              field={field}
             />
           )}
-          <div className="ml-1 grid">
+          <div
+            className={cn("ml-1 grid", {
+              "-mt-7": field === "subcategoryDescription",
+            })}
+          >
             <CheckIcon
               className={cn("h-full w-full cursor-pointer", textClass)}
               onMouseDown={() => setCurrentEditId("")}

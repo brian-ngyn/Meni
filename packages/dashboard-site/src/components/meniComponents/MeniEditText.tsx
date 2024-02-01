@@ -1,6 +1,8 @@
 import { type ReactNode } from "react";
 import { v4 as uuidv4 } from "uuid";
 
+import { cn } from "~/lib/hooks";
+
 type MeniEditTextProps = {
   onChange: (e: any) => void;
   onBlur?: (e: any) => void;
@@ -27,10 +29,15 @@ export default function MeniEditText(props: MeniEditTextProps) {
     name,
     type,
     children,
+    field,
   } = props;
   const id = uuidv4();
   return (
-    <div className="h-full w-full">
+    <div
+      className={cn("h-full w-full", {
+        "-mt-7": field === "subcategoryDescription",
+      })}
+    >
       {multiline ? (
         <textarea
           onChange={onChange}
@@ -55,7 +62,7 @@ export default function MeniEditText(props: MeniEditTextProps) {
           autoFocus={autoFocus}
           name={name}
           value={value}
-          className="peer h-full w-full border-none bg-grey p-2 placeholder:text-transparent focus:border-transparent focus:outline-none focus:ring-0 sm:text-sm lg:h-9"
+          className="peer -mt-7 h-full w-full border-none bg-grey p-2 placeholder:text-transparent focus:border-transparent focus:outline-none focus:ring-0 sm:text-sm lg:h-9"
           id={id}
           placeholder={title}
           required
