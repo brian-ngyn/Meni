@@ -58,11 +58,7 @@ export function MeniContextProvider({ children }: Props) {
     isLoading: isAccountInfoLoading,
   } = api.getters.getAccountInfo.useQuery(
     { clerkId: user?.id || "" },
-    {
-      enabled: (user &&
-        isSignedIn &&
-        router.pathname === "/dashboard") as boolean,
-    },
+    { enabled: !!(user && isSignedIn && router.pathname === "/dashboard") },
   );
   const {
     data: allRestaurantInfo,
@@ -71,9 +67,7 @@ export function MeniContextProvider({ children }: Props) {
   } = api.getters.getAllRestaurantInfo.useQuery(
     { clerkId: user?.id || "" },
     {
-      enabled: (user &&
-        isSignedIn &&
-        router.pathname === "/dashboard") as boolean,
+      enabled: !!(user && isSignedIn && router.pathname === "/dashboard"),
     },
   );
 

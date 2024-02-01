@@ -60,7 +60,7 @@ export default function MeniAddressSuggester(props: MeniAddressSuggesterProps) {
       {
         address: search,
       },
-      { enabled: search !== "" },
+      { enabled: !!(search !== "") },
     );
 
   useEffect(() => {
