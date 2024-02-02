@@ -235,7 +235,7 @@ export default function Dashboard() {
             menus={menus}
             restaurantId={currentRestaurantSelected?.id || ""}
             getRestaurantMenus={() => fetchMenusBrief()}
-            currentPlan={accountInfo?.currentPlan || ""}
+            currentPlan={accountInfo?.plan || ""}
           />
         ) : (
           <div className="w-full py-8 text-center font-sans">

@@ -38,7 +38,6 @@ export const onboardingRouter = createTRPCRouter({
           firstName: input.firstName,
           lastName: input.lastName,
           clerkId: ctx.userSubmittingRequest.id,
-          currentPlan: "tier0",
           activePayment: false,
           plan: "FREE",
         },
@@ -59,19 +58,22 @@ export const onboardingRouter = createTRPCRouter({
         },
       });
 
-      // SET TIER 3
-      // REMOVE IN FUTURE
+      // ****************************************************
+      // ********SET BETA PLAN REMOVE IN THE FUTURE *********
+      // ****************************************************
       await ctx.db.account.update({
         where: {
           clerkId: ctx.userSubmittingRequest.id,
         },
         data: {
-          currentPlan: "tier3",
-          plan: "BETA1",
+          activePayment: true, // remove in future, set this via stripe
+          lastPaidAt: new Date().toString(), // remove in future, set this via stripe
+          plan: "BETA1", // set it to BETA1 for now, FREE in the future
         },
       });
-      // SET TIER 3
-      // REMOVE IN FUTURE
+      // ****************************************************
+      // ********SET BETA PLAN REMOVE IN THE FUTURE *********
+      // ****************************************************
 
       // update the user's public metadata to indicate onboarding is complete
       if (newAccount && newRestaurant) {
@@ -79,10 +81,14 @@ export const onboardingRouter = createTRPCRouter({
           publicMetadata: {
             onboardingComplete: true,
             activePayment: true, // remove in future, set this via stripe
+            lastPaidAt: new Date().toString(), // remove in future, set this via stripe
             plan: "BETA1", // set it to BETA1 for now, FREE in the future
           },
         });
       }
+      // ****************************************************
+      // ********SET BETA PLAN REMOVE IN THE FUTURE *********
+      // ****************************************************
 
       return {
         success: true,
