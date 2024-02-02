@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 
-import EditContainer from "~/components/Menu/EditContainer";
+import { MenuPage } from "~/components/menu/MenuPage";
 
 export default function RestaurantPage() {
   const router = useRouter();
@@ -8,7 +8,7 @@ export default function RestaurantPage() {
 
   return (
     <>
-      <EditContainer restaurantId={id as string} tableMode={false} />
+      <MenuPage restaurantId={id as string} tableMode={false} />
     </>
   );
 }

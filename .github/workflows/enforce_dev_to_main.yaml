@@ -1,0 +1,21 @@
+name: Enforce develop branch into main
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  enforce-pr-branch:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Validate PR branch
+      run: |
+        if [ "${{ github.event.pull_request.head.ref }}" != "develop" ]; then
+          echo "Invalid branch for pull request. Please create a pull request from 'develop' branch."
+          exit 1
+        fi

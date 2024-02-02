@@ -4,19 +4,18 @@ import React, { type ChangeEvent, useEffect, useState } from "react";
 
 import { useUser } from "@clerk/nextjs";
 
-import { type IMenuBrief } from "~/constants/types";
 import { useMeniContext } from "~/context/meniContext";
-import { MEC_checkCount } from "~/server/utils/helpers";
+import { type IMenuBrief } from "~/lib/types";
 import { api } from "~/utils/api";
 
-import MenuList, { MenuCardMode } from "~/components/Dashboard/MenuList";
-import { LoadingPage } from "~/components/LoadingPage";
-import Navbar from "~/components/Navbar";
-import MeniMoneyMaker from "~/components/RegistrationForms/MeniMoneyMaker";
-import PersonalInfo from "~/components/RegistrationForms/PersonalInfo";
-import RestaurantInfo from "~/components/RegistrationForms/RestaurantInfo";
-import MeniButton from "~/components/items/MeniButton";
-import MeniNotification from "~/components/items/MeniNotification";
+import MenuList, { MenuCardMode } from "~/components/dashboard/MenuList";
+import { LoadingPage } from "~/components/loadingPage";
+import MeniButton from "~/components/meniComponents/MeniButton";
+import MeniMoneyMaker from "~/components/meniComponents/MeniMoneyMaker";
+import MeniNotification from "~/components/meniComponents/MeniNotification";
+import Navbar from "~/components/navbar";
+import PersonalInfo from "~/components/registrationForms/PersonalInfo";
+import RestaurantInfo from "~/components/registrationForms/RestaurantInfo";
 
 const PADDING = "xl:mx-48 md:mx-24 xs:mx-6";
 
@@ -204,7 +203,7 @@ export default function Dashboard() {
       <Navbar page="dashboard" />
       <div className="pb-8">
         <div
-          className={`flex justify-between pt-20 font-serif text-6xl ${PADDING} flex-col md:flex-row`}
+          className={`flex flex-col justify-between pt-20 font-serif text-6xl md:flex-row ${PADDING}`}
         >
           <div>Dashboard</div>
         </div>
@@ -218,7 +217,7 @@ export default function Dashboard() {
           </p>
         </div>
         <div className={`my-10 h-px bg-white ${PADDING}`}></div>
-        <div className={`flex ${PADDING} justify-between`}>
+        <div className={`flex justify-between  ${PADDING}`}>
           <h3 className="font-serif text-4xl font-medium">My Menus</h3>
           <div className="hidden sm:block" id="create-menu-button">
             <MeniButton onClick={() => void handleCreateMenu()}>
@@ -239,7 +238,7 @@ export default function Dashboard() {
             currentPlan={accountInfo?.currentPlan || ""}
           />
         ) : (
-          <div className={`w-full py-8 text-center font-sans`}>
+          <div className="w-full py-8 text-center font-sans">
             <div className="create-button hidden sm:block">
               Click CREATE MENU above to create your first menu!
             </div>
@@ -250,17 +249,8 @@ export default function Dashboard() {
         )}
         {/* space for menus components*/}
         <div className={`${PADDING}`}>
-          <div className="grid font-sans">
+          <div className="grid">
             <MeniMoneyMaker
-              hasPaymentMethod={
-                // !!(
-                //   accountInfo?.stripePaymentId && accountInfo?.stripeCustomerId
-                // ) || true
-                // WHEN WE GO OUT OF BETA UNCOMMENT THIS
-                true
-              }
-              isPaid={accountInfo?.isPaid || false}
-              currentTier={accountInfo?.currentPlan || ""}
               restaurantId={currentRestaurantSelected?.id || ""}
             />
           </div>

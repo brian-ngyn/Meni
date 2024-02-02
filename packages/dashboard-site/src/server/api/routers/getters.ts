@@ -18,38 +18,28 @@ interface Suggestions {
 }
 
 export const gettersRouter = createTRPCRouter({
-  getAccountInfo: onboardedProcedure
+  getContextData: onboardedProcedure
     .input(
       z.object({
         clerkId: z.string(),
       }),
     )
     .query(async ({ ctx, input }) => {
-      return await ctx.db.account.findUnique({
+      const accountInfo = await ctx.db.account.findUnique({
         where: {
           clerkId: input.clerkId,
         },
       });
-    }),
-
-  getAllRestaurantInfo: onboardedProcedure
-    .input(
-      z.object({
-        clerkId: z.string(),
-      }),
-    )
-    .query(async ({ ctx, input }) => {
-      const owner = await ctx.db.account.findUnique({
-        where: {
-          clerkId: input.clerkId,
-        },
-      });
-      if (owner && owner.id) {
-        return await ctx.db.restaurantInfo.findMany({
+      if (accountInfo && accountInfo.id) {
+        const allRestaurantInfo = await ctx.db.restaurantInfo.findMany({
           where: {
-            ownerId: owner.id,
+            ownerId: accountInfo.id,
           },
         });
+        return {
+          accountInfo,
+          allRestaurantInfo,
+        };
       } else {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",

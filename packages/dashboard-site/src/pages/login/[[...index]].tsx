@@ -7,9 +7,9 @@ import { useEffect } from "react";
 
 import { SignIn, useUser } from "@clerk/nextjs";
 
-import quotes from "~/constants/quotes";
+import { quotes } from "~/lib/constants";
 
-import { LoadingPage } from "~/components/LoadingPage";
+import { LoadingPage } from "~/components/loadingPage";
 
 export default function Page() {
   const { isLoaded, user, isSignedIn } = useUser();
@@ -26,7 +26,7 @@ export default function Page() {
     }
   }, [isLoaded, isSignedIn, user]);
 
-  const quote = quotes[Math.floor(Math.random() * quotes.length)];
+  const quote = quotes[Math.floor(Math.random() * quotes.length - 1)];
 
   if (!isLoaded) return <LoadingPage />;
 

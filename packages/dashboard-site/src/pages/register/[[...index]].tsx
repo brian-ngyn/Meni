@@ -7,13 +7,13 @@ import { type ChangeEvent, useEffect, useState } from "react";
 
 import { SignUp, useUser } from "@clerk/nextjs";
 
-import quotes from "~/constants/quotes";
+import { quotes } from "~/lib/constants";
 import { api } from "~/utils/api";
 
-import { LoadingPage } from "~/components/LoadingPage";
-import PersonalInfo from "~/components/RegistrationForms/PersonalInfo";
-import RestaurantInfo from "~/components/RegistrationForms/RestaurantInfo";
-import MeniNotification from "~/components/items/MeniNotification";
+import { LoadingPage } from "~/components/loadingPage";
+import MeniNotification from "~/components/meniComponents/MeniNotification";
+import PersonalInfo from "~/components/registrationForms/PersonalInfo";
+import RestaurantInfo from "~/components/registrationForms/RestaurantInfo";
 
 export default function Page() {
   const [signupComplete, setSignupComplete] = useState(false);
@@ -58,7 +58,7 @@ export default function Page() {
     description: "",
   });
 
-  const quote = quotes[Math.floor(Math.random() * quotes.length)];
+  const quote = quotes[Math.floor(Math.random() * quotes.length - 1)];
 
   const handleChange = (
     e: ChangeEvent<HTMLTextAreaElement> | ChangeEvent<HTMLInputElement>,
