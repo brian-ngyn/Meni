@@ -1,8 +1,8 @@
+import imageCompression from "browser-image-compression";
 import { useCallback, useEffect, useState } from "react";
 import { generateClientDropzoneAccept } from "uploadthing/client";
 
 import FileUploadIcon from "@mui/icons-material/FileUpload";
-import type { FileWithPath } from "@uploadthing/react";
 import { useDropzone } from "@uploadthing/react/hooks";
 
 import { type EditableFieldTypes } from "~/lib/types";
@@ -22,9 +22,21 @@ type ImageUploaderProps = {
   setIsUploading: (isUploading: boolean) => void;
 };
 
+async function compress(file: File[]) {
+  // Run some compression algorithm on the file
+  if (file[0]) {
+    const options = {
+      useWebWorker: true,
+      maxWidthOrHeight: 1600, // PIXELS
+    };
+    const compressedFile = await imageCompression(file[0], options);
+    return [compressedFile];
+  }
+}
+
 export const ImageUploader = (props: ImageUploaderProps) => {
   const [files, setFiles] = useState<File[]>([]);
-  const onDrop = useCallback((acceptedFiles: FileWithPath[]) => {
+  const onDrop = useCallback((acceptedFiles: File[]) => {
     setFiles(acceptedFiles);
   }, []);
 
@@ -58,10 +70,16 @@ export const ImageUploader = (props: ImageUploaderProps) => {
   });
 
   useEffect(() => {
-    if (files.length > 0) {
-      void startUpload(files);
-      setFiles([]);
+    async function upload() {
+      if (files.length > 0) {
+        const compressed = await compress(files);
+        if (compressed) {
+          void startUpload(compressed);
+        }
+        setFiles([]);
+      }
     }
+    void upload();
   }, [files, startUpload]);
 
   return (
