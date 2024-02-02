@@ -20,7 +20,6 @@ model Account {
   stripePaymentId  String?
   plan             IPlanRole @default(FREE)
   activePayment    Boolean   @default(false)
-  currentPlan      String // will remove this in the future, use "plan" instead
   lastPaidAt       String? // this will be BigInt in the future, this value will change based on stripe, maybe need to rename this property as well
 }
 
