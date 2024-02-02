@@ -90,6 +90,7 @@ export default function EditableText(props: IEditableTextProps) {
         editableMenuState.editingId === fieldIdentifier &&
         field !== "foodDescription"
       ) {
+        validate(value as string);
         setCurrentEditId("");
       }
     };
