@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { IPlanRole } from "@prisma/client";
+import { type IPlanRole } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 
 import { env } from "~/env.mjs";
