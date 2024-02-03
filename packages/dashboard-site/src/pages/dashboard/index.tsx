@@ -5,6 +5,7 @@ import React, { type ChangeEvent, useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 
 import { useMeniContext } from "~/context/meniContext";
+import { FE_MEC_checkCount } from "~/lib/hooks";
 import { type IMenuBrief } from "~/lib/types";
 import { api } from "~/utils/api";
 
@@ -25,10 +26,8 @@ export default function Dashboard() {
   const {
     loading,
     accountInfo,
-    allRestaurantInfo,
     currentRestaurantSelected,
-    currentRestaurantSelectedIndex,
-    setCurrentRestaurantSelectedIndex,
+    userEntitlements,
     updateAccountInfo,
     updateRestaurantInfo,
   } = useMeniContext();
@@ -135,20 +134,11 @@ export default function Dashboard() {
   //   setTourEnable(true);
   // }, [interactibilityLoader]);
 
-  const handleCreateMenu = async () => {
+  const handleCreateMenu = () => {
     if (user && menus && currentRestaurantSelected) {
-      const response = await fetchCanCreateMenu();
-      if (response?.data?.success) {
-        void router.push({
-          pathname: `/edit/${currentRestaurantSelected?.id}/new`,
-        });
-      } else {
-        MeniNotification(
-          "Error!",
-          `You have reached the maximum number of menus for your plan.`,
-          "error",
-        );
-      }
+      void router.push({
+        pathname: `/edit/${currentRestaurantSelected?.id}/new`,
+      });
     }
   };
 
@@ -220,7 +210,25 @@ export default function Dashboard() {
         <div className={`flex justify-between  ${PADDING}`}>
           <h3 className="font-serif text-4xl font-medium">My Menus</h3>
           <div className="hidden sm:block" id="create-menu-button">
-            <MeniButton onClick={() => void handleCreateMenu()}>
+            <MeniButton
+              onClick={() => void handleCreateMenu()}
+              disabled={
+                !FE_MEC_checkCount(
+                  userEntitlements?.entitlements,
+                  "MENU",
+                  menus?.length,
+                )
+              }
+              tooltip={
+                !FE_MEC_checkCount(
+                  userEntitlements?.entitlements,
+                  "MENU",
+                  menus?.length,
+                )
+                  ? "You have reached the maximum number of menus for your plan."
+                  : ""
+              }
+            >
               Create Menu
             </MeniButton>
           </div>

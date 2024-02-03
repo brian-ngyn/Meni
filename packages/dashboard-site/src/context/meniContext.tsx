@@ -7,6 +7,7 @@ import { useUser } from "@clerk/nextjs";
 import { type Account, type RestaurantInfo } from "@prisma/client";
 import { type UseQueryResult } from "@tanstack/react-query";
 
+import { type IPlanFeatures } from "~/server/utils/helpers";
 import { api } from "~/utils/api";
 
 import MeniNotification from "~/components/meniComponents/MeniNotification";
@@ -32,6 +33,8 @@ type MeniContextReturnType = {
   loading: boolean;
   accountInfo: Account | null | undefined;
   allRestaurantInfo: RestaurantInfo[] | null | undefined;
+  userEntitlements: IPlanFeatures | undefined;
+  refetchUserEntitlements: () => Promise<UseQueryResult>;
   refetchContextData: () => Promise<UseQueryResult>;
   updateAccountInfo: (newInfo: EditedAccount) => void;
   updateRestaurantInfo: (newInfo: EditedRestaurantInfo) => void;
@@ -56,6 +59,15 @@ export function MeniContextProvider({ children }: Props) {
     refetch: refetchContextData,
     isLoading: isContextDataLoading,
   } = api.getters.getContextData.useQuery(
+    { clerkId: user?.id || "" },
+    { enabled: !!(user && isSignedIn && router.pathname === "/dashboard") },
+  );
+
+  const {
+    data: userEntitlements,
+    refetch: refetchUserEntitlements,
+    isLoading: isUserEntitlementsLoading,
+  } = api.getters.getEntitlements.useQuery(
     { clerkId: user?.id || "" },
     { enabled: !!(user && isSignedIn && router.pathname === "/dashboard") },
   );
@@ -145,12 +157,12 @@ export function MeniContextProvider({ children }: Props) {
   };
 
   useEffect(() => {
-    if (isContextDataLoading || !isClerkLoaded) {
+    if (isContextDataLoading || !isClerkLoaded || isUserEntitlementsLoading) {
       setLoading(true);
     } else {
       setLoading(false);
     }
-  }, [isContextDataLoading, isClerkLoaded]);
+  }, [isContextDataLoading, isClerkLoaded, isUserEntitlementsLoading]);
 
   return (
     <MeniContext.Provider
@@ -158,6 +170,8 @@ export function MeniContextProvider({ children }: Props) {
         loading,
         accountInfo,
         allRestaurantInfo,
+        userEntitlements,
+        refetchUserEntitlements,
         currentRestaurantSelectedIndex,
         setCurrentRestaurantSelectedIndex,
         refetchContextData,

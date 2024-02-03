@@ -20,8 +20,10 @@ export const homeRouter = createTRPCRouter({
         },
       },
     });
-    const validOwners = owners.filter((owner) =>
-      MEC_checkPermissions(owner, IEntitlements.FEATURED),
+    const validOwners = owners.filter(
+      (owner) =>
+        MEC_checkPermissions(owner, IEntitlements.FEATURED) &&
+        MEC_checkPermissions(owner, IEntitlements.ALLOW_PUBLISHING),
     );
     return activeRestaurants.filter((restaurant) =>
       validOwners.find((owner) => owner.id === restaurant.ownerId),

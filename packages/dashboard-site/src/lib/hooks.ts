@@ -2,6 +2,7 @@ import clsx, { type ClassValue } from "clsx";
 import { twMerge as twMergeOriginal } from "tailwind-merge";
 
 import { type APIProps, type CDNQueryProps } from "~/lib/types";
+import { type IEntitlements } from "~/server/utils/helpers";
 
 export function MeniGlobals() {
   const env = process.env.NODE_ENV;
@@ -33,4 +34,19 @@ export const ScrollTo = (id: string) => {
 
 export function cn(...args: ClassValue[]) {
   return twMergeOriginal(clsx(args));
+}
+
+export function FE_MEC_checkCount(
+  entitlements: IEntitlements[] | undefined,
+  typeToCheck: "RESTAURANT" | "MENU",
+  count: number | undefined,
+) {
+  if (entitlements && count) {
+    for (const entitlement of entitlements) {
+      if (entitlement.startsWith(`${typeToCheck}_COUNT_`)) {
+        const countAllowed = entitlement.split(`${typeToCheck}_COUNT_`)[1];
+        return !!(countAllowed && count < parseInt(countAllowed));
+      }
+    }
+  }
 }
