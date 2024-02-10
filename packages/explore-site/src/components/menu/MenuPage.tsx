@@ -63,7 +63,7 @@ export function MenuPage(props: MenuPageProps) {
 
   const renderHeader = () => {
     return (
-      <>
+      <div className="px-4 pt-10 sm:px-10">
         <Head>
           <title>{restaurant?.name} | Meni</title>
         </Head>
@@ -101,7 +101,7 @@ export function MenuPage(props: MenuPageProps) {
             </div>
           </div>
         </div>
-      </>
+      </div>
     );
   };
 
@@ -109,7 +109,7 @@ export function MenuPage(props: MenuPageProps) {
     <div className="flex justify-center">
       <ScrollContainer
         className={cn(
-          "sticky top-0 z-50 flex w-full gap-16 overflow-x-auto bg-backdrop py-3 align-middle text-xl font-thin",
+          "sticky top-0 z-50 flex w-full gap-16 overflow-x-auto bg-backdrop px-4 py-3 align-middle text-xl font-thin sm:px-10",
           {
             "border-b md:border-b-0": props.tableMode,
           },
@@ -172,7 +172,6 @@ export function MenuPage(props: MenuPageProps) {
         className={cn(
           "h-full w-full items-center justify-center font-sans text-white",
           {
-            "p-10": !tableMode,
             "px-10 pt-2": tableMode,
           },
         )}
@@ -184,7 +183,7 @@ export function MenuPage(props: MenuPageProps) {
           </div>
         </>
 
-        <div className="m-auto mb-36 grid h-fit max-w-[1460px] gap-4 xl:w-4/5">
+        <div className="m-auto mb-36 grid h-fit w-full gap-4 px-4 sm:px-10 xl:px-40">
           <div className="relative grid gap-4">
             <div className="relative overflow-hidden">
               <div className="my-8 flex flex-col gap-y-16">

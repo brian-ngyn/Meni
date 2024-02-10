@@ -23,6 +23,8 @@ import MeniButton from "~/components/meniComponents/MeniButton";
 import MeniDialog from "~/components/meniComponents/MeniDialog";
 import MeniNotification from "~/components/meniComponents/MeniNotification";
 
+const HORIZONTAL_PADDING = "px-6 md:px-10 lg:px-16 xl:px-0 transition";
+
 type EditContainerProps = {
   menuId: string;
   restaurantId: string;
@@ -246,32 +248,30 @@ export default function EditContainer(props: EditContainerProps) {
 
   const renderHeader = () => {
     return (
-      <>
-        <div className="mt-20 grid gap-4 font-sans">
-          <h1 className="font-serif text-6xl text-white">{restaurant?.name}</h1>
-          <p className="font-thin">{restaurant?.description} </p>
-          <div className="flex gap-2">
-            <Image
-              width={20}
-              height={20}
-              alt="location icon"
-              src="/menuPage/location.svg"
-            ></Image>
-            <p className="font-thin">{restaurant?.address}</p>
-          </div>
-          <div className="flex gap-2">
-            <Image
-              width={20}
-              height={20}
-              alt="location icon"
-              src="/menuPage/phone.svg"
-            ></Image>
-            <a href="tel:403-231-8933" className="font-thin">
-              {restaurant?.phoneNumber}
-            </a>
-          </div>
+      <div className={`mt-20 grid gap-4 pt-10 font-sans ${HORIZONTAL_PADDING}`}>
+        <h1 className="font-serif text-6xl text-white">{restaurant?.name}</h1>
+        <p className="font-thin">{restaurant?.description} </p>
+        <div className="flex gap-2">
+          <Image
+            width={20}
+            height={20}
+            alt="location icon"
+            src="/menuPage/location.svg"
+          ></Image>
+          <p className="font-thin">{restaurant?.address}</p>
         </div>
-      </>
+        <div className="flex gap-2 border-b pb-6">
+          <Image
+            width={20}
+            height={20}
+            alt="location icon"
+            src="/menuPage/phone.svg"
+          ></Image>
+          <a href="tel:403-231-8933" className="font-thin">
+            {restaurant?.phoneNumber}
+          </a>
+        </div>
+      </div>
     );
   };
 
@@ -285,13 +285,15 @@ export default function EditContainer(props: EditContainerProps) {
   return !editableMenuState.loading ? (
     <>
       {renderSaveBar()}
-      <div className="h-full w-full items-center justify-center p-10 font-sans text-white">
+      <div className="h-full w-full items-center justify-center font-sans text-white xl:px-20">
         <div className="m-auto grid h-fit max-w-[1460px] gap-4 xl:w-4/5">
-          <div className="grid gap-4 ">
+          <div className="grid gap-4">
             {renderHeader()}
             <div className="relative overflow-hidden">
               {startGuide && renderNewMenuDialog()}
-              <ScrollContainer className="sticky top-0 z-10 flex w-full gap-16 overflow-x-scroll border-t bg-backdrop py-4 align-middle text-xl font-thin">
+              <ScrollContainer
+                className={`sticky top-0 z-10 flex w-full gap-16 overflow-x-scroll bg-backdrop py-4 align-middle text-xl font-thin opacity-90 shadow-inner ${HORIZONTAL_PADDING}`}
+              >
                 {editableMenuState.menu.mainCategories.map(
                   (category, index) => (
                     <div className="group" key={category.id}>
@@ -334,7 +336,7 @@ export default function EditContainer(props: EditContainerProps) {
                   + Category
                 </div>
               </ScrollContainer>
-              <div className="my-8 flex flex-col">
+              <div className={`my-8 flex flex-col ${HORIZONTAL_PADDING}`}>
                 {editableMenuState.menu.mainCategories.map((category) => {
                   return (
                     <section
