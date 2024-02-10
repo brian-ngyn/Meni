@@ -171,10 +171,9 @@ export function MenuPage(props: MenuPageProps) {
       <div
         className={cn(
           "h-full w-full items-center justify-center font-sans text-white",
-          // {
-          //   "p-10": !tableMode,
-          //   "px-10 pt-2": tableMode,
-          // },
+          {
+            "px-10 pt-2": tableMode,
+          },
         )}
       >
         <>
