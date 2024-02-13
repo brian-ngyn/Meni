@@ -7,6 +7,7 @@ import { type UseQueryResult } from "@tanstack/react-query";
 
 import { useMeniContext } from "~/context/meniContext";
 import { type IMenuBrief } from "~/lib/types";
+import { IEntitlements } from "~/server/utils/helpers";
 import { api } from "~/utils/api";
 
 import MenuCard from "~/components/dashboard/MenuCard";
@@ -31,7 +32,8 @@ type IMenuListProps = {
 type SelectedMenu = { id: string; name: string };
 
 function MenuList(props: IMenuListProps) {
-  const { refetchContextData, currentRestaurantSelected } = useMeniContext();
+  const { userEntitlements, refetchContextData, currentRestaurantSelected } =
+    useMeniContext();
   const router = useRouter();
   const { user } = useUser();
   // We will use React useRef hook to reference the wrapping div:
@@ -76,11 +78,7 @@ function MenuList(props: IMenuListProps) {
       if (errorMessage && errorMessage[0]) {
         MeniNotification("Error", errorMessage[0], "error");
       } else {
-        MeniNotification(
-          "Error",
-          "Failed to set your active menu. Please try again later or contact support.",
-          "error",
-        );
+        MeniNotification("Error", e.message, "error");
       }
     },
   });
@@ -154,20 +152,12 @@ function MenuList(props: IMenuListProps) {
   });
 
   const handleSetActiveMenu = (menuId: string) => {
-    if (props.currentPlan === "tier0") {
-      MeniNotification(
-        "Error",
-        "You cannot set an active menu with your current plan!",
-        "warning",
-      );
-    } else {
-      if (user) {
-        setActiveMenu({
-          clerkId: user.id,
-          menuId: menuId,
-          restaurantId: props.restaurantId,
-        });
-      }
+    if (user) {
+      setActiveMenu({
+        clerkId: user.id,
+        menuId: menuId,
+        restaurantId: props.restaurantId,
+      });
     }
   };
 

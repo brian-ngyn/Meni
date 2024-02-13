@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { type IPlanRole } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 
 import { env } from "~/env.mjs";
@@ -8,6 +9,10 @@ import {
   onboardedProcedure,
   privateProcedure,
 } from "~/server/api/trpc";
+import {
+  MEC_checkPermissions,
+  subscribedFeature,
+} from "~/server/utils/helpers";
 
 interface Suggestions {
   suggestions: [
@@ -171,5 +176,25 @@ export const gettersRouter = createTRPCRouter({
         }));
       });
       return suggestions;
+    }),
+
+  // creating a restaurant
+  // creating a menu (per restaurant)
+  // setting active menu (per restaurant) - alow publishing
+  // export QR code - allow publishing
+  getEntitlements: onboardedProcedure
+    .input(
+      z.object({
+        clerkId: z.string(),
+      }),
+    )
+    .query(({ ctx, input }) => {
+      const currentEntitlement =
+        subscribedFeature[
+          ctx.userSubmittingRequest.publicMetadata.plan as IPlanRole
+        ];
+      return {
+        ...currentEntitlement,
+      };
     }),
 });

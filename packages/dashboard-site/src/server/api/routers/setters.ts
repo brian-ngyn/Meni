@@ -88,6 +88,7 @@ export const settersRouter = createTRPCRouter({
         message: "Restaurant Info updated",
       };
     }),
+
   updateAccount: onboardedProcedure
     .input(
       z.object({

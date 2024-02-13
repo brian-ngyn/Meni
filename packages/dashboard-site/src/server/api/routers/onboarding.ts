@@ -3,6 +3,7 @@ import { z } from "zod";
 import { clerkClient } from "@clerk/nextjs";
 import { geocode } from "@esri/arcgis-rest-geocoding";
 import { ApiKeyManager } from "@esri/arcgis-rest-request";
+import { IPlanRole } from "@prisma/client";
 
 import { env } from "~/env.mjs";
 import {
@@ -66,9 +67,9 @@ export const onboardingRouter = createTRPCRouter({
           clerkId: ctx.userSubmittingRequest.id,
         },
         data: {
-          activePayment: true, // remove in future, set this via stripe
-          lastPaidAt: new Date().toString(), // remove in future, set this via stripe
-          plan: "BETA1", // set it to BETA1 for now, FREE in the future
+          activePayment: false, // remove in future, set this via stripe
+          lastPaidAt: null, // remove in future, set this via stripe
+          plan: IPlanRole.FREE, // set it to BETA1 for now, FREE in the future
         },
       });
       // ****************************************************
@@ -80,9 +81,9 @@ export const onboardingRouter = createTRPCRouter({
         await clerkClient.users.updateUser(ctx.userSubmittingRequest.id, {
           publicMetadata: {
             onboardingComplete: true,
-            activePayment: true, // remove in future, set this via stripe
-            lastPaidAt: new Date().toString(), // remove in future, set this via stripe
-            plan: "BETA1", // set it to BETA1 for now, FREE in the future
+            activePayment: false, // remove in future, set this via stripe
+            lastPaidAt: null, // remove in future, set this via stripe
+            plan: IPlanRole.FREE, // set it to BETA1 for now, FREE in the future
           },
         });
       }

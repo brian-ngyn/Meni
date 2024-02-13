@@ -23,8 +23,8 @@ const subscribedFeature = {
   [IPlanRole.BETA1]: {
     inMarket: true,
     grandfathered: false,
-    releaseDate: new Date(),
-    activeUntil: new Date(),
+    releaseDate: new Date("2024-01-01"),
+    activeUntil: new Date("2999-01-01"),
     entitlements: [
       IEntitlements.RESTAURANT_COUNT_3,
       IEntitlements.MENU_COUNT_3,
@@ -36,8 +36,8 @@ const subscribedFeature = {
   [IPlanRole.FREE]: {
     inMarket: true,
     grandfathered: false,
-    releaseDate: new Date(),
-    activeUntil: new Date(),
+    releaseDate: new Date("2024-01-01"),
+    activeUntil: new Date("2999-01-01"),
     entitlements: [
       IEntitlements.RESTAURANT_COUNT_1,
       IEntitlements.MENU_COUNT_1,
@@ -45,20 +45,15 @@ const subscribedFeature = {
   },
 };
 
-export const MEC_isPaid = (account: Account): void => {
+export const MEC_isPaid = (account: Account): boolean => {
   if (
     subscribedFeature[account.plan as IPlanRole].entitlements.includes(
       IEntitlements.SKIP_PAYMENT,
     )
   ) {
-    return;
+    return true;
   } else {
-    if (!account.activePayment as boolean) {
-      throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "User does not have an active payment",
-      });
-    }
+    return account.activePayment;
   }
 };
 
@@ -66,17 +61,12 @@ export const MEC_checkPermissions = (
   account: Account,
   entitlement: IEntitlements,
 ): boolean => {
-  MEC_isPaid(account);
-  const allowed =
-    subscribedFeature[account.plan as IPlanRole].entitlements.includes(
-      entitlement,
-    );
-  if (!allowed) {
-    throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message:
-        "User is not authorized to use this feature for the current plan",
-    });
+  if (MEC_isPaid(account)) {
+    const allowed =
+      subscribedFeature[account.plan as IPlanRole].entitlements.includes(
+        entitlement,
+      );
+    return allowed;
   }
-  return allowed;
+  return false;
 };

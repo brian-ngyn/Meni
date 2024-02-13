@@ -137,11 +137,11 @@ const HambugerMenu = () => {
                 )}
               </div>
             </li>
-            <li className="flex cursor-pointer items-center gap-x-2 pt-2">
+            <li className={"flex cursor-pointer items-center gap-x-2 pt-2"}>
               <AddBoxIcon />
               <div
                 className="flex w-full text-lg"
-                onClick={() => void handleCreateRestaurant}
+                onClick={() => void handleCreateRestaurant()}
               >
                 Create New Restaurant
               </div>

@@ -13,14 +13,25 @@ export enum IEntitlements {
   MENU_COUNT_3 = "MENU_COUNT_3",
   SKIP_PAYMENT = "SKIP_PAYMENT",
 }
+export type IPlanFeatures = {
+  inMarket: boolean;
+  grandfathered: boolean;
+  releaseDate: Date;
+  activeUntil: Date;
+  entitlements: IEntitlements[];
+};
+
+export type ISubscribedFeatures = {
+  [key in IPlanRole]: IPlanFeatures;
+};
 
 // This should eventually be from a Mongo Table
-const subscribedFeature = {
+export const subscribedFeature: ISubscribedFeatures = {
   [IPlanRole.BETA1]: {
     inMarket: true,
     grandfathered: false,
-    releaseDate: new Date(),
-    activeUntil: new Date(),
+    releaseDate: new Date("2024-01-01"),
+    activeUntil: new Date("2999-01-01"),
     entitlements: [
       IEntitlements.RESTAURANT_COUNT_3,
       IEntitlements.MENU_COUNT_3,
@@ -32,12 +43,11 @@ const subscribedFeature = {
   [IPlanRole.FREE]: {
     inMarket: true,
     grandfathered: false,
-    releaseDate: new Date(),
-    activeUntil: new Date(),
+    releaseDate: new Date("2024-01-01"),
+    activeUntil: new Date("2999-01-01"),
     entitlements: [
       IEntitlements.RESTAURANT_COUNT_1,
       IEntitlements.MENU_COUNT_1,
-      IEntitlements.SKIP_PAYMENT,
     ],
   },
 };
@@ -50,7 +60,7 @@ export const MEC_isPaid = (clerkUser: User): void => {
   ) {
     return;
   } else {
-    if (!!clerkUser.publicMetadata.activePayment) {
+    if (!clerkUser.publicMetadata.activePayment) {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "User does not have an active payment",
@@ -80,7 +90,7 @@ export const MEC_checkPermissions = (
 export const MEC_checkCount = (
   clerkUser: User,
   typeToCheck: "RESTAURANT" | "MENU",
-  count: number, // this count represents the CURRENT restaurant count before adding
+  count: number, // this count represents the CURRENT restaurant or menu count before adding
 ): void => {
   MEC_isPaid(clerkUser);
   for (const entitlement of subscribedFeature[
