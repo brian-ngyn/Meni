@@ -10,8 +10,8 @@ import { MeniContextProvider } from "~/context/meniContext";
 import "~/styles/globals.css";
 import { api } from "~/utils/api";
 
-import Footer from "~/components/Footer";
 import Feedback from "~/components/feedback";
+import Footer from "~/components/footer";
 
 const abrilFatface = Abril_Fatface({
   subsets: ["latin"],
