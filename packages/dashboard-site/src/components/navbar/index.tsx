@@ -27,7 +27,7 @@ export default function Navbar(props: NavbarProps) {
                 >
                   <Image
                     alt="logo"
-                    src="/landingPage/logo.svg"
+                    src="/logo-transparent.svg"
                     width="70"
                     height="70"
                   />

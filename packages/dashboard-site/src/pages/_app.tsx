@@ -11,6 +11,7 @@ import "~/styles/globals.css";
 import { api } from "~/utils/api";
 
 import Feedback from "~/components/feedback";
+import Footer from "~/components/footer";
 
 const abrilFatface = Abril_Fatface({
   subsets: ["latin"],
@@ -39,6 +40,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         <ClerkProvider {...pageProps}>
           <MeniContextProvider>
             <Component {...pageProps} />
+            <Footer />
             <Analytics />
             <Feedback />
           </MeniContextProvider>
