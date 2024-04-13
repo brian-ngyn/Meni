@@ -9,7 +9,7 @@ export const homeRouter = createTRPCRouter({
     const activeRestaurants = await ctx.db.restaurantInfo.findMany({
       where: {
         activeMenuId: {
-          not: null,
+          isEmpty: false,
         },
       },
     });
@@ -41,7 +41,7 @@ export const homeRouter = createTRPCRouter({
       const allRestaurants = await ctx.db.restaurantInfo.findMany({
         where: {
           activeMenuId: {
-            not: null,
+            isEmpty: false,
           },
         },
       });

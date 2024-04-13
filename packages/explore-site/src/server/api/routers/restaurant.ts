@@ -6,40 +6,94 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { IEntitlements, MEC_checkPermissions } from "~/server/utils/helpers";
 
 export const restaurantRouter = createTRPCRouter({
-  getMenu: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
-    const restaurant = await ctx.db.restaurantInfo.findUnique({
-      where: {
-        id: input,
-        activeMenuId: {
-          not: null,
+  getMenu: publicProcedure
+    .input(
+      z.object({
+        restaurantId: z.string(),
+        menuId: z.string(),
+      }),
+    )
+    .query(async (opts) => {
+      const ctx = opts.ctx;
+      const { restaurantId, menuId } = opts.input;
+      const restaurant = await ctx.db.restaurantInfo.findUnique({
+        where: {
+          id: restaurantId,
         },
-      },
-    });
-    const owner = await ctx.db.account.findUnique({
-      where: {
-        id: restaurant?.ownerId,
-      },
-    });
-    if (owner && MEC_checkPermissions(owner, IEntitlements.ALLOW_PUBLISHING)) {
-      if (restaurant?.activeMenuId) {
-        return ctx.db.menus.findFirst({
-          where: {
-            id: restaurant?.activeMenuId,
-          },
+      });
+      if (!restaurant?.activeMenuId?.includes(menuId)) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Menu not currently active",
         });
+      }
+      const owner = await ctx.db.account.findUnique({
+        where: {
+          id: restaurant?.ownerId,
+        },
+      });
+      if (
+        owner &&
+        MEC_checkPermissions(owner, IEntitlements.ALLOW_PUBLISHING)
+      ) {
+        if (restaurant?.activeMenuId) {
+          return ctx.db.menus.findFirst({
+            where: {
+              id: menuId,
+            },
+          });
+        } else {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Restaurant does not have an active menu",
+          });
+        }
       } else {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: "Restaurant does not have an active menu",
+          message: "Restaurant does not have a valid plan",
         });
       }
-    } else {
-      throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "Restaurant does not have a valid plan",
+    }),
+  getRestaurantMenus: publicProcedure
+    .input(z.string())
+    .query(async ({ ctx, input }) => {
+      const restaurant = await ctx.db.restaurantInfo.findUnique({
+        where: {
+          id: input,
+          activeMenuId: {
+            isEmpty: false,
+          },
+        },
       });
-    }
-  }),
+      const owner = await ctx.db.account.findUnique({
+        where: {
+          id: restaurant?.ownerId,
+        },
+      });
+      if (
+        owner &&
+        MEC_checkPermissions(owner, IEntitlements.ALLOW_PUBLISHING)
+      ) {
+        if (restaurant?.activeMenuId) {
+          return ctx.db.menus.findFirst({
+            where: {
+              id: { in: restaurant?.activeMenuId },
+            },
+          });
+        } else {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Restaurant does not have an active menu",
+          });
+        }
+      } else {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Restaurant does not have a valid plan",
+        });
+      }
+    }),
   getRestaurant: publicProcedure
     .input(z.string())
     .query(async ({ ctx, input }) => {
@@ -47,7 +101,7 @@ export const restaurantRouter = createTRPCRouter({
         where: {
           id: input,
           activeMenuId: {
-            not: null,
+            isEmpty: false,
           },
         },
       });

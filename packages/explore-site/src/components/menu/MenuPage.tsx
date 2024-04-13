@@ -17,18 +17,23 @@ import { MenuTextField } from "~/components/menu/MenuTextField";
 
 interface MenuPageProps {
   restaurantId: string;
+  menuId: string;
   tableMode: boolean;
 }
 
 export function MenuPage(props: MenuPageProps) {
   const router = useRouter();
   const barREF = useRef();
-  const { restaurantId, tableMode } = props;
+  const { restaurantId, menuId, tableMode } = props;
 
-  const { data: menu, isLoading: isLoadingMenu } =
-    api.restaurant.getMenu.useQuery(restaurantId, {
-      enabled: !!props.restaurantId,
-    });
+  const {
+    data: menu,
+    isLoading: isLoadingMenu,
+    refetch: refetchMenus,
+  } = api.restaurant.getMenu.useQuery(
+    { restaurantId, menuId },
+    { enabled: true },
+  );
   const {
     data: restaurant,
     isLoading: isLoadingRestaurant,
