@@ -21,7 +21,7 @@ export const restaurantRouter = createTRPCRouter({
           id: restaurantId,
         },
       });
-      if (!restaurant?.activeMenuId?.includes(menuId)) {
+      if (!restaurant?.activeMenuIds?.includes(menuId)) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Menu not currently active",
@@ -36,7 +36,7 @@ export const restaurantRouter = createTRPCRouter({
         owner &&
         MEC_checkPermissions(owner, IEntitlements.ALLOW_PUBLISHING)
       ) {
-        if (restaurant?.activeMenuId) {
+        if (restaurant?.activeMenuIds) {
           return ctx.db.menus.findFirst({
             where: {
               id: menuId,
@@ -61,7 +61,7 @@ export const restaurantRouter = createTRPCRouter({
       const restaurant = await ctx.db.restaurantInfo.findUnique({
         where: {
           id: input,
-          activeMenuId: {
+          activeMenuIds: {
             isEmpty: false,
           },
         },
@@ -75,10 +75,10 @@ export const restaurantRouter = createTRPCRouter({
         owner &&
         MEC_checkPermissions(owner, IEntitlements.ALLOW_PUBLISHING)
       ) {
-        if (restaurant?.activeMenuId) {
+        if (restaurant?.activeMenuIds) {
           return ctx.db.menus.findFirst({
             where: {
-              id: { in: restaurant?.activeMenuId },
+              id: { in: restaurant?.activeMenuIds },
             },
           });
         } else {
@@ -100,7 +100,7 @@ export const restaurantRouter = createTRPCRouter({
       const restaurant = await ctx.db.restaurantInfo.findUnique({
         where: {
           id: input,
-          activeMenuId: {
+          activeMenuIds: {
             isEmpty: false,
           },
         },

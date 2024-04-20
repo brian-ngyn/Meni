@@ -60,7 +60,7 @@ function MenuList(props: IMenuListProps) {
       if (a.success) {
         MeniNotification(
           "Success",
-          "Active menu has been set successfully.",
+          "Active menus successfully updated.",
           "success",
         );
         void refetchContextData();

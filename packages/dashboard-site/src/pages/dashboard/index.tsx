@@ -220,7 +220,7 @@ export default function Dashboard() {
         {menus && menus.length > 0 ? (
           <MenuList
             mode={MenuCardMode.MENU}
-            activeMenus={currentRestaurantSelected?.activeMenuId || []}
+            activeMenus={currentRestaurantSelected?.activeMenuIds || []}
             menus={menus}
             restaurantId={currentRestaurantSelected?.id || ""}
             getRestaurantMenus={() => fetchMenusBrief()}
