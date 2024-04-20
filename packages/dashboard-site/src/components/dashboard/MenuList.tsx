@@ -25,7 +25,7 @@ type IMenuListProps = {
   mode: MenuCardMode;
   restaurantId: string;
   getRestaurantMenus: () => Promise<UseQueryResult>;
-  activeMenu: string;
+  activeMenus: string[];
   currentPlan: string;
 };
 
@@ -158,6 +158,7 @@ function MenuList(props: IMenuListProps) {
         menuId: menuId,
         restaurantId: props.restaurantId,
       });
+      void props.getRestaurantMenus();
     }
   };
 
@@ -264,7 +265,7 @@ function MenuList(props: IMenuListProps) {
             key={m.id}
             openSettings={handleOpenMenuSettings}
             setActive={handleSetActiveMenu}
-            isActive={props.activeMenu === m.id}
+            isActive={props.activeMenus.includes(m.id)}
             menu={m}
             opened={openedMenu.id === m.id}
             openDialog={handleDialogOpen}

@@ -380,12 +380,24 @@ export const settersRouter = createTRPCRouter({
             "User is not authorized to update this account's active menu",
         });
       }
+      let activeMenus = restaurant?.activeMenuId
+        ? [...restaurant.activeMenuId]
+        : [];
+      if (activeMenus.includes(input.menuId)) {
+        // remove the menu from the active menu
+        activeMenus = activeMenus.filter((menuId) => menuId !== input.menuId);
+      } else {
+        // add the menu to the active menu
+        activeMenus.push(input.menuId);
+      }
+      // update restaurant's active menus
       await ctx.db.restaurantInfo.update({
         where: {
           id: restaurant?.id,
+          ownerId: owner?.id,
         },
         data: {
-          activeMenuId: input.menuId,
+          activeMenuId: activeMenus,
         },
       });
 
@@ -496,7 +508,10 @@ export const settersRouter = createTRPCRouter({
           },
         });
 
-        if (menuLength === 0 || restaurant?.activeMenuId === input.menuId) {
+        if (
+          menuLength === 0 ||
+          restaurant?.activeMenuId.includes(input.menuId)
+        ) {
           // verify if the menu deleted is the active menu
           await ctx.db.restaurantInfo.update({
             where: {
@@ -504,7 +519,7 @@ export const settersRouter = createTRPCRouter({
               ownerId: owner?.id,
             },
             data: {
-              activeMenuId: null,
+              activeMenuId: [],
             },
           });
         }
