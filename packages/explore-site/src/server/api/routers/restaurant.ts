@@ -76,7 +76,7 @@ export const restaurantRouter = createTRPCRouter({
         MEC_checkPermissions(owner, IEntitlements.ALLOW_PUBLISHING)
       ) {
         if (restaurant?.activeMenuIds) {
-          return ctx.db.menus.findFirst({
+          return ctx.db.menus.findMany({
             where: {
               id: { in: restaurant?.activeMenuIds },
             },
