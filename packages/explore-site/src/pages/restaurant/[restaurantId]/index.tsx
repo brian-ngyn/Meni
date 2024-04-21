@@ -42,7 +42,7 @@ export default function RestaurantPage() {
   };
 
   if (isLoading) return <LoadingPage />;
-  if (!data.menus) {
+  if (!data.menus.length) {
     return (
       <div className="flex h-screen w-full flex-col">
         {NavBar()}
@@ -57,7 +57,9 @@ export default function RestaurantPage() {
     <div className="flex h-screen w-full flex-col">
       {NavBar()}
       <div className="flex w-full flex-1 flex-col overflow-auto md:flex-row">
-        {data.menus?.map((menu) => <MenuCard key={menu.id} menu={menu} />)}
+        {data.menus?.map((menu, index) => (
+          <MenuCard key={menu.id} menu={menu} index={index} />
+        ))}
       </div>
     </div>
   );
