@@ -15,7 +15,7 @@ function MenuCard({ menu }: MenuCardProps) {
   return (
     <div
       onClick={handleMenuClick}
-      className="flex min-h-[300px] items-center justify-center border border-black bg-red-400 md:h-full md:min-w-[300px] md:flex-1"
+      className="flex min-h-[300px] flex-1 items-center justify-center border border-black bg-red-400 md:h-full md:min-w-[300px]"
     >
       <div className="flex w-full max-w-[80%] cursor-pointer items-center justify-center bg-card p-4">
         <div className="flex w-full items-center justify-center truncate border border-white px-5 py-10 font-serif text-xl">
