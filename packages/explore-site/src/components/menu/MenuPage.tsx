@@ -81,7 +81,9 @@ export function MenuPage(props: MenuPageProps) {
     return (
       <div className="px-4 pt-10 sm:px-10">
         <Head>
-          <title>{restaurant?.name} | Meni</title>
+          <title>
+            {restaurant?.name} {menu?.name} | Meni
+          </title>
         </Head>
         <div className="mt-2 flex w-full flex-col gap-4 px-0 pb-4 font-sans xl:px-32 xl:pt-8">
           <div>

@@ -76,11 +76,14 @@ export const restaurantRouter = createTRPCRouter({
         MEC_checkPermissions(owner, IEntitlements.ALLOW_PUBLISHING)
       ) {
         if (restaurant?.activeMenuIds) {
-          return ctx.db.menus.findMany({
-            where: {
-              id: { in: restaurant?.activeMenuIds },
-            },
-          });
+          return {
+            restaurantName: restaurant.name,
+            menus: await ctx.db.menus.findMany({
+              where: {
+                id: { in: restaurant?.activeMenuIds },
+              },
+            }),
+          };
         } else {
           throw new TRPCError({
             code: "INTERNAL_SERVER_ERROR",
