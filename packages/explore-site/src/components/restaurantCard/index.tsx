@@ -18,14 +18,18 @@ export function RestaurantCard({
 }: RestaurantCardProps) {
   const router = useRouter();
 
+  const handleRestaurantClick = () => {
+    let redirectPath = `/restaurant/${restaurantInfo.id}`;
+    if (restaurantInfo.activeMenuIds.length === 1) {
+      redirectPath += `/${restaurantInfo.activeMenuIds[0]}`; // skip menu selection if only one menu
+    }
+    void router.push(redirectPath, "");
+  };
+
   return (
     <div
       className="flex aspect-square h-[375px] w-[320px] flex-col items-center rounded bg-grey hover:cursor-pointer md:h-[325px] md:w-[275px]"
-      onClick={() =>
-        void router.push(`/restaurant/${restaurantInfo.id}`, "", {
-          scroll: true,
-        })
-      }
+      onClick={handleRestaurantClick}
     >
       <div className="relative mb-3 h-[200px] w-full object-cover">
         <Image

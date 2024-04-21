@@ -45,6 +45,7 @@ export default function RestaurantPage() {
       </div>
     );
   }
+
   return (
     <div className="flex h-screen w-full flex-col">
       <Head>

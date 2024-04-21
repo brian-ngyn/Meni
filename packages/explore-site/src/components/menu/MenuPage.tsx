@@ -66,6 +66,17 @@ export function MenuPage(props: MenuPageProps) {
     }
   }, [isLoadingMenu, isLoadingRestaurant]);
 
+  const handleBackArrowClick = () => {
+    if (
+      restaurant?.activeMenuIds.length &&
+      restaurant?.activeMenuIds.length > 1
+    ) {
+      void router.push(`/restaurant/${restaurantId}`);
+    } else {
+      void router.push("/");
+    }
+  };
+
   const renderHeader = () => {
     return (
       <div className="px-4 pt-10 sm:px-10">
@@ -76,14 +87,19 @@ export function MenuPage(props: MenuPageProps) {
           <div>
             <ArrowBackIosIcon
               className="absolute left-6 top-6 cursor-pointer"
-              onClick={() => void router.push("/")}
+              onClick={handleBackArrowClick}
             />
           </div>
           <div className="flex w-full flex-col gap-y-4 border-b pb-4">
             <h1 className="font-serif text-6xl text-white">
               {restaurant?.name}
             </h1>
-            <p className="break-normal font-thin">{restaurant?.description} </p>
+            <p className="text-md font-sans font-thin italic text-white">
+              {menu?.name}
+            </p>
+            <p className="break-normal font-extralight">
+              {restaurant?.description}{" "}
+            </p>
             <div className="flex gap-2">
               <Image
                 width={20}
