@@ -7,7 +7,7 @@ export default function QRPage() {
   useEffect(() => {
     if (router.isReady) {
       // Send QR requests to /restaurant right now
-      void router.push(`/restaurant/${router.query.id as string}/`);
+      void router.push(`/restaurant/${router.query.id as string}?qr=true`);
     }
   }, [router, router.isReady]);
   return <></>;
