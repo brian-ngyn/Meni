@@ -44,7 +44,7 @@ const MeniMoneyMaker = (props: MMMProps) => {
               </div>
               <QRCode
                 id="qr-gen"
-                value={"https://meniapp.ca/qr/" + restaurantId}
+                value={`https://meniapp.ca/restaurant/${restaurantId}?qr=true`}
                 size={290}
                 level={"H"}
                 includeMargin={true}

@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
@@ -12,6 +13,9 @@ import { LoadingPage } from "~/components/loadingPage";
 
 export default function RestaurantPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const fromQrScan = searchParams.get("qr");
+
   const { restaurantId } = router.query;
   const { data, isLoading } = api.restaurant.getRestaurantMenus.useQuery(
     restaurantId as string,
@@ -30,13 +34,15 @@ export default function RestaurantPage() {
         <Head>
           <title>{`${data.restaurantName} | Meni`}</title>
         </Head>
-        <div className="align-center flex w-full flex-row gap-4 p-8 font-sans">
-          <ArrowBackIosIcon
-            className="left-6 top-6 cursor-pointer"
-            onClick={() => void router.push("/")}
-          />
-          <div className="font-serif text-xl">Restaurant Name</div>
-        </div>
+        {!fromQrScan && (
+          <div className="align-center flex w-full flex-row gap-4 p-8 font-sans">
+            <ArrowBackIosIcon
+              className="left-6 top-6 cursor-pointer"
+              onClick={() => void router.push("/")}
+            />
+            <div className="font-serif text-xl">Restaurant Name</div>
+          </div>
+        )}
       </>
     );
   };

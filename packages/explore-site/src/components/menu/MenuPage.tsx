@@ -26,14 +26,11 @@ export function MenuPage(props: MenuPageProps) {
   const barREF = useRef();
   const { restaurantId, menuId, tableMode } = props;
 
-  const {
-    data: menu,
-    isLoading: isLoadingMenu,
-    refetch: refetchMenus,
-  } = api.restaurant.getMenu.useQuery(
-    { restaurantId, menuId },
-    { enabled: true },
-  );
+  const { data: menu, isLoading: isLoadingMenu } =
+    api.restaurant.getMenu.useQuery(
+      { restaurantId, menuId },
+      { enabled: true },
+    );
   const {
     data: restaurant,
     isLoading: isLoadingRestaurant,
@@ -66,17 +63,6 @@ export function MenuPage(props: MenuPageProps) {
     }
   }, [isLoadingMenu, isLoadingRestaurant]);
 
-  const handleBackArrowClick = () => {
-    if (
-      restaurant?.activeMenuIds.length &&
-      restaurant?.activeMenuIds.length > 1
-    ) {
-      void router.push(`/restaurant/${restaurantId}`);
-    } else {
-      void router.push("/");
-    }
-  };
-
   const renderHeader = () => {
     return (
       <div className="px-4 pt-10 sm:px-10">
@@ -89,7 +75,7 @@ export function MenuPage(props: MenuPageProps) {
           <div>
             <ArrowBackIosIcon
               className="absolute left-6 top-6 cursor-pointer"
-              onClick={handleBackArrowClick}
+              onClick={() => router.back()}
             />
           </div>
           <div className="flex w-full flex-col gap-y-4 border-b pb-4">

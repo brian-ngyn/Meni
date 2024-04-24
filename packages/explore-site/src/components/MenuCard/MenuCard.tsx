@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 
@@ -14,12 +15,10 @@ const MENU_COVERS = [menucover1, menucover2, menucover3];
 
 function MenuCard({ menu, index }: MenuCardProps) {
   const router = useRouter();
-  const handleMenuClick = () =>
-    void router.push(`${router.asPath}/${menu.id}`, "");
 
   return (
-    <div
-      onClick={handleMenuClick}
+    <Link
+      href={`${router.asPath.split("?")[0]}/${menu.id}`}
       className={`${
         index && "border-t md:border-l md:border-t-0"
       } flex min-h-[300px] flex-1 items-center justify-center border-white/40 md:h-full md:min-w-[300px]`}
@@ -35,7 +34,7 @@ function MenuCard({ menu, index }: MenuCardProps) {
       <div className="flex w-full max-w-[80%] cursor-pointer items-center justify-center truncate border border-white px-5 py-10 font-serif text-3xl transition-all hover:bg-white/10">
         {menu.name}{" "}
       </div>
-    </div>
+    </Link>
   );
 }
 
