@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { useSearchParams } from "next/navigation";
 import React from "react";
 
 import type { Menus } from "@prisma/client";
@@ -8,17 +8,22 @@ import { menucover1, menucover2, menucover3 } from "~/assets";
 
 interface MenuCardProps {
   menu: Menus;
+  restaurantId: string;
   index: number;
 }
 
 const MENU_COVERS = [menucover1, menucover2, menucover3];
 
-function MenuCard({ menu, index }: MenuCardProps) {
-  const router = useRouter();
+function MenuCard({ menu, index, restaurantId }: MenuCardProps) {
+  const searchParams = useSearchParams();
+  const fromQrScan = searchParams.get("qr");
 
   return (
     <Link
-      href={`${router.asPath.split("?")[0]}/${menu.id}`}
+      href={{
+        pathname: `/restaurant/${restaurantId}/${menu.id}`,
+        query: { qr: fromQrScan },
+      }}
       className={`${
         index && "border-t md:border-l md:border-t-0"
       } flex min-h-[300px] flex-1 items-center justify-center border-white/40 md:h-full md:min-w-[300px]`}

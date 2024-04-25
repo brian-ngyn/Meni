@@ -1,17 +1,15 @@
 import Head from "next/head";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
-import { useState } from "react";
 
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import type { Menus } from "@prisma/client";
 
 import { api } from "~/utils/api";
 
 import MenuCard from "~/components/MenuCard/MenuCard";
 import { LoadingPage } from "~/components/loadingPage";
 
-export default function RestaurantPage() {
+export default function Restaurant() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const fromQrScan = searchParams.get("qr");
@@ -64,7 +62,12 @@ export default function RestaurantPage() {
       {NavBar()}
       <div className="flex w-full flex-1 flex-col overflow-auto md:flex-row">
         {data.menus?.map((menu, index) => (
-          <MenuCard key={menu.id} menu={menu} index={index} />
+          <MenuCard
+            key={menu.id}
+            menu={menu}
+            index={index}
+            restaurantId={restaurantId as string}
+          />
         ))}
       </div>
     </div>

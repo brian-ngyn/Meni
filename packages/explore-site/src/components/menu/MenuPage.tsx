@@ -1,5 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import ScrollContainer from "react-indiana-drag-scroll";
@@ -23,8 +24,13 @@ interface MenuPageProps {
 
 export function MenuPage(props: MenuPageProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  const { replace } = useRouter();
   const barREF = useRef();
   const { restaurantId, menuId, tableMode } = props;
+
+  const searchParams = useSearchParams();
+  const fromQrScan = searchParams.get("qr");
 
   const { data: menu, isLoading: isLoadingMenu } =
     api.restaurant.getMenu.useQuery(
@@ -63,6 +69,14 @@ export function MenuPage(props: MenuPageProps) {
     }
   }, [isLoadingMenu, isLoadingRestaurant]);
 
+  const handleBackNavigation = () => {
+    const params = new URLSearchParams(searchParams);
+    if (fromQrScan) {
+      params.set("qr", "true");
+    }
+    void router.push(`/restaurant/${restaurantId}?${params.toString()}`);
+  };
+
   const renderHeader = () => {
     return (
       <div className="px-4 pt-10 sm:px-10">
@@ -75,7 +89,7 @@ export function MenuPage(props: MenuPageProps) {
           <div>
             <ArrowBackIosIcon
               className="absolute left-6 top-6 cursor-pointer"
-              onClick={() => router.back()}
+              onClick={handleBackNavigation}
             />
           </div>
           <div className="flex w-full flex-col gap-y-4 border-b pb-4">

@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 
 import { MenuPage } from "~/components/menu/MenuPage";
 
-export default function RestaurantPage() {
+export default function Menu() {
   const router = useRouter();
   const { restaurantId, menuId } = router.query;
 
