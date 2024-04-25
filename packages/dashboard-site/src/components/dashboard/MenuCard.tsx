@@ -49,17 +49,16 @@ function MenuCard(props: IMenuCard) {
           >
             Rename
           </div>
-          {!props.isActive && (
-            <div
-              className="flex flex-1 items-center border-b border-accent pl-2 hover:cursor-pointer hover:bg-accent"
-              onClick={(e) => {
-                props.setActive(props.menu.id);
-                props.openSettings({ id: "", name: "" });
-              }}
-            >
-              Set as Active
-            </div>
-          )}
+
+          <div
+            className="flex flex-1 items-center border-b border-accent pl-2 hover:cursor-pointer hover:bg-accent"
+            onClick={(e) => {
+              props.setActive(props.menu.id);
+              props.openSettings({ id: "", name: "" });
+            }}
+          >
+            {props.isActive ? "Disable" : "Enable"}
+          </div>
           <div
             className="flex flex-1 items-center border-b border-accent pl-2 hover:cursor-pointer hover:bg-accent"
             onClick={() => props.openDialog("delete")}

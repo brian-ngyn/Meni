@@ -4,11 +4,15 @@ import { MenuPage } from "~/components/menu/MenuPage";
 
 export default function TablePage() {
   const router = useRouter();
-  const { id } = router.query;
+  const { restaurantId, menuId } = router.query;
 
   return (
     <>
-      <MenuPage restaurantId={id as string} tableMode={true} />
+      <MenuPage
+        restaurantId={restaurantId as string}
+        menuId={menuId as string}
+        tableMode={true}
+      />
     </>
   );
 }

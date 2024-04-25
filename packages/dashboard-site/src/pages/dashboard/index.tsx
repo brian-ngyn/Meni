@@ -34,7 +34,6 @@ export default function Dashboard() {
   const router = useRouter();
   const { user } = useUser();
 
-  const [activeMenu, setActiveMenu] = useState<string>(""); // active menu for the restaurant
   const [tourEnable, setTourEnable] = useState(false);
 
   const {
@@ -46,9 +45,8 @@ export default function Dashboard() {
       clerkId: accountInfo?.clerkId as string,
       restaurantId: currentRestaurantSelected?.id as string,
     },
-    { enabled: false },
+    { enabled: true },
   );
-
   const { refetch: fetchCanCreateMenu } =
     api.meniMoneyMaker.createMenuCheck.useQuery(
       {
@@ -57,23 +55,6 @@ export default function Dashboard() {
       },
       { enabled: false, retry: false },
     );
-
-  useEffect(() => {
-    if (accountInfo?.clerkId && currentRestaurantSelected?.id) {
-      void fetchMenusBrief();
-      menus?.forEach((menu: IMenuBrief) => {
-        if (menu.id === currentRestaurantSelected?.activeMenuId) {
-          setActiveMenu(menu.id);
-        }
-      });
-    }
-  }, [
-    accountInfo?.clerkId,
-    fetchMenusBrief,
-    menus,
-    currentRestaurantSelected?.id,
-    currentRestaurantSelected?.activeMenuId,
-  ]);
 
   const [newForm, setNewForm] = useState({
     firstName: "",
@@ -239,7 +220,7 @@ export default function Dashboard() {
         {menus && menus.length > 0 ? (
           <MenuList
             mode={MenuCardMode.MENU}
-            activeMenu={activeMenu}
+            activeMenus={currentRestaurantSelected?.activeMenuIds || []}
             menus={menus}
             restaurantId={currentRestaurantSelected?.id || ""}
             getRestaurantMenus={() => fetchMenusBrief()}
