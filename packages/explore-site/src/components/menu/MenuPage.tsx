@@ -1,5 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import ScrollContainer from "react-indiana-drag-scroll";
@@ -17,18 +18,25 @@ import { MenuTextField } from "~/components/menu/MenuTextField";
 
 interface MenuPageProps {
   restaurantId: string;
+  menuId: string;
   tableMode: boolean;
 }
 
 export function MenuPage(props: MenuPageProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  const { replace } = useRouter();
   const barREF = useRef();
-  const { restaurantId, tableMode } = props;
+  const { restaurantId, menuId, tableMode } = props;
+
+  const searchParams = useSearchParams();
+  const fromQrScan = searchParams.get("qr");
 
   const { data: menu, isLoading: isLoadingMenu } =
-    api.restaurant.getMenu.useQuery(restaurantId, {
-      enabled: !!props.restaurantId,
-    });
+    api.restaurant.getMenu.useQuery(
+      { restaurantId, menuId },
+      { enabled: true },
+    );
   const {
     data: restaurant,
     isLoading: isLoadingRestaurant,
@@ -61,24 +69,39 @@ export function MenuPage(props: MenuPageProps) {
     }
   }, [isLoadingMenu, isLoadingRestaurant]);
 
+  const handleBackNavigation = () => {
+    const params = new URLSearchParams(searchParams);
+    if (fromQrScan) {
+      params.set("qr", "true");
+    }
+    void router.push(`/restaurant/${restaurantId}?${params.toString()}`);
+  };
+
   const renderHeader = () => {
     return (
       <div className="px-4 pt-10 sm:px-10">
         <Head>
-          <title>{restaurant?.name} | Meni</title>
+          <title>
+            {restaurant?.name} {menu?.name} | Meni
+          </title>
         </Head>
         <div className="mt-2 flex w-full flex-col gap-4 px-0 pb-4 font-sans xl:px-32 xl:pt-8">
           <div>
             <ArrowBackIosIcon
               className="absolute left-6 top-6 cursor-pointer"
-              onClick={() => void router.push("/")}
+              onClick={handleBackNavigation}
             />
           </div>
           <div className="flex w-full flex-col gap-y-4 border-b pb-4">
             <h1 className="font-serif text-6xl text-white">
               {restaurant?.name}
             </h1>
-            <p className="break-normal font-thin">{restaurant?.description} </p>
+            <p className="text-md font-sans font-thin italic text-white">
+              {menu?.name}
+            </p>
+            <p className="break-normal font-extralight">
+              {restaurant?.description}{" "}
+            </p>
             <div className="flex gap-2">
               <Image
                 width={20}

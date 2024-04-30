@@ -8,8 +8,8 @@ export const homeRouter = createTRPCRouter({
   getFeaturedRestaurants: publicProcedure.query(async ({ ctx }) => {
     const activeRestaurants = await ctx.db.restaurantInfo.findMany({
       where: {
-        activeMenuId: {
-          not: null,
+        activeMenuIds: {
+          isEmpty: false,
         },
       },
     });
@@ -40,8 +40,8 @@ export const homeRouter = createTRPCRouter({
       // return the list of restaurants that have the same geoLocation as the user's location
       const allRestaurants = await ctx.db.restaurantInfo.findMany({
         where: {
-          activeMenuId: {
-            not: null,
+          activeMenuIds: {
+            isEmpty: false,
           },
         },
       });
