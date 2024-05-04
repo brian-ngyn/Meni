@@ -2,3 +2,4 @@
 node_modules
 packages/dashboard-site/node_modules
 packages/explore-site/node_modules
+local

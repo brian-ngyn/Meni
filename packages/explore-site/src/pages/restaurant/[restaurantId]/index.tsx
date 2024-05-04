@@ -38,7 +38,7 @@ export default function Restaurant() {
               className="left-6 top-6 cursor-pointer"
               onClick={() => void router.push("/")}
             />
-            <div className="font-serif text-xl">Restaurant Name</div>
+            <div className="font-serif text-xl">{data.restaurantName}</div>
           </div>
         )}
       </>
