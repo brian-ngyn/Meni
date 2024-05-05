@@ -285,7 +285,7 @@ export function MenuPage(props: MenuPageProps) {
         </div>
         <MenuTextField
           id={menu.id}
-          textClass="text-xl font-thin whitespace-pre-line break-normal text-center w-full"
+          textClass="text-xl font-thin whitespace-pre-line break-normal text-center w-full pb-6"
           field={"menuFooter"}
         >
           {menu.footer ? menu.footer : ""}
