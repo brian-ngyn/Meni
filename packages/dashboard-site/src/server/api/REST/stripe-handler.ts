@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 // This is your test secret API key.
 import { Stripe } from "stripe";
 
-import { StripeHandlerResponseData } from "~/pages/api/stripe";
+import { type StripeHandlerResponseData } from "~/pages/api/stripe";
 import { db } from "~/server/db";
 
 const stripe = new Stripe(
@@ -15,11 +15,13 @@ const stripe = new Stripe(
 // at https://dashboard.stripe.com/webhooks
 const endpointSecret = "whsec_...";
 
-export const stripeHandler = (
+export const stripeHandler = async (
   req: NextApiRequest,
   res: NextApiResponse<StripeHandlerResponseData>,
 ) => {
-  let event: Stripe.Event = req.body;
+  let event: Stripe.Event = req.body as Stripe.Event;
+  // Dummy await until DB is connected
+  await new Promise((resolve) => setTimeout(resolve, 1000));
 
   // Only verify the event if you have an endpoint secret defined.
   // Otherwise use the basic event deserialized with JSON.parse
@@ -28,12 +30,12 @@ export const stripeHandler = (
     const signature = req.headers["stripe-signature"] as string;
     try {
       event = stripe.webhooks.constructEvent(
-        req.body,
+        req.body as string,
         signature,
         endpointSecret,
       );
-    } catch (err: any) {
-      console.log(`⚠️  Webhook signature verification failed.`, err.message);
+    } catch (err) {
+      console.log(`⚠️  Webhook signature verification failed.`, err);
       res.status(400);
     }
   }

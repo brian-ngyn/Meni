@@ -15,5 +15,5 @@ export default function handler(
     res.status(405).end(); // Method Not Allowed
     return;
   }
-  stripeHandler(req, res);
+  void stripeHandler(req, res);
 }
