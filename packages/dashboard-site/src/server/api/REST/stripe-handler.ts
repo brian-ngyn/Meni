@@ -15,11 +15,11 @@ const stripe = new Stripe(
 // at https://dashboard.stripe.com/webhooks
 const endpointSecret = "whsec_...";
 
-export const stripeHandler = async (
+export const stripeHandler = (
   req: NextApiRequest,
   res: NextApiResponse<StripeHandlerResponseData>,
 ) => {
-  let event = req.body;
+  let event: Stripe.Event = req.body;
 
   // Only verify the event if you have an endpoint secret defined.
   // Otherwise use the basic event deserialized with JSON.parse
@@ -38,24 +38,36 @@ export const stripeHandler = async (
     }
   }
 
+  const meniTerminationOfPaymentProcess = () => {
+    // TODO Update Clerk and DB tables to set isPaid to false
+  };
+  const meniSuccessfulPaymentProcess = () => {
+    // TODO Update Clerk and DB tables with current active subscription and set isPaid to true
+  };
+  const menuPaymentMetaDataUpdateProcess = () => {
+    // TODO Update Clerk and DB tables with relevant information from stripe
+  };
+
   // IMPORTANT EVENTS WE CARE ABOUT @ MENI
   // NOTE: This is only a partial list picked by Ideen when he was sleep deprived. It may be missing more important events
   // Refer for full list and meaning: https://docs.stripe.com/api/events/types
   switch (event.type) {
     // GOOD SITUATION EVENTS
-    case "payment_intent.succeeded":
     case "customer.subscription.created":
     case "customer.subscription.resumed":
     case "customer.subscription.updated":
-      // TODO Update Clerk and DB tables with current active subscription and set isPaid to true
+      meniSuccessfulPaymentProcess();
+      menuPaymentMetaDataUpdateProcess();
+      break;
+    case "payment_intent.succeeded":
+      meniSuccessfulPaymentProcess();
       const paymentIntent = event.data.object;
       console.log(`PaymentIntent for ${paymentIntent.amount} was successful!`);
-      // Then define and call a method to handle the successful payment intent.
-      // handlePaymentIntentSucceeded(paymentIntent);
       break;
 
     // NOT SURE WE CARE EVENTS!!!? Maybe we do
     case "payment_method.attached":
+      menuPaymentMetaDataUpdateProcess();
       const paymentMethod = event.data.object;
       // Then define and call a method to handle the successful attachment of a PaymentMethod.
       // handlePaymentMethodAttached(paymentMethod);
@@ -64,12 +76,14 @@ export const stripeHandler = async (
     // BAD SITUATION EVENTS
     case "customer.subscription.deleted":
     case "customer.subscription.paused":
+      meniTerminationOfPaymentProcess();
+      menuPaymentMetaDataUpdateProcess();
+      break;
     case "payment_intent.payment_failed":
-      // TODO Update Clerk and DB tables to set isPaid to false
+      meniTerminationOfPaymentProcess();
       const failed = event.data.object;
       console.log(`PaymentIntent for ${failed.amount} failed!`);
-      // Then define and call a method to handle the successful payment intent.
-      // handlePaymentIntentSucceeded(paymentIntent);
+
       break;
     default:
       // Unexpected event type
