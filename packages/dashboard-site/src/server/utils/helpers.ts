@@ -108,3 +108,16 @@ export const MEC_checkCount = (
     message: "User is not authorized to use this feature for the current plan",
   });
 };
+
+export const formatMenuItemPrice = (price: string): string => {
+  if (price === "" || /[a-zA-Z]/.test(price)) {
+    return "0.00";
+  } else {
+    const num = parseFloat(price);
+    if (isNaN(num)) {
+      return "0.00";
+    } else {
+      return num.toFixed(2);
+    }
+  }
+};

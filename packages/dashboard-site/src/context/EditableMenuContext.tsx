@@ -163,7 +163,7 @@ export function EditableMenuContextProvider({ children }: Props) {
                       name: "",
                       price: "",
                       description: "",
-                      image: "fd347148-f0ae-4fe1-bcd0-81eacaf60bdb-jedoig.png",
+                      image: "",
                       tags: [],
                     },
                   ],
