@@ -65,22 +65,20 @@ export function FoodCard(props: IFoodCardProps) {
         {
           "bg-[#656565]": currentImage === image && isTable,
           "bg-card": !(currentImage === image && isTable),
-          "aspect-square": !isTable,
+          "aspect-square": !isTable && image !== "",
         },
       )}
     >
       <div className="bg-accent absolute left-2 top-2 z-10 hidden rounded-full p-1 hover:cursor-pointer group-hover:block"></div>
-      {!props.isTable && (
+      {!props.isTable && image !== "" && (
         <div className="relative aspect-square flex-none sm:w-48 lg:w-48">
-          {image !== "" && (
-            <Image
-              src={MeniGlobals().cdnRoot + image}
-              className="rounded-l object-cover"
-              fill={true}
-              alt="Food Item Image"
-              priority
-            />
-          )}
+          <Image
+            src={MeniGlobals().cdnRoot + image}
+            className="rounded-l object-cover"
+            fill={true}
+            alt="Food Item Image"
+            priority
+          />
         </div>
       )}
       <div className="flex w-full flex-col justify-between overflow-hidden break-words px-4 py-2 sm:h-full">

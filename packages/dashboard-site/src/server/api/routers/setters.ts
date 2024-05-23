@@ -11,6 +11,7 @@ import {
   IEntitlements,
   MEC_checkCount,
   MEC_checkPermissions,
+  formatMenuItemPrice,
 } from "~/server/utils/helpers";
 
 export const settersRouter = createTRPCRouter({
@@ -191,21 +192,9 @@ export const settersRouter = createTRPCRouter({
         mainCategories: input.newMenu.mainCategories.map((item) => {
           const subCategories = item.subCategories.map((subItem) => {
             const menuItems = subItem.items.map((menuItem) => {
-              const inputPrice = menuItem.price.trim();
-              let parsedPrice: string;
-              if (inputPrice === "" || /[a-zA-Z]/.test(inputPrice)) {
-                parsedPrice = "0.00";
-              } else {
-                const num = parseFloat(inputPrice);
-                if (isNaN(num)) {
-                  parsedPrice = "0.00";
-                } else {
-                  parsedPrice = num.toFixed(2);
-                }
-              }
               return {
                 ...menuItem,
-                price: parsedPrice,
+                price: formatMenuItemPrice(menuItem.price.trim()),
               };
             });
             return {
@@ -297,21 +286,9 @@ export const settersRouter = createTRPCRouter({
         mainCategories: input.updatedMenu.mainCategories.map((item) => {
           const subCategories = item.subCategories.map((subItem) => {
             const menuItems = subItem.items.map((menuItem) => {
-              const inputPrice = menuItem.price.trim();
-              let parsedPrice: string;
-              if (inputPrice === "" || /[a-zA-Z]/.test(inputPrice)) {
-                parsedPrice = "0.00";
-              } else {
-                const num = parseFloat(inputPrice);
-                if (isNaN(num)) {
-                  parsedPrice = "0.00";
-                } else {
-                  parsedPrice = num.toFixed(2);
-                }
-              }
               return {
                 ...menuItem,
-                price: parsedPrice,
+                price: formatMenuItemPrice(menuItem.price.trim()),
               };
             });
             return {
