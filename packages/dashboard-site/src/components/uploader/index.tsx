@@ -2,7 +2,7 @@ import imageCompression from "browser-image-compression";
 import { useCallback, useEffect, useState } from "react";
 import { generateClientDropzoneAccept } from "uploadthing/client";
 
-import FileUploadIcon from "@mui/icons-material/FileUpload";
+import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import { useDropzone } from "@uploadthing/react/hooks";
 
 import { type EditableFieldTypes } from "~/lib/types";
@@ -91,7 +91,7 @@ export const ImageUploader = (props: ImageUploaderProps) => {
       {props.isUploading ? (
         <LoadingSpinner />
       ) : (
-        <FileUploadIcon fontSize="large" className="m-auto w-10" />
+        <AddAPhotoIcon fontSize="large" className="m-auto w-10" />
       )}
     </div>
   );
