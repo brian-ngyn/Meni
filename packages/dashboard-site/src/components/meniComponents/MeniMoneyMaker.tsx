@@ -1,10 +1,35 @@
+import { useRouter } from "next/router";
 import QRCode from "qrcode.react";
+import { Stripe } from "stripe";
+
+const stripe = new Stripe(
+  "sk_test_51PCFTR07WFzCJDijv0QAqIfkqecETirz2QEdHCSn4KOB8TNNv9bUAATuw7IwYsv4oFjnYBwXU4sxFTBy6W2PUDzx00wAjrMFGd",
+);
+const YOUR_DOMAIN = "https://dashboard.meniapp.ca";
 
 type MMMProps = {
   restaurantId: string;
 };
 
 const MeniMoneyMaker = (props: MMMProps) => {
+  const router = useRouter();
+
+  const redirectToCheckout = async () => {
+    const session = await stripe.checkout.sessions.create({
+      line_items: [
+        {
+          // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+          price: "price_1PDh5Q07WFzCJDij2QYtW5X4",
+          quantity: 1,
+        },
+      ],
+      mode: "subscription",
+      success_url: `${YOUR_DOMAIN}/dashboard?stripe_return=success`,
+      cancel_url: `${YOUR_DOMAIN}/dashboard?stripe_return=cancel`,
+    });
+    router.push(new URL(session.url as string));
+  };
+
   const { restaurantId } = props;
 
   const handleQRCodeExport = () => {
@@ -27,9 +52,15 @@ const MeniMoneyMaker = (props: MMMProps) => {
       <div className="grid gap-10 font-sans text-white">
         <div className="m-auto grid grid-rows-2 gap-2">
           <div className="m-auto grid gap-y-10">
-            <p className="text-center">
-              The Meni Team appreciates your continued support. Thanks for
-              helping Beta test!
+            <button
+              className="text-light w-full border border-white bg-white px-6 py-3 font-semibold text-black transition hover:border-white hover:bg-backdrop hover:text-white sm:w-96"
+              onClick={redirectToCheckout}
+            >
+              Pay
+            </button>
+            <p>
+              DW Dimitar, this button will be replaced with the OG meni money
+              maker plan selection box once I find it
             </p>
           </div>
           <div className="m-auto" id="edit-plan-button">
